@@ -1,0 +1,6 @@
+*.pyc
+.idea/
+*console.log
+venv/
+*.DS_Store
+*db.sqlite3
