@@ -1,1 +1,1 @@
-# UWA Masters of Pharmacy Case Study Management Application Haolin
+# UWA Masters of Pharmacy Case Study Management Application
