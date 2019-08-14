@@ -5,4 +5,4 @@ from django.http import HttpResponse
 
 
 def index(request):
-    return HttpResponse("Hello, world. You're at the case study index.")
+    return HttpResponse("Please use the /admin or /cases routes.")
