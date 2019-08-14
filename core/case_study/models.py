@@ -29,13 +29,12 @@ class CaseStudy(models.Model):
     # Processing information and settings
     date_submitted = models.DateTimeField(null=True, blank=True)
     date_last_edited = models.DateTimeField(null=True, blank=True)
-    last_edited_user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True)
+    last_edited_user = models.ForeignKey(User, blank=True)
     is_deleted = models.BooleanField(default=False)
     # Case study fields
     height = models.IntegerField(blank=True)
     weight = models.IntegerField(blank=True)
     scr = models.IntegerField(blank=True)
-    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
     age_type = models.CharField(
         max_length=1,
         choices=AGE_CHOICES,
@@ -56,9 +55,16 @@ class CaseStudy(models.Model):
     answer_4 = models.TextField(help_text='Answer 4')
     feedback = models.TextField(help_text='Case study creator feedback')
 
+
+class TagRelationships:
+    case_study = models.ForeignKey(CaseStudy, on_delete=models.CASCADE)
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+
+
 class MedicalHistory(models.Model):
     body = models.TextField(help_text='Medical history information')
     case_study = models.ForeignKey(CaseStudy, on_delete=models.CASCADE)
+
 
 class Medication(models.Model):
     name = models.TextField(help_text='Medication Name')
