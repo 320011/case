@@ -34,8 +34,8 @@ class CaseStudy(models.Model):
     is_deleted = models.BooleanField(default=False)
     # Case study fields
     height = models.IntegerField(blank=True)
-    weight = models.IntegerField(blank=True)
-    scr = models.IntegerField(blank=True)
+    weight = models.FloatField(blank=True)
+    scr = models.FloatField(blank=True)
     age_type = models.CharField(
         max_length=1,
         choices=AGE_CHOICES,
