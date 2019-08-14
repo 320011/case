@@ -29,7 +29,8 @@ class CaseStudy(models.Model):
     # Processing information and settings
     date_submitted = models.DateTimeField(null=True, blank=True)
     date_last_edited = models.DateTimeField(null=True, blank=True)
-    last_edited_user = models.ForeignKey(User, blank=True)
+    # Don't use FK here to Users, use integer instead and check later, as on_delete can't be CASCADE
+    last_edited_user = models.IntegerField(blank=True)
     is_deleted = models.BooleanField(default=False)
     # Case study fields
     height = models.IntegerField(blank=True)
