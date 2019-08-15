@@ -1,9 +1,30 @@
+{%  extends "base.html" %}
+
 {%  block head %}
     <title>Home</title>
 {%  endblock %}
 
 {%  block body %}
-    <div>
-        <h1>This is the home page</h1>
+    <div class="action-list">
+        <a class="action-link" href="{% url "cases" %}">
+            <div class="action-card">
+                <p>View Existing Cases</p>
+            </div>
+        </a>
+        <a class="action-link" href="{% url "cases" %}">
+            <div class="action-card">
+                <p>Submit New Case</p>
+            </div>
+        </a>
+        <a class="action-link" href="{% url "cases" %}">
+            <div class="action-card">
+                <p>Admin</p>
+            </div>
+        </a>
+        <a class="action-link" href="{% url "cases" %}">
+            <div class="action-card">
+                <p>Analytics</p>
+            </div>
+        </a>
     </div>
 {%  endblock %}

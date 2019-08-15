@@ -1,5 +1,4 @@
 {% load staticfiles %}
-{% load tags %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -15,6 +14,39 @@
 </head>
 
 <body>
+<nav class="nav-container">
+    <div class="nav-item left">
+        <a class="nav-link" href="{% url "default" %}">
+            <div class="nav-link-inner">
+                UWA Pharmacy App
+            </div>
+        </a>
+    </div>
+    {% if c.user %}
+        <div class="nav-item right">
+            <a class="nav-link" href="{% url "default" %}">
+                <div class="nav-link-inner">
+                    {{ c.user.name }}
+                </div>
+            </a>
+        </div>
+    {% else %}
+        <div class="nav-item right">
+            <a class="nav-link" href="{% url "default" %}">
+                <div class="nav-link-inner">
+                    Sign Up
+                </div>
+            </a>
+        </div>
+        <div class="nav-item right">
+            <a class="nav-link" href="{% url "default" %}">
+                <div class="nav-link-inner">
+                    Log In
+                </div>
+            </a>
+        </div>
+    {% endif %}
+</nav>
 {% block body %} {% endblock %}
 </body>
 </html>
