@@ -22,11 +22,11 @@
             </div>
         </a>
     </div>
-    {% if c.user %}
+    {% if user.is_authenticated %}
         <div class="nav-item right">
             <a class="nav-link" href="{% url "default" %}">
                 <div class="nav-link-inner">
-                    {{ c.user.name }}
+                    {{ user.username }}
                 </div>
             </a>
         </div>
