@@ -57,7 +57,6 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             os.path.join(BASE_DIR, 'static/templates/'),
-            os.path.join(BASE_DIR, 'venv/Lib/site-packages/django/contrib/admin/static/admin'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
