@@ -29,6 +29,7 @@ class CaseStudy(models.Model):
     # Processing information and settings
     date_submitted = models.DateTimeField(null=True, blank=True)
     date_last_edited = models.DateTimeField(null=True, blank=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     # Don't use FK here to Users, use integer instead and check later, as on_delete can't be CASCADE
     last_edited_user = models.IntegerField(blank=True)
     is_deleted = models.BooleanField(default=False)
