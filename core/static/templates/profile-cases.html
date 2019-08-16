@@ -4,15 +4,7 @@
 {%  endblock %}
 
 {%  block profile_content %}
-    <p>this is the profile content</p>
-    <p>this is the profile content</p>
-    <p>this is the profile content</p>
-    <p>this is the profile content</p>
-    <p>this is the profile content</p>
-    <p>this is the profile content</p>
-    <p>this is the profile content</p>
-    <p>this is the profile content</p>
-    <p>this is the profile content</p>
-    <p>this is the profile content</p>
-    <p>this is the profile content</p>
+    {% for case in user_cases %}
+        {% include "case-card.html" %}
+    {% endfor %}
 {%  endblock %}

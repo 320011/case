@@ -1,40 +1,19 @@
-{%  extends "base.html" %}
+{%  extends "profile-base.html" %}
 
 {%  block head %}
-    <title>Home</title>
 {%  endblock %}
 
-{%  block body %}
-    <div class="action-list-container">
-        <div class="action-list">
-            <div class="action-container">
-                <a class="action-link" href="{% url "cases" %}">
-                    <div class="action-card">
-                        <p>View Existing Cases</p>
-                    </div>
-                </a>
-            </div>
-            <div class="action-container">
-                <a class="action-link" href="{% url "cases" %}">
-                    <div class="action-card">
-                        <p>Submit New Case</p>
-                    </div>
-                </a>
-            </div>
-            <div class="action-container">
-                <a class="action-link" href="{% url "cases" %}">
-                    <div class="action-card">
-                        <p>Admin</p>
-                    </div>
-                </a>
-            </div>
-            <div class="action-container">
-                <a class="action-link" href="{% url "cases" %}">
-                    <div class="action-card">
-                        <p>Analytics</p>
-                    </div>
-                </a>
-             </div>
-       </div>
-   </div>
+{%  block profile_content %}
+    <p>RESULTS</p>
+    <p>this is the profile content</p>
+    <p>this is the profile content</p>
+    <p>this is the profile content</p>
+    <p>this is the profile content</p>
+    <p>this is the profile content</p>
+    <p>this is the profile content</p>
+    <p>this is the profile content</p>
+    <p>this is the profile content</p>
+    <p>this is the profile content</p>
+    <p>this is the profile content</p>
+    <p>this is the profile content</p>
 {%  endblock %}
