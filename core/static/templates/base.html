@@ -1,0 +1,60 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="{% static "favicon.ico" %}"/>
+    <link href="{% static "css/core.css" %}" rel="stylesheet">
+    <script src="{% static "js/core.js" %}"></script>
+
+    <!-- Extended header -->
+    {% block head %} {% endblock %}
+</head>
+
+<body>
+<nav class="nav-container">
+    <div class="nav-item left">
+        <a class="nav-link" href="{% url "default" %}">
+            <div class="nav-link-inner">
+                UWA Pharmacy App
+            </div>
+        </a>
+    </div>
+    {% if user.is_authenticated %}
+        <div class="nav-item right">
+            <div class="dropdown" id="nav-dropdown">
+                <button id="username-dd-btn" class="dropdown-btn"
+                        onclick="document.getElementById('nav-dd-content').classList.toggle('dropdown-open')">
+                    {{ user.username }}
+                </button>
+                <div class="dropdown-content" id="nav-dd-content">
+                    <a href="{% url "default" %}">View Profile</a>
+                    <a href="{% url "default" %}">Current Cases</a>
+                    <a href="{% url "default" %}">Submitted Cases</a>
+                    <a href="{% url "default" %}">Settings</a>
+                    <a href="{% url "default" %}">Log Out</a>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="nav-item right">
+            <a class="nav-link" href="{% url "default" %}">
+                <div class="nav-link-inner">
+                    Sign Up
+                </div>
+            </a>
+        </div>
+        <div class="nav-item right">
+            <a class="nav-link" href="{% url "default" %}">
+                <div class="nav-link-inner">
+                    Log In
+                </div>
+            </a>
+        </div>
+    {% endif %}
+</nav>
+{% block body %} {% endblock %}
+</body>
+</html>
