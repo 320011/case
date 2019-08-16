@@ -1,0 +1,30 @@
+{%  extends "base.html" %}
+
+{%  block head %}
+    <title>Profile</title>
+{%  endblock %}
+
+{%  block body %}
+    <div class="profile-container">
+        <div class="profile-col-bio">
+            <div class="avatar-container">
+                <img src="{{ user.avatar_url }}" alt="user avatar" />
+            </div>
+            <div class="bio-container">
+                <h1>{{ user.username }}</h1>
+                <h2>{{ user.year }}</h2>
+                <p>This is my user bio this is where stuff about me goes and what I do. This is will be replaced at a later date with content from the database.</p>
+            </div>
+        </div>
+        <div class="profile-col-main">
+            <div class="profile-content-tabs">
+                <a href="{% url "profile" user_id=user.id %}">Cases</a>
+                <a href="{% url "profile_results" user_id=user.id %}">Results</a>
+            </div>
+            <div class="profile-content">
+                {% block profile_content %}
+                {%  endblock %}
+            </div>
+        </div>
+    </div>
+{%  endblock %}
