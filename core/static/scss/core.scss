@@ -1,0 +1,42 @@
+$col-pri: #0084b4;
+$col-body-background: #f5f8fa;
+$col-background: #ffffff;
+$col-border: #e1e8ed;
+$col-text-pri: #373a3c;
+$col-text-sec: #8899a6;
+$col-text-error: #7c2527;
+
+$font-light: 100;
+$font-regular: 400;
+$font-bold: 600;
+
+$border-radius: 0.3125rem;
+$border-avatar-radius: 0.625rem;
+$border-avatar-size: 0.3125rem;
+$border-size: 0.0625rem;
+$border-style: solid;
+$padding: 0.625rem;
+$margin: 0.25rem;
+
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes slideup {
+    from { transform: translateY(30px); }
+    from { transform: translateY(0px); }
+}
+
+body {
+    padding-top: 3.5rem;
+    background-color: $col-body-background;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    color: $col-text-pri;
+    font-size: 1rem;
+}
+
+@import "_index";
+@import "_nav";
+@import "_dropdown";

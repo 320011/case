@@ -5,3 +5,4 @@ venv/
 *.DS_Store
 *db.sqlite3
 *main
+*/static/css/
