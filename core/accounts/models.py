@@ -51,7 +51,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=40, blank=True)
     last_name = models.CharField(max_length=60, blank=True)
     university = models.CharField(max_length=150, blank=True)
-    degree_commencement_year = models.IntegerField(help_text='Year of pharmacy degree commencement', blank=True)
+    degree_commencement_year = models.IntegerField(help_text='Year of pharmacy degree commencement', blank=True, null=True)
     date_joined = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)   #whether this user is still active
     is_staff = models.BooleanField(default=False)   #whether this user can access the admin site
@@ -63,7 +63,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = []
 
     def __str__(self):
-        return self.name_first + " " + self.name_last
+        return self.first_name + " " + self.last_name
 
     def get_full_name(self):
         '''Returns the first_name plus the last_name, with a space in between.'''
