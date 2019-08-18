@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from datetime import datetime
 
 
 # blank=True means that the field is not required
@@ -27,6 +28,7 @@ class CaseStudy(models.Model):
         (FEMALE, 'Female')
     ]
     # Processing information and settings
+    date_created = models.DateTimeField(default=datetime.now)
     date_submitted = models.DateTimeField(null=True, blank=True)
     date_last_edited = models.DateTimeField(null=True, blank=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
