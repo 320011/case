@@ -28,6 +28,9 @@ class CaseStudyQuestionForm(ModelForm):
     class Meta:
         model = Question
         fields = ['body']
+        widgets = {
+            'body': forms.ModelChoiceField(queryset=Question.body.all())
+        }
 
 # populate patient medical history
 class MedicalHistoryForm(ModelForm):

@@ -12,7 +12,7 @@ def index(request):
     return HttpResponse("Hello, world. You're at the case study index.")
 
 
-def create_new_case(request):
+def create_new_case_page1(request):
     # cases = CaseStudy.objects.all()
     # print(cases)
     # c = {
@@ -35,6 +35,27 @@ def create_new_case(request):
         medication_form = MedicationForm()
         # case_tag_form = CaseTagForm()
 
-    return render(request, 'create_new_case.html', { 'case_study_form': case_study_form, 'case_study_question_form':case_study_question_form,
-     'medical_history_form':medical_history_form, 'medication_form':medication_form}) #, 'case_tag_form':case_tag_form})
+    return render(request, 'create_new_case.html', { 'case_study_form': case_study_form, 'case_study_question_form':case_study_question_form})
+    # return HttpResponse("Hello, world. yo!")
+
+def create_new_case_page2(request):
+    # cases = CaseStudy.objects.all()
+    # print(cases)
+    # c = {
+    #     'cases': cases
+    # }
+    if request.method == 'POST':
+        medical_history_form = MedicalHistoryForm(request.POST)
+        medication_form = MedicationForm(request.POST)
+        # case_tag_form = CaseTagForm(request.POST)
+        # if form.is_valid():
+        #     username = form.cleaned_data.get('username')
+        #     messages.success(request, f'Account created for {username}!')
+        #     return redirect('accounts-home')
+    else:
+        medical_history_form = MedicalHistoryForm()
+        medication_form = MedicationForm()
+        # case_tag_form = CaseTagForm()
+
+    return render(request, 'create_new_case.html', {'medical_history_form':medical_history_form, 'medication_form':medication_form}) #, 'case_tag_form':case_tag_form})
     # return HttpResponse("Hello, world. yo!")
