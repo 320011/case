@@ -21,8 +21,12 @@
     <div class='form-group'>
     
       <form method="post">
+        {% csrf_token %}
         {{ case_study_form.as_p }}
         {{ case_study_question_form.as_p }}
+        {{ medical_history_form.as_p }}
+        {{ medication_form.as_p }}
+        <input type="submit" value="Submit">
       </form>
     
     </div>
