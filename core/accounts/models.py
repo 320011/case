@@ -30,9 +30,5 @@ class UserProfile(models.Model):
 
 
 # this code links our custom UserProfile model to the django User model
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        UserProfile.objects.create(user=instance)
-
-
-post_save.connect(create_user_profile, sender=User)
+def create_user_profile(sender, **kwargs):
+    UserProfile.objects.get_or_create(user=kwargs['instance'])
