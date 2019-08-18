@@ -2,12 +2,11 @@ from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
 
-
 # blank=True means that the field is not required
 class Question(models.Model):
     body = models.TextField(help_text='Question text body')
-
-
+    
+    
 class Tag(models.Model):
     name = models.CharField(max_length=60)
 
@@ -61,8 +60,8 @@ class CaseStudy(models.Model):
 
 
 class TagRelationships(models.Model):
-    case_study = models.ForeignKey(CaseStudy, on_delete=models.CASCADE)
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+    case_study = models.ForeignKey(CaseStudy, on_delete=models.CASCADE)
 
 
 class MedicalHistory(models.Model):
