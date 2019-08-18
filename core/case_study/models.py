@@ -72,5 +72,3 @@ class Medication(models.Model):
     name = models.TextField(help_text='Medication Name')
     case_study = models.ForeignKey(CaseStudy, on_delete=models.CASCADE)
 
-
-
