@@ -30,33 +30,33 @@ class CaseStudy(models.Model):
     date_created = models.DateTimeField(default=datetime.now)
     date_submitted = models.DateTimeField(null=True)
     date_last_edited = models.DateTimeField(null=True)
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     # Don't use FK here to Users, use integer instead and check later, as on_delete can't be CASCADE
-    last_edited_user = models.IntegerField()
+    last_edited_user = models.IntegerField(null=True)
     is_deleted = models.BooleanField(default=False)
     # Case study fields
-    height = models.IntegerField()
-    weight = models.FloatField()
-    scr = models.FloatField()
+    height = models.IntegerField(null=True)
+    weight = models.FloatField(null=True)
+    scr = models.FloatField(null=True)
     age_type = models.CharField(
         max_length=1,
         choices=AGE_CHOICES,
         default=YEARS
     )
-    age = models.IntegerField()
+    age = models.IntegerField(null=True)
     sex = models.CharField(
         max_length=1,
         choices=SEX_CHOICES,
         default=MALE
     )
-    description = models.TextField()
+    description = models.TextField(null=True)
     # Case Study Question and Answer
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    answer_1 = models.TextField()
-    answer_2 = models.TextField()
-    answer_3 = models.TextField()
-    answer_4 = models.TextField()
-    feedback = models.TextField()
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, null=True)
+    answer_1 = models.TextField(null=True)
+    answer_2 = models.TextField(null=True)
+    answer_3 = models.TextField(null=True)
+    answer_4 = models.TextField(null=True)
+    feedback = models.TextField(null=True)
 
 
 class TagRelationships(models.Model):
