@@ -1,0 +1,15 @@
+{% extends "accounts/base.html" %}
+{% block content %}
+<h1>register page</h1>
+  <div>
+  <a class='nav-link' href="{%url 'accounts-home' %}">home</a>
+</div>
+
+    {% if user.is_authenticated %}
+
+    {% else %}
+
+    {% endif %}
+
+
+{% endblock content %}
