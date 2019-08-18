@@ -1,17 +1,27 @@
-<h1>Sign up</h1>
-<form method="post">
-  {% csrf_token %}
-  {% for field in form %}
-      <p>
-        {{ field.label_tag }}<br>
-        {{ field }}
-        {% if field.help_text %}
-          <small style="display: none">{{ field.help_text }}</small>
-        {% endif %}
-        {% for error in field.errors %}
-          <p style="color: red">{{ error }}</p>
-        {% endfor %}
-      </p>
-      {% endfor %}
-  <button type="submit">Sign up</button>
-</form>
+{% extends "user-base.html" %}
+
+
+{% block user-content %}
+	<div class='signup-form'>
+		<form method="post">
+			{% csrf_token %}
+			<h2>Register</h2>
+			<p class="hint-text">Create your account.<br>It's free and only takes a few minutes.</p>
+			{% for field in form %}
+				<div class="form-group">
+					{{ field }}
+					{% if field.help_text %}
+						<small class="help_text">{{ field.help_text }}</small>
+					{% endif %}
+					{% for error in field.errors %}
+						<p style="color: red">{{ error }}</p>
+					{% endfor %}
+				</div>
+			{% endfor %}
+			<div class="form-group">
+				<button type="submit" class="btn btn-success btn-lg btn-block">Sign Up</button>
+			</div>
+		</form>
+		<div class="text-center">Already have an account? <a href="{% url "accounts:login" %}">Log in</a></div>
+	</div>
+{% endblock %}

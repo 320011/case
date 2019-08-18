@@ -54,13 +54,9 @@ def activate(request, uidb64, token):
         user.is_active = True
         user.save()
         login(request, user)
-        return HttpResponse('Your account has been successfully activated')
+        return render(request, 'activate_success.html')
     else:
         return HttpResponse('Activation link is invalid!')
-
-
-def home(request):
-    return render(request,'user/home.html')
 
 
 def profile(request, user_id):
