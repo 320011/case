@@ -1,0 +1,46 @@
+#username-dd-btn {
+  min-width: 5rem;
+}
+
+.dropdown-open {
+  display: block !important;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+
+  .dropdown-btn {
+    background-color: white;
+    color: $col-pri;
+    padding: 1rem;
+    border: none;
+    cursor: pointer;
+  }
+
+  &:hover {
+    .dropdown-btn {
+      background-color: darken(white, 10%);
+    }
+  }
+
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: $col-background;
+    min-width: 10rem;
+    box-shadow: 0 0.25rem 0.5rem 0 rgba(0, 0, 0, 0.3);
+    z-index: 1;
+
+    a {
+      color: $col-text-pri;
+      padding: 0.5rem 1rem;
+      text-decoration: none;
+      display: block;
+
+      &:hover {
+        background-color: darken(white, 10%);
+      }
+    }
+  }
+}
