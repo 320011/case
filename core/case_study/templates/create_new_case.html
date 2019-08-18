@@ -22,10 +22,28 @@
     
       <form method="post">
         {% csrf_token %}
-        {{ case_study_form.as_p }}
-        {{ case_study_question_form.as_p }}
-        <!-- {{ medical_history_form.as_p }} -->
-        <!-- {{ medication_form.as_p }} -->
+        <label>Description: </label>
+        {{ case_study_form.description }} <br>
+        <label>Patient Height: </label>
+        {{ case_study_form.height }} <br>
+        <label>Patient Weight: </label>
+        {{ case_study_form.weight }} <br>
+        <label>Patient SCr: </label>
+        {{ case_study_form.scr }} <br>
+        <label>Patient Age: </label>
+        {{ case_study_form.age }} <br>
+        <label>Patient Sex: </label>
+        {{ case_study_form.sex }} <br>
+        <label>Question: </label>
+        {{ case_study_question_form.choice }} <br>
+        <label>Answer 1: </label>
+        {{ case_study_form.answer_1 }} <br>
+        <label>Answer 2: </label>
+        {{ case_study_form.answer_2 }} <br>
+        <label>Answer 3: </label>
+        {{ case_study_form.answer_3 }} <br>
+        <label>Answer 4: </label>
+        {{ case_study_form.answer_4 }} <br>
         <input type="submit" value="Submit">
       </form>
     

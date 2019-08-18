@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
-from django import forms
 
 # blank=True means that the field is not required
 class Question(models.Model):
@@ -61,8 +60,8 @@ class CaseStudy(models.Model):
 
 
 class TagRelationships(models.Model):
-    case_study = models.ForeignKey(CaseStudy, on_delete=models.CASCADE)
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+    case_study = models.ForeignKey(CaseStudy, on_delete=models.CASCADE)
 
 
 class MedicalHistory(models.Model):
