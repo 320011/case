@@ -48,14 +48,14 @@ class CaseStudy(models.Model):
         choices=SEX_CHOICES,
         default=MALE
     )
-    description = models.TextField(help_text='Description for case study scenario.')
+    description = models.TextField()
     # Case Study Question and Answer
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    answer_1 = models.TextField(help_text='Answer 1')
-    answer_2 = models.TextField(help_text='Answer 2')
-    answer_3 = models.TextField(help_text='Answer 3')
-    answer_4 = models.TextField(help_text='Answer 4')
-    feedback = models.TextField(help_text='Case study creator feedback')
+    answer_1 = models.TextField()
+    answer_2 = models.TextField()
+    answer_3 = models.TextField()
+    answer_4 = models.TextField()
+    feedback = models.TextField()
 
 
 class TagRelationships(models.Model):
@@ -64,11 +64,11 @@ class TagRelationships(models.Model):
 
 
 class MedicalHistory(models.Model):
-    body = models.TextField(help_text='Medical history information')
+    body = models.TextField()
     case_study = models.ForeignKey(CaseStudy, on_delete=models.CASCADE)
 
 
 class Medication(models.Model):
-    name = models.TextField(help_text='Medication Name')
+    name = models.TextField()
     case_study = models.ForeignKey(CaseStudy, on_delete=models.CASCADE)
 
