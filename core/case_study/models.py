@@ -5,7 +5,7 @@ from datetime import datetime
 
 # blank=True means that the field is not required
 class Question(models.Model):
-    body = models.TextField(help_text='Question text body')
+    body = models.TextField()
 
 
 class Tag(models.Model):
@@ -29,16 +29,16 @@ class CaseStudy(models.Model):
     ]
     # Processing information and settings
     date_created = models.DateTimeField(default=datetime.now)
-    date_submitted = models.DateTimeField(null=True, blank=True)
-    date_last_edited = models.DateTimeField(null=True, blank=True)
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    date_submitted = models.DateTimeField(null=True)
+    date_last_edited = models.DateTimeField(null=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     # Don't use FK here to Users, use integer instead and check later, as on_delete can't be CASCADE
-    last_edited_user = models.IntegerField(blank=True)
+    last_edited_user = models.IntegerField()
     is_deleted = models.BooleanField(default=False)
     # Case study fields
-    height = models.IntegerField(blank=True)
-    weight = models.FloatField(blank=True)
-    scr = models.FloatField(blank=True)
+    height = models.IntegerField()
+    weight = models.FloatField()
+    scr = models.FloatField()
     age_type = models.CharField(
         max_length=1,
         choices=AGE_CHOICES,
