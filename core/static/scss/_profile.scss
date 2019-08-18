@@ -1,0 +1,71 @@
+.profile-container {
+  margin: auto;
+  width: 70%;
+  display: flex;
+  background-color: $col-background;
+  border-radius: $border-radius;
+  box-shadow: $block-box-shadow;
+  border: 1px solid darken($col-background, 15%);
+
+  .profile-col-bio {
+    width: 30%;
+    margin: 1rem;
+    padding: 1rem;
+    margin-right: 0;
+    background-color: darken($col-background, 7%);
+    border: 1px solid darken($col-background, 15%);
+    box-shadow: $block-box-shadow;
+    border-radius: $border-radius;
+
+    .avatar-container {
+      img {
+
+      }
+    }
+
+    .bio-container {
+
+      h1 {
+
+      }
+      h2 {
+
+      }
+      p {
+
+      }
+    }
+  }
+
+  .profile-col-main {
+    width: 70%;
+    margin: 1rem;
+
+    .profile-content-tabs {
+      text-align: center;
+
+      a {
+        border: 1px solid darken($col-text-sec, 5%);
+        display: inline-block;
+        box-shadow: $block-box-shadow;
+        width: 45%;
+        margin: 0 0.5rem 0 0.5rem;
+        height: 3rem;
+        background-color: $col-text-sec;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        line-height: 3rem;
+      }
+    }
+
+    .profile-content {
+      padding: 1rem;
+      margin-top: 1rem;
+      background-color: darken($col-background, 7%);
+      border-radius: $border-radius;
+      box-shadow: $block-box-shadow;
+      border: 1px solid darken($col-background, 15%);
+    }
+  }
+}

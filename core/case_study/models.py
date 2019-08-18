@@ -58,7 +58,7 @@ class CaseStudy(models.Model):
     feedback = models.TextField(help_text='Case study creator feedback')
 
 
-class TagRelationships:
+class TagRelationships(models.Model):
     case_study = models.ForeignKey(CaseStudy, on_delete=models.CASCADE)
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
 
