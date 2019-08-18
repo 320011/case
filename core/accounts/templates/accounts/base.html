@@ -20,7 +20,11 @@
   </head>
   <body>
   <div class='container'>
-
+  {% if messages %}
+  {% for message in messages %}
+  <div class='alert alert-{{ message.tags }}'>{{ message }}</div>
+  {% endfor %}
+  {% endif %}
   {% block content %}{% endblock %}
 </div>
 
