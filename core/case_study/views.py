@@ -12,32 +12,25 @@ def index(request):
 
 def create_new_case(request):
     print(request)
-    # cases = CaseStudy.objects.all()
-    # print(cases)
-    # c = {
-    #     'cases': cases
-    # }
     if request.method == 'POST':
         case_study_form = CaseStudyForm(request.POST)
         case_study_question_form = CaseStudyQuestionForm(request.POST)
-        medical_history_form = MedicalHistoryForm(request.POST)
-        medication_form = MedicationForm(request.POST)
-        # case_tag_form = CaseTagForm(request.POST)
-        # if form.is_valid():
-        #     username = form.cleaned_data.get('username')
-        #     messages.success(request, f'Account created for {username}!')
-        #     return redirect('accounts-home')
+        if case_study_form.is_valid() and case_study_question_form.is_valid():
+            medical_history_form = MedicalHistoryForm(request.POST)
+            medication_form = MedicationForm(request.POST)
+            return # redirect('somewhere')
     else:
         case_study_form = CaseStudyForm()
         case_study_question_form = CaseStudyQuestionForm()
         medical_history_form = MedicalHistoryForm()
         medication_form = MedicationForm()
         # case_tag_form = CaseTagForm()
-
-
     return render(request, 'create_new_case.html',
                   {'case_study_form': case_study_form, 'case_study_question_form': case_study_question_form,
                    'medical_history_form': medical_history_form,
                    'medication_form': medication_form,
                    })  # , 'case_tag_form':case_tag_form})
+
+
+
     # return HttpResponse("Hello, world. yo!")
