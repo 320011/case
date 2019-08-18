@@ -59,6 +59,10 @@ def activate(request, uidb64, token):
         return HttpResponse('Activation link is invalid!')
 
 
+def home(request):
+    return render(request,'user/home.html')
+
+
 def profile(request, user_id):
     c = {
         "user_cases": [
