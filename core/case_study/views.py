@@ -14,7 +14,7 @@ def index(request):
 def start_new_case(request):
     case = CaseStudy.objects.create(created_by=request.user)
     return HttpResponseRedirect(
-        reverse('create-new-case', kwargs={'case_study_id': case.id}))
+        reverse('cases:create-new-case', kwargs={'case_study_id': case.id}))
 
 
 def create_new_case(request, case_study_id):
