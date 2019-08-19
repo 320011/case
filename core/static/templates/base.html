@@ -11,6 +11,8 @@
   <script src="{% static "js/core.js" %}"></script>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+        integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
           integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
@@ -28,7 +30,8 @@
 
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-between">
-  <a class="navbar-brand" href="{% url "default" %}"><img src="{% static "favicon.ico" %}"/> {% block header %}UWA Pharmacy App{% endblock %}</a>
+  <a class="navbar-brand" href="{% url "default" %}"><img src="{% static "favicon.ico" %}"/> {% block header %}UWA
+    Pharmacy App{% endblock %}</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
           aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
