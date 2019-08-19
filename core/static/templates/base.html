@@ -30,24 +30,24 @@
                     {{ user.username }}
                 </button>
                 <div class="dropdown-content" id="nav-dd-content">
-                    <a href="{% url "profile" user_id=user.id %}">View Profile</a>
+                    <a href="{% url "accounts:profile" user_id=user.id %}">View Profile</a>
                     <a href="{% url "default" %}">Current Cases</a>
                     <a href="{% url "default" %}">Submitted Cases</a>
                     <a href="{% url "default" %}">Settings</a>
-                    <a href="{% url "default" %}">Log Out</a>
+                    <a href="{% url "accounts:logout" %}">Log Out</a>
                 </div>
             </div>
         </div>
     {% else %}
         <div class="nav-item right">
-            <a class="nav-link" href="{% url "default" %}">
+            <a class="nav-link" href="{% url "accounts:signup" %}">
                 <div class="nav-link-inner">
                     Sign Up
                 </div>
             </a>
         </div>
         <div class="nav-item right">
-            <a class="nav-link" href="{% url "default" %}">
+            <a class="nav-link" href="{% url "accounts:login" %}">
                 <div class="nav-link-inner">
                     Log In
                 </div>
