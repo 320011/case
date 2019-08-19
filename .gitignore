@@ -7,3 +7,4 @@ venv/
 .vscode/
 */static/css/
 *main
+core/core/secrets.py

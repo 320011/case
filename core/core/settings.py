@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+from . import secrets
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -85,8 +86,8 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'case.pharmacy@gmail.com'
-EMAIL_HOST_PASSWORD = 'UWApharmacy1'
+EMAIL_HOST_USER = secrets.CASE_USER
+EMAIL_HOST_PASSWORD = secrets.CASE_PASS
 EMAIL_PORT = 587
 
 # Database
