@@ -14,6 +14,5 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),
     path('profile/',  login_required(views.UserView.as_view()), name='profile'),
     path('signup/', views.signup, name='signup'),
-    url(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
-        views.activate, name='activate'),
+    path('activate/<slug:uidb64>/<slug:token>/', views.activate, name='activate'),
 ]

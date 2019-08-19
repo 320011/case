@@ -4,10 +4,6 @@
 venv/
 *.DS_Store
 *db.sqlite3
-<<<<<<< HEAD
 .vscode/
 */static/css/
-=======
-*/static/css/
 *main
->>>>>>> 73da5868f99877ff35d4427b3dd90a3c5b2af9b4

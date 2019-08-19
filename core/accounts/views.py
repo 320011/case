@@ -3,7 +3,7 @@ from django.contrib.auth import login, authenticate
 from django.views.generic.detail import DetailView
 from django.http import HttpResponse
 from django.contrib.sites.shortcuts import get_current_site
-from django.utils.encoding import force_bytes
+from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
@@ -48,7 +48,7 @@ def signup(request):
 
 def activate(request, uidb64, token):
     try:
-        uid = force_bytes(urlsafe_base64_decode(uidb64))    #force_text instead of force_bytes
+        uid = force_text(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
     except(TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
