@@ -35,7 +35,7 @@ AUTH_USER_MODEL = 'accounts.User'
 # Default login url
 
 LOGIN_URL = '/user/login/'
-LOGIN_REDIRECT_URL = '/user/profile/'
+LOGIN_REDIRECT_URL = '/'
 
 # Application definition
 
