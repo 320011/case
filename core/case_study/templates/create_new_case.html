@@ -17,11 +17,12 @@
 {% block body %}
 
   <div class='content-section'>
-    
+
     <div class='form-group'>
-    
+
       <form method="post">
         {% csrf_token %}
+        <input type="hidden" name="submission_type" value="default" id="submission_type">
         <label>Description: </label>
         {{ case_study_form.description }} <br>
         <label>Patient Height: </label>
@@ -30,12 +31,14 @@
         {{ case_study_form.weight }} <br>
         <label>Patient SCr: </label>
         {{ case_study_form.scr }} <br>
+        <label>Patient Age Type: </label>
+        {{ case_study_form.age_type }} <br>
         <label>Patient Age: </label>
         {{ case_study_form.age }} <br>
         <label>Patient Sex: </label>
         {{ case_study_form.sex }} <br>
         <label>Question: </label>
-        {{ case_study_question_form.choice }} <br>
+        {{ case_study_question_form.question_choice }} <br>
         <label>Answer 1: </label>
         {{ case_study_form.answer_1 }} <br>
         <label>Answer 2: </label>
@@ -44,9 +47,32 @@
         {{ case_study_form.answer_3 }} <br>
         <label>Answer 4: </label>
         {{ case_study_form.answer_4 }} <br>
+        <label>Tags:</label>
+        {{ case_study_tag_form }}
+
+        <div style="font-size: 25px">
+          <input type="hidden" name="remove_tag" value="false">
+          {% for tag in tags %}
+            <input type="hidden" name="tag_choices" value="{{ tag.id }}">
+            <span class="badge badge-light">
+              {{ tag.tag.name }}
+{#              <span class="float-right badge badge-secondary">#}
+{#                <i class="fa fa-times"></i>#}
+{#              </span>#}
+            </span>
+          {% endfor %}
+        </div>
+        <br>
         <input type="submit" value="Submit">
       </form>
-    
+
     </div>
   </div>
+
+  <script>
+    $('#id_tag_choice').change(function() {
+      $('#submission_type').val("tag");
+      $('form').submit();
+    })
+  </script>
 {% endblock %}
