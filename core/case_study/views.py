@@ -52,7 +52,7 @@ def create_new_case(request, case_study_id):
         # if user adds medication
         elif request.POST['submission_type'] == 'medication':
             name = request.POST['name'] # obtain medication name
-            Medication.objects.get_or_create(name=name, case_study=case_study) # get or create new medical history relationship in the database
+            Medication.objects.get_or_create(name=name, case_study=case_study) # get or create new medication relationship in the database
 
             medication_form = MedicationForm(request.POST)
             print(medication_form.is_valid())
