@@ -1,5 +1,6 @@
 # Create your views here.
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse
 from django.shortcuts import render
 
 from .forms import CaseStudyForm, CaseStudyQuestionForm, MedicalHistoryForm, MedicationForm  # , CaseTagForm
@@ -10,8 +11,13 @@ def index(request):
     return HttpResponse("Hello, world. You're at the case study index.")
 
 
-def create_new_case(request):
-    print(request)
+def start_new_case(request):
+    case = CaseStudy.objects.create(created_by=request.user)
+    return HttpResponseRedirect(
+        reverse('create-new-case', kwargs={'case_study_id': case.id}))
+
+
+def create_new_case(request, case_study_id):
     if request.method == 'POST':
         case_study_form = CaseStudyForm(request.POST)
         case_study_question_form = CaseStudyQuestionForm(request.POST)
