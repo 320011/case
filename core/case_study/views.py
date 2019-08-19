@@ -42,6 +42,7 @@ def create_new_case(request, case_study_id):
                           {'case_study_form': case_study_form,
                            'tags': relevant_tags,
                            'medical_historys': medical_historys, 
+                           'medications': medications, 
                            # 'case_study_question_form': case_study_question_form,
                            'case_study_tag_form': case_study_tag_form,
                            'medical_history_form': medical_history_form,
@@ -77,6 +78,8 @@ def create_new_case(request, case_study_id):
             return render(request, 'create_new_case.html',
                           {'case_study_form': case_study_form,
                            'tags': relevant_tags,
+                           'medical_historys': medical_historys, 
+                           'medications': medications, 
                            # 'case_study_question_form': case_study_question_form,
                            'case_study_tag_form': case_study_tag_form,
                            'medical_history_form': medical_history_form,
@@ -90,13 +93,15 @@ def create_new_case(request, case_study_id):
             if case_study_form.is_valid() and case_study_tag_form.is_valid():
                 case_study_form.save()
                 return render(request, 'create_new_case.html',
-                      {'case_study_form': case_study_form,
-                       'tags': relevant_tags,
-                       # 'case_study_question_form': case_study_question_form,
-                       'case_study_tag_form': case_study_tag_form,
-                       'medical_history_form': medical_history_form,
-                       'medication_form': medication_form,
-                       })
+                          {'case_study_form': case_study_form,
+                           'tags': relevant_tags,
+                           'medical_historys': medical_historys, 
+                           'medications': medications, 
+                           # 'case_study_question_form': case_study_question_form,
+                           'case_study_tag_form': case_study_tag_form,
+                           'medical_history_form': medical_history_form,
+                           'medication_form': medication_form,
+                           })
     else:
         case_study_form = CaseStudyForm(instance=case_study)
         # case_study_question_form = CaseStudyQuestionForm()
@@ -105,13 +110,15 @@ def create_new_case(request, case_study_id):
         medication_form = MedicationForm()
         # case_tag_form = CaseTagForm()
     return render(request, 'create_new_case.html',
-                  {'case_study_form': case_study_form,
-                   'tags': relevant_tags,
-                   # 'case_study_question_form': case_study_question_form,
-                   'case_study_tag_form': case_study_tag_form,
-                   'medical_history_form': medical_history_form,
-                   'medication_form': medication_form,
-                   })  # , 'case_tag_form':case_tag_form})
+                          {'case_study_form': case_study_form,
+                           'tags': relevant_tags,
+                           'medical_historys': medical_historys, 
+                           'medications': medications, 
+                           # 'case_study_question_form': case_study_question_form,
+                           'case_study_tag_form': case_study_tag_form,
+                           'medical_history_form': medical_history_form,
+                           'medication_form': medication_form,
+                           })
 
 
 
