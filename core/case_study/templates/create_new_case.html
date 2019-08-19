@@ -19,10 +19,25 @@
   <div class="card bg-light mb-3">
 
     <div class='card-body'>
+      {% if case_study_form.errors %}
+        {% for field in case_study_form %}
+          {% for error in field.errors %}
+            <div class="alert alert-danger">
+              <strong>{{ error|escape }}</strong>
+            </div>
+          {% endfor %}
+        {% endfor %}
+        {% for error in case_study_form.non_field_errors %}
+          <div class="alert alert-danger">
+            <strong>{{ error|escape }}</strong>
+          </div>
+        {% endfor %}
+      {% endif %}
 
       <form method="post">
         {% csrf_token %}
-        <input type="hidden" name="submission_type" value="default" id="submission_type"> <!-- Sets the default submission_type to "default" -->
+        <input type="hidden" name="submission_type" value="default" id="submission_type">
+        <!-- Sets the default submission_type to "default" -->
         <label>Description: </label>
         {{ case_study_form.description }} <br>
         <label>Patient Height: </label>
@@ -46,8 +61,8 @@
         <hr>
         <br>
         <!-- Medical history -->
-        <label>Patient Medical History: </label> 
-        {{ medical_history_form.body }} <br> 
+        <label>Patient Medical History: </label>
+        {{ medical_history_form.body }} <br>
         <div class="input-group-append">
           <a class="btn btn-primary" style="color: #fff" id="add_medical_history">Add Medical History</a>
         </div>
@@ -55,15 +70,15 @@
         <input type="hidden" name="remove_medical_history" value="false">
         <div class="list-group">
           {% for medical_history in medical_historys %}
-            <li class="list-group-item">{{ medical_history.body }}</li>  
+            <li class="list-group-item">{{ medical_history.body }}</li>
           {% endfor %}
         </div>
         <br>
         <hr>
         <br>
         <!-- Medication -->
-        <label>Patient Medication: </label> 
-        {{ medication_form.name }} <br> 
+        <label>Patient Medication: </label>
+        {{ medication_form.name }} <br>
         <div class="input-group-append">
           <a class="btn btn-primary" style="color: #fff" id="add_medication">Add Medication</a>
         </div>
@@ -71,19 +86,19 @@
         <input type="hidden" name="remove_medical_history" value="false">
         <div class="list-group">
           {% for medication in medications %}
-            <li class="list-group-item">{{ medication.name }}</li>  
+            <li class="list-group-item">{{ medication.name }}</li>
           {% endfor %}
         </div>
         <br>
         <hr>
         <br>
-        
+
         <!-- Question -->
         <label>Question: </label>
         {{ case_study_form.question }} <br>
         {#        <label>Question: </label>#}
         {#        {{ case_study_question_form.question_choice }} <br>#}
-        
+
         <!-- Case Study Answers -->
         <div class="row mb-3">
           <div class="col">
@@ -113,8 +128,8 @@
             <a class="btn btn-primary" style="color: #fff" id="add_tag">Add Tag</a>
           </div>
         </div>
-{#        {{ case_study_tag_form.tag_choice }}#}
-{#        <div><a class="btn btn-primary float-right mt-3" style="color: #fff" id="add_tag">Add Tag</a></div>#}
+        {#        {{ case_study_tag_form.tag_choice }}#}
+        {#        <div><a class="btn btn-primary float-right mt-3" style="color: #fff" id="add_tag">Add Tag</a></div>#}
         <div style="font-size: 25px" class="mt-2">
           <input type="hidden" name="remove_tag" value="false">
           {% for tag in tags %}
@@ -129,8 +144,11 @@
         </div>
         <br>
         <hr>
-        <input class="btn btn-primary float-left" type="submit" value="Save">
-        <input class="btn btn-primary float-right" type="submit" value="Submit">
+{#        Purely for validation#}
+        {{ case_study_form.is_submitted.as_hidden }}
+
+        <input class="btn btn-primary float-left" type="submit" value="Save" id="save">
+        <input class="btn btn-primary float-right" type="submit" value="Submit" id="submit">
       </form>
 
     </div>
@@ -141,19 +159,30 @@
     $('#add_tag').click(function () {
       $('#submission_type').val("tag");
       $('form').submit();
-    })
-    
+    });
+
     // Add medical history 
     $('#add_medical_history').click(function () {
       $('#submission_type').val("medical_history");
       $('form').submit();
-    })
+    });
 
     // Add medication
     $('#add_medication').click(function () {
       $('#submission_type').val("medication");
       $('form').submit();
+    });
+
+    $('#save').click(function () {
+      $('#submission_type').val("save");
+      $('#id_is_submitted').prop('value', false );
+      $('form').submit();
+    });
+
+    $('#submit').click(function () {
+      $('#id_is_submitted').prop('value', true );
+      $('form').submit();
     })
-    
+
   </script>
 {% endblock %}

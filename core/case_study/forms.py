@@ -6,7 +6,7 @@ from .models import Question, Tag, CaseStudy, MedicalHistory, Medication #,TagRe
 class CaseStudyForm(ModelForm):
     class Meta:
         model = CaseStudy
-        fields = ['height', 'weight', 'scr', 'age_type', 'age', 'sex','description', 'question', 'answer_1', 'answer_2', 'answer_3', 'answer_4']
+        fields = ['height', 'weight', 'scr', 'age_type', 'age', 'sex','description', 'question', 'answer_1', 'answer_2', 'answer_3', 'answer_4', 'is_submitted']
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4}),
             'answer_1': forms.Textarea(attrs={'rows': 4}),
@@ -21,6 +21,15 @@ class CaseStudyForm(ModelForm):
         # you can iterate all fields here
         for fname, f in self.fields.items():
             f.widget.attrs['class'] = 'form-control'
+
+    def clean(self):
+        print(self.cleaned_data)
+        is_submitted = self.cleaned_data.get('is_submitted')
+        print(is_submitted)
+        if is_submitted:
+            age = self.cleaned_data.get('age')
+            if not age:
+                raise forms.ValidationError("This is not a valid age")
 
 
 class CaseStudyTagForm(forms.Form):
