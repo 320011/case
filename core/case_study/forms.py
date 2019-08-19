@@ -38,12 +38,26 @@ class MedicalHistoryForm(ModelForm):
     class Meta:
         model = MedicalHistory
         fields = ['body']
+    
+    def __init__(self, *args, **kwargs):
+        super(MedicalHistoryForm, self).__init__(*args, **kwargs)
+
+        # you can iterate all fields here
+        for fname, f in self.fields.items():
+            f.widget.attrs['class'] = 'form-control'
 
 # populate patient medication
 class MedicationForm(ModelForm):
     class Meta:
         model = Medication
         fields = ['name']
+    
+    def __init__(self, *args, **kwargs):
+        super(MedicationForm, self).__init__(*args, **kwargs)
+
+        # you can iterate all fields here
+        for fname, f in self.fields.items():
+            f.widget.attrs['class'] = 'form-control'
 
 # # select tags for case study
 # class CaseTagForm(ModelForm):

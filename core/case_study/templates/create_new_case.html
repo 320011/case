@@ -22,7 +22,7 @@
 
       <form method="post">
         {% csrf_token %}
-        <input type="hidden" name="submission_type" value="default" id="submission_type">
+        <input type="hidden" name="submission_type" value="default" id="submission_type"> <!-- Sets the default submission_type to "default" -->
         <label>Description: </label>
         {{ case_study_form.description }} <br>
         <label>Patient Height: </label>
@@ -43,10 +43,29 @@
         </div>
         <label>Patient Sex: </label>
         {{ case_study_form.sex }} <br>
+        <!-- Medical history -->
+        <label>Patient Medical History: </label> 
+        {{ medical_history_form.body }} <br> 
+        <div class="input-group-append">
+          <a class="btn btn-primary" style="color: #fff" id="add_medical_history">Add Medical History</a>
+        </div>
+        <br>
+        <input type="hidden" name="remove_medical_history" value="false">
+        <div class="list-group">
+          {% for medical_history in medical_historys %}
+            <li class="list-group-item">{{ medical_history.body }}</li>  
+          {% endfor %}
+        </div>
+        <br>
+        
+        
+        <!-- Question -->
         <label>Question: </label>
         {{ case_study_form.question }} <br>
         {#        <label>Question: </label>#}
         {#        {{ case_study_question_form.question_choice }} <br>#}
+        
+        <!-- Case Study Answers -->
         <div class="row mb-3">
           <div class="col">
             <label>Answer 1: </label>
@@ -67,6 +86,7 @@
             {{ case_study_form.answer_4 }}
           </div>
         </div>
+        <!-- Case Study Tags -->
         <label>Tags:</label>
         <div class="input-group mb-2">
           {{ case_study_tag_form.tag_choice }}
@@ -102,5 +122,11 @@
       $('#submission_type').val("tag");
       $('form').submit();
     })
+
+    $('#add_medical_history').click(function () {
+      $('#submission_type').val("medical_history");
+      $('form').submit();
+    })
+    
   </script>
 {% endblock %}
