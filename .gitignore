@@ -4,5 +4,7 @@
 venv/
 *.DS_Store
 *db.sqlite3
+.vscode/
 */static/css/
 *main
+core/core/secrets.py

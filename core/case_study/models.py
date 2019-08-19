@@ -1,14 +1,22 @@
 from django.db import models
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from datetime import datetime
+from accounts.models import User
+
 
 # blank=True means that the field is not required
 class Question(models.Model):
     body = models.TextField()
 
+    def __str__(self):
+        return self.body
+
 
 class Tag(models.Model):
     name = models.CharField(max_length=60)
+
+    def __str__(self):
+        return self.name
 
 
 class CaseStudy(models.Model):
