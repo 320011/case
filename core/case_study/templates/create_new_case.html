@@ -16,9 +16,9 @@
 
 {% block body %}
 
-  <div class='content-section'>
+  <div class="card bg-light mb-3">
 
-    <div class='form-group'>
+    <div class='card-body'>
 
       <form method="post">
         {% csrf_token %}
@@ -68,8 +68,14 @@
           </div>
         </div>
         <label>Tags:</label>
-        {{ case_study_tag_form.tag_choice }}
-        <div><a class="btn btn-primary float-right mt-3" style="color: #fff" id="add_tag">Add Tag</a></div>
+        <div class="input-group mb-2">
+          {{ case_study_tag_form.tag_choice }}
+          <div class="input-group-append">
+            <a class="btn btn-primary" style="color: #fff" id="add_tag">Add Tag</a>
+          </div>
+        </div>
+{#        {{ case_study_tag_form.tag_choice }}#}
+{#        <div><a class="btn btn-primary float-right mt-3" style="color: #fff" id="add_tag">Add Tag</a></div>#}
         <div style="font-size: 25px" class="mt-2">
           <input type="hidden" name="remove_tag" value="false">
           {% for tag in tags %}
@@ -83,7 +89,9 @@
           {% endfor %}
         </div>
         <br>
-        <input type="submit" value="Submit">
+        <hr>
+        <input class="btn btn-primary float-left" type="submit" value="Save">
+        <input class="btn btn-primary float-right" type="submit" value="Submit">
       </form>
 
     </div>
