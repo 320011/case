@@ -38,7 +38,9 @@ def signup(request):
             to_email = form.cleaned_data.get('email')
             email = EmailMessage(email_subject, message, to=[to_email])
             email.send()
-            return render(request, 'activate_confirmation.html')
+            message = {'message': 
+                'The activation link is sent to your email. Please confirm your email address to complete the registration.'}
+            return render(request, 'activate_message.html', message)
     else:
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
@@ -54,9 +56,11 @@ def activate(request, uidb64, token):
         user.is_active = True
         user.save()
         login(request, user)
-        return render(request, 'activate_success.html')
+        message = {'message': 'Your account has been successfully activated.'}
+        return render(request, 'activate_message.html', message)
     else:
-        return HttpResponse('Activation link is invalid!')
+        message = {'message': 'Activation link is invalid!'}
+        return render(request, 'activate_message.html', message)
 
 
 def profile(request, user_id):
