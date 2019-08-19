@@ -21,6 +21,7 @@ def create_new_case(request, case_study_id):
     case_study, created = CaseStudy.objects.get_or_create(pk=case_study_id) # returns object (case_study), and boolean specifiying whether an object was created 
     relevant_tags = TagRelationships.objects.filter(case_study=case_study) # return Tags for that case_study
     medical_historys = MedicalHistory.objects.filter(case_study=case_study) 
+    medications = Medication.objects.filter(case_study=case_study) 
     if request.method == 'POST':
         print(request.POST)
         # obtain forms with fields populated from POST request
@@ -46,6 +47,25 @@ def create_new_case(request, case_study_id):
                            'medical_history_form': medical_history_form,
                            'medication_form': medication_form,
                            })
+        
+        # if user adds medication
+        elif request.POST['submission_type'] == 'medication':
+            name = request.POST['name'] # obtain medication name
+            Medication.objects.get_or_create(name=name, case_study=case_study) # get or create new medical history relationship in the database
+
+            medication_form = MedicationForm(request.POST)
+            print(medication_form.is_valid())
+            return render(request, 'create_new_case.html',
+                          {'case_study_form': case_study_form,
+                           'tags': relevant_tags,
+                           'medical_historys': medical_historys, 
+                           'medications': medications, 
+                           # 'case_study_question_form': case_study_question_form,
+                           'case_study_tag_form': case_study_tag_form,
+                           'medical_history_form': medical_history_form,
+                           'medication_form': medication_form,
+                           })
+        
         # if user adds tag
         elif request.POST['submission_type'] == 'tag' and request.POST['tag_choice']:
             # Create a new tag relationship for this case study.

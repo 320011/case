@@ -43,6 +43,8 @@
         </div>
         <label>Patient Sex: </label>
         {{ case_study_form.sex }} <br>
+        <hr>
+        <br>
         <!-- Medical history -->
         <label>Patient Medical History: </label> 
         {{ medical_history_form.body }} <br> 
@@ -57,7 +59,24 @@
           {% endfor %}
         </div>
         <br>
-        
+        <hr>
+        <br>
+        <!-- Medication -->
+        <label>Patient Medication: </label> 
+        {{ medication_form.name }} <br> 
+        <div class="input-group-append">
+          <a class="btn btn-primary" style="color: #fff" id="add_medication">Add Medication</a>
+        </div>
+        <br>
+        <input type="hidden" name="remove_medical_history" value="false">
+        <div class="list-group">
+          {% for medication in medications %}
+            <li class="list-group-item">{{ medication.name }}</li>  
+          {% endfor %}
+        </div>
+        <br>
+        <hr>
+        <br>
         
         <!-- Question -->
         <label>Question: </label>
@@ -118,13 +137,21 @@
   </div>
 
   <script>
+    // Add tag 
     $('#add_tag').click(function () {
       $('#submission_type').val("tag");
       $('form').submit();
     })
-
+    
+    // Add medical history 
     $('#add_medical_history').click(function () {
       $('#submission_type').val("medical_history");
+      $('form').submit();
+    })
+
+    // Add medication
+    $('#add_medication').click(function () {
+      $('#submission_type').val("medication");
       $('form').submit();
     })
     
