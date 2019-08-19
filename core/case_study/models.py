@@ -1,6 +1,8 @@
 from django.db import models
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from datetime import datetime
+from accounts.models import User
+
 
 # blank=True means that the field is not required
 class Question(models.Model):
