@@ -17,18 +17,21 @@ class CaseStudyForm(ModelForm):
             "sex",
             "description",
             "question",
-            "answer_1",
-            "answer_2",
-            "answer_3",
-            "answer_4",
+            "answer_a",
+            "answer_b",
+            "answer_c",
+            "answer_d",
+            "answer",
+            "feedback",
             "is_submitted"
         ]
         widgets = {
             "description": forms.Textarea(attrs={"rows": 4}),
-            "answer_1": forms.Textarea(attrs={"rows": 4}),
-            "answer_2": forms.Textarea(attrs={"rows": 4}),
-            "answer_3": forms.Textarea(attrs={"rows": 4}),
-            "answer_4": forms.Textarea(attrs={"rows": 4}),
+            "answer_a": forms.Textarea(attrs={"rows": 4}),
+            "answer_b": forms.Textarea(attrs={"rows": 4}),
+            "answer_c": forms.Textarea(attrs={"rows": 4}),
+            "answer_d": forms.Textarea(attrs={"rows": 4}),
+            "feedback": forms.Textarea(attrs={"rows": 4})
         }
 
     def __init__(self, *args, **kwargs):
@@ -47,10 +50,12 @@ class CaseStudyForm(ModelForm):
             age_type = self.cleaned_data.get("age_type")
             sex = self.cleaned_data.get("sex")
             question = self.cleaned_data.get("question")
-            answer_1 = self.cleaned_data.get("answer_1")
-            answer_2 = self.cleaned_data.get("answer_2")
-            answer_3 = self.cleaned_data.get("answer_3")
-            answer_4 = self.cleaned_data.get("answer_4")
+            answer_a = self.cleaned_data.get("answer_a")
+            answer_b = self.cleaned_data.get("answer_b")
+            answer_c = self.cleaned_data.get("answer_c")
+            answer_d = self.cleaned_data.get("answer_d")
+            answer = self.cleaned_data.get("answer")
+            feedback = self.cleaned_data.get("feedback")
             if not age or \
                     not description or \
                     not height or \
@@ -59,10 +64,12 @@ class CaseStudyForm(ModelForm):
                     not age_type or \
                     not sex or \
                     not question or \
-                    not answer_1 or \
-                    not answer_2 or \
-                    not answer_3 or \
-                    not answer_4:
+                    not answer_a or \
+                    not answer_b or \
+                    not answer_c or \
+                    not answer_d or \
+                    not answer or \
+                    not feedback:
                 errordict = {}
                 for item in self.cleaned_data:
                     if not self.cleaned_data[item]:
