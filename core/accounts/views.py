@@ -7,20 +7,42 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
-
+from django.contrib.auth.decorators import login_required
 from .forms import SignUpForm
 from .models import User
 from .tokens import account_activation_token
 
 
-class UserView(DetailView):
-    template_name = 'profile.html'
+@login_required
+def view_profile(request):
+    c = {
+        "user_cases": [
+            {
+                "title": "Case 1: XYZ",
+                "description": "This is a cool case description provided by a user. "
+                               "This is a cool case description provided by a user. "
+                               "This is a cool case description provided by a user. "
+                               "This is a cool case description provided by a user. "
+                               "This is a cool case description provided by a user. "
+                               "This is a cool case description provided by a user. "
+                               "This is a cool case description provided by a user. ",
+                "pass_rate": 75,
+                "view_count": 565688,
+                "patient_sex": "M",
+                "patient_age": 86
+            },
+        ] * 5
+    }
+    return render(request, 'profile-cases.html', c)
 
-    def get_object(self):
-        return self.request.user
+
+@login_required
+def view_profile_results(request):
+    c = {}
+    return render(request, "profile-results.html", c)
 
 
-def signup(request):
+def view_signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
@@ -46,7 +68,7 @@ def signup(request):
     return render(request, 'signup.html', {'form': form})
 
 
-def activate(request, uidb64, token):
+def view_activate(request, uidb64, token):
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
@@ -63,22 +85,3 @@ def activate(request, uidb64, token):
         return render(request, 'activate_message.html', message)
 
 
-def profile(request, user_id):
-    c = {
-        "user_cases": [
-            {
-                "title": "Case 1: XYZ",
-                "description": "This is a cool case description provided by a user. It is pretty long. It just doesnt stop does it.",
-                "pass_rate": 0.75,
-                "view_count": 565688,
-                "patient_sex": "M",
-                "patient_age": 86
-            },
-        ] * 5
-    }
-    return render(request, "profile-cases.html", c)
-
-
-def profile_results(request, user_id):
-    c = {}
-    return render(request, "profile-results.html", c)
