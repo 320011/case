@@ -29,7 +29,6 @@ $margin: 0.25rem;
 }
 
 body {
-    padding-top: 3.5rem;
     background-color: $col-body-background;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     line-height: 1.5;
@@ -38,7 +37,5 @@ body {
 }
 
 @import "_index";
-@import "_nav";
-@import "_dropdown";
 @import "_profile";
 @import "_casecard";

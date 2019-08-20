@@ -6,7 +6,7 @@
 
 {%  block body %}
     <div class="profile-container">
-        <div class="profile-col-bio">
+        <div class="profile-col-bio" id="bio">
             <div class="avatar-container">
                 <img src="{{ user.avatar_url }}" alt="user avatar" />
             </div>
@@ -16,10 +16,10 @@
                 <p>This is my user bio this is where stuff about me goes and what I do. This is will be replaced at a later date with content from the database.</p>
             </div>
         </div>
-        <div class="profile-col-main">
+        <div class="profile-col-main" id="main">
             <div class="profile-content-tabs">
-                <a href="{% url "profile" user_id=user.id %}">Cases</a>
-                <a href="{% url "profile_results" user_id=user.id %}">Results</a>
+                <a href="{% url "accounts:profile" user_id=user.id %}">Cases</a>
+                <a href="{% url "accounts:profile_results" user_id=user.id %}">Results</a>
             </div>
             <div class="profile-content">
                 {% block profile_content %}
