@@ -15,7 +15,7 @@
           {{ user.first_name }}
         </a>
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="{% url "accounts:profile" user_id=user.id %}">View Profile</a>
+          <a class="dropdown-item" href="{% url "accounts:profile" %}">View Profile</a>
           <a class="dropdown-item" href="#">Current Cases</a>
           <a class="dropdown-item" href="#">Submitted Cases</a>
           <a class="dropdown-item" href="#">Settings</a>
