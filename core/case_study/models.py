@@ -34,6 +34,17 @@ class CaseStudy(models.Model):
         (MALE, "Male"),
         (FEMALE, "Female")
     ]
+    # Answer Choices
+    ANSWER_A = "A"
+    ANSWER_B = "B"
+    ANSWER_C = "C"
+    ANSWER_D = "D"
+    ANSWER_CHOICES = [
+        (ANSWER_A, "A"),
+        (ANSWER_B, "B"),
+        (ANSWER_C, "C"),
+        (ANSWER_D, "D")
+    ]
     # Processing information and settings
     date_created = models.DateTimeField(default=datetime.now)
     date_submitted = models.DateTimeField(null=True, blank=True)
@@ -63,10 +74,16 @@ class CaseStudy(models.Model):
     description = models.TextField(null=True, blank=True)
     # Case Study Question and Answer
     question = models.ForeignKey(Question, on_delete=models.CASCADE, null=True, blank=True)
-    answer_1 = models.TextField(null=True, blank=True)
-    answer_2 = models.TextField(null=True, blank=True)
-    answer_3 = models.TextField(null=True, blank=True)
-    answer_4 = models.TextField(null=True, blank=True)
+    answer_a = models.TextField(null=True, blank=True)
+    answer_b = models.TextField(null=True, blank=True)
+    answer_c = models.TextField(null=True, blank=True)
+    answer_d = models.TextField(null=True, blank=True)
+    answer = models.CharField(
+        max_length=1,
+        choices=ANSWER_CHOICES,
+        blank=True,
+        null=True
+    )
     feedback = models.TextField(null=True, blank=True)
 
 
