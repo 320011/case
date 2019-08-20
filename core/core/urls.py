@@ -22,4 +22,5 @@ urlpatterns = [
     path('cases/', include('case_study.urls', namespace='cases')),
     path('user/', include('accounts.urls', namespace='accounts')),
     path('admin/', admin.site.urls),
+    path('accounts/', include('django.contrib.auth.urls')),
 ]
