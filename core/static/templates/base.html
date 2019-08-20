@@ -47,24 +47,24 @@
           {{ user.first_name }}
         </a>
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="#">View Profile</a>
+          <a class="dropdown-item" href="{% url "accounts:profile" user_id=user.id %}">View Profile</a>
           <a class="dropdown-item" href="#">Current Cases</a>
           <a class="dropdown-item" href="#">Submitted Cases</a>
           <a class="dropdown-item" href="#">Settings</a>
-          <a class="dropdown-item" href="#">Log Out</a>
+          <a class="dropdown-item" href="{% url "accounts:logout" %}">Log Out</a>
         </div>
       </div>
     {% else %}
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
-          <a class="nav-link" href="{% url "default" %}">
+          <a class="nav-link" href="{% url "accounts:signup" %}">
             <div class="nav-link">
               Sign Up
             </div>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url "default" %}">
+          <a class="nav-link" href="{% url "accounts:login" %}">
             <div class="nav-link">
               Log In
             </div>
