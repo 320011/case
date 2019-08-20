@@ -24,8 +24,9 @@ def create_new_case(request, case_study_id):
     relevant_tags = TagRelationships.objects.filter(case_study=case_study)  # return Tags for that case_study
     medical_historys = MedicalHistory.objects.filter(case_study=case_study)
     medications = Medication.objects.filter(case_study=case_study)
+    message = {'content': '', 'type': ''}
     if request.method == 'POST':
-        print(request.POST)
+        # print(request.POST)
         # obtain forms with fields populated from POST request
         case_study_form = CaseStudyForm(request.POST, instance=case_study)
         # case_study_question_form = CaseStudyQuestionForm(request.POST) 
@@ -36,13 +37,20 @@ def create_new_case(request, case_study_id):
         # if user adds medical history 
         if request.POST['submission_type'] == 'medical_history':
             body = request.POST['body']  # obtain medical history body
-            MedicalHistory.objects.get_or_create(body=body,
-                                                 case_study=case_study)  # get or create new medical history relationship in the database
+            if body:
+                mhx, created = MedicalHistory.objects.get_or_create(body=body,
+                                                     case_study=case_study)  # get or create new medical history relationship in the database
+                if created:
+                    message['content'] = 'Medical history added!'
+                    message['type'] = 'success'
+                else:
+                    message['content'] = 'This medical history already exists. If it is a repeated condition, please include when the condition occured.'
+                    message['type'] = 'danger'
 
             medical_history_form = MedicalHistoryForm(request.POST)
-            print(medical_history_form.is_valid())
             return render(request, 'create_new_case.html',
                           {'case_study_form': case_study_form,
+                           'message': message,
                            'tags': relevant_tags,
                            'medical_historys': medical_historys,
                            'medications': medications,
@@ -55,13 +63,20 @@ def create_new_case(request, case_study_id):
         # if user adds medication
         elif request.POST['submission_type'] == 'medication':
             name = request.POST['name']  # obtain medication name
-            Medication.objects.get_or_create(name=name,
-                                             case_study=case_study)  # get or create new medication relationship in the database
+            if name:
+                medication, created = Medication.objects.get_or_create(name=name,
+                                                 case_study=case_study)  # get or create new medication relationship in the database
+                if created:
+                    message['content'] = 'Medication added!'
+                    message['type'] = 'success'
+                else:
+                    message['content'] = 'This medication already exists.'
+                    message['type'] = 'danger'
 
             medication_form = MedicationForm(request.POST)
-            print(medication_form.is_valid())
             return render(request, 'create_new_case.html',
                           {'case_study_form': case_study_form,
+                           'message': message,
                            'tags': relevant_tags,
                            'medical_historys': medical_historys,
                            'medications': medications,
@@ -74,13 +89,19 @@ def create_new_case(request, case_study_id):
         elif request.POST['submission_type'] == 'tag' and request.POST['tag_choice']:
             # Create a new tag relationship for this case study.
             tag = Tag.objects.get(pk=int(request.POST['tag_choice']))  # get tag object for tag_choice
-            TagRelationships.objects.get_or_create(tag=tag,
+            created_tag_relationship, created = TagRelationships.objects.get_or_create(tag=tag,
                                                    case_study=case_study)  # get or create new tag relationship in the database
+            if created:
+                message['content'] = 'Tag added!'
+                message['type'] = 'success'
+            else:
+                message['content'] = 'This tag already exists.'
+                message['type'] = 'danger'
 
-            case_study_tag_form = CaseStudyTagForm(request.POST)
-            print(case_study_form.is_valid())
+            case_study_tag_form = CaseStudyTagForm()
             return render(request, 'create_new_case.html',
                           {'case_study_form': case_study_form,
+                           'message': message,
                            'tags': relevant_tags,
                            'medical_historys': medical_historys,
                            'medications': medications,
@@ -93,6 +114,25 @@ def create_new_case(request, case_study_id):
         elif request.POST['submission_type'] == 'save':
             if case_study_form.is_valid():
                 case_study_form.save()
+                message['content'] = 'Case Study Saved!'
+                message['type'] = 'success'
+                return render(request, 'create_new_case.html',
+                              {'case_study_form': case_study_form,
+                               'tags': relevant_tags,
+                               'message': message,
+                               'medical_historys': medical_historys,
+                               'medications': medications,
+                               # 'case_study_question_form': case_study_question_form,
+                               'case_study_tag_form': case_study_tag_form,
+                               'medical_history_form': medical_history_form,
+                               'medication_form': medication_form,
+                               })
+        elif request.POST['submission_type'] == 'submit':
+            if case_study_form.is_valid():
+                case_study_form.save()
+                case_study.date_submitted = timezone.now()
+                case_study.save()
+                case_study_form = CaseStudyForm(request.POST, instance=case_study)
                 return render(request, 'create_new_case.html',
                               {'case_study_form': case_study_form,
                                'tags': relevant_tags,
@@ -104,11 +144,6 @@ def create_new_case(request, case_study_id):
                                'medication_form': medication_form,
                                })
         else:
-            case_study.date_submitted = timezone.now()
-            case_study.save()
-            case_study_form = CaseStudyForm(request.POST, instance=case_study)
-            if case_study_form.is_valid():
-                case_study_form.save()
                 return render(request, 'create_new_case.html',
                               {'case_study_form': case_study_form,
                                'tags': relevant_tags,
