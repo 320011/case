@@ -21,18 +21,18 @@ class Tag(models.Model):
 
 class CaseStudy(models.Model):
     # Years Choices
-    YEARS = 'Y'
-    MONTHS = 'M'
+    YEARS = "Y"
+    MONTHS = "M"
     AGE_CHOICES = [
-        (YEARS, 'Years'),
-        (MONTHS, 'Months')
+        (YEARS, "Years"),
+        (MONTHS, "Months")
     ]
     # Sex Choices
-    MALE = 'M'
-    FEMALE = 'F'
+    MALE = "M"
+    FEMALE = "F"
     SEX_CHOICES = [
-        (MALE, 'Male'),
-        (FEMALE, 'Female')
+        (MALE, "Male"),
+        (FEMALE, "Female")
     ]
     # Processing information and settings
     date_created = models.DateTimeField(default=datetime.now)
@@ -40,7 +40,7 @@ class CaseStudy(models.Model):
     is_submitted = models.BooleanField(default=False)
     date_last_edited = models.DateTimeField(null=True, blank=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    # Don't use FK here to Users, use integer instead and check later, as on_delete can't be CASCADE
+    # Don"t use FK here to Users, use integer instead and check later, as on_delete can"t be CASCADE
     last_edited_user = models.IntegerField(null=True, blank=True)
     is_deleted = models.BooleanField(default=False)
     # Case study fields
@@ -70,7 +70,7 @@ class CaseStudy(models.Model):
     feedback = models.TextField(null=True, blank=True)
 
 
-class TagRelationships(models.Model):
+class TagRelationship(models.Model):
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
     case_study = models.ForeignKey(CaseStudy, on_delete=models.CASCADE)
 
@@ -83,4 +83,3 @@ class MedicalHistory(models.Model):
 class Medication(models.Model):
     name = models.TextField(null=True, blank=True)
     case_study = models.ForeignKey(CaseStudy, on_delete=models.CASCADE)
-
