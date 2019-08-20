@@ -4,7 +4,7 @@
     My Profile | UWA Case
 {% endblock %}
 
-{%  block body %}
+{% block body %}
     <div class="profile-container">
         <div class="profile-col-bio">
             <div class="bio-container">
@@ -24,8 +24,8 @@
             </div>
             <div class="profile-content">
                 {% block profile_content %}
-                {%  endblock %}
+                {% endblock %}
             </div>
         </div>
     </div>
-{%  endblock %}
+{% endblock %}

@@ -1,4 +1,4 @@
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import render
 from django.contrib.auth import login
 from django.contrib.sites.shortcuts import get_current_site
@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import SignUpForm
 from .models import User
 from .tokens import account_activation_token
+from .decorators import anon_required
 
 
 @login_required
@@ -17,21 +18,21 @@ def view_profile(request):
     c = {
         "title": "Cases | My Profile",
         "user_cases": [
-            {
-                "title": "Case 1: XYZ",
-                "description": "This is a cool case description provided by a user. "
-                               "This is a cool case description provided by a user. "
-                               "This is a cool case description provided by a user. "
-                               "This is a cool case description provided by a user. "
-                               "This is a cool case description provided by a user. "
-                               "This is a cool case description provided by a user. "
-                               "This is a cool case description provided by a user. ",
-                "pass_rate": 75,
-                "view_count": 565688,
-                "patient_sex": "M",
-                "patient_age": 86
-            },
-        ] * 5,
+                          {
+                              "title": "Case 1: XYZ",
+                              "description": "This is a cool case description provided by a user. "
+                                             "This is a cool case description provided by a user. "
+                                             "This is a cool case description provided by a user. "
+                                             "This is a cool case description provided by a user. "
+                                             "This is a cool case description provided by a user. "
+                                             "This is a cool case description provided by a user. "
+                                             "This is a cool case description provided by a user. ",
+                              "pass_rate": 75,
+                              "view_count": 565688,
+                              "patient_sex": "M",
+                              "patient_age": 86
+                          },
+                      ] * 5,
     }
     return render(request, "profile-cases.html", c)
 
@@ -44,6 +45,7 @@ def view_profile_results(request):
     return render(request, "profile-results.html", c)
 
 
+@anon_required
 def view_signup(request):
     if request.method == "POST":
         form = SignUpForm(request.POST)
@@ -103,5 +105,3 @@ def view_activate(request):
         c["message"] = "Your account has been successfully activated."
 
     return render(request, "activate-message.html", c)
-
-

@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import (
-        AbstractBaseUser, BaseUserManager, PermissionsMixin)
+    AbstractBaseUser, BaseUserManager, PermissionsMixin)
 from django.core.mail import send_mail
 from django.utils import timezone
 
@@ -53,7 +53,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=40, blank=True)
     last_name = models.CharField(max_length=60, blank=True)
     university = models.CharField(max_length=150, blank=True)
-    degree_commencement_year = models.IntegerField(help_text="Year of pharmacy degree commencement", blank=True, null=True)
+    degree_commencement_year = models.IntegerField(help_text="Year of pharmacy degree commencement", blank=True,
+                                                   null=True)
     date_joined = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)  # whether this user is still active
     is_staff = models.BooleanField(default=False)  # whether this user can access the admin site

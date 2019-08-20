@@ -1,11 +1,11 @@
-{%  extends "profile-base.html" %}
+{% extends "profile-base.html" %}
 
 {% block title %}
     My Profile | UWA Case
 {% endblock %}
 
-{%  block profile_content %}
+{% block profile_content %}
     {% for case in user_cases %}
         {% include "case-card.html" %}
     {% endfor %}
-{%  endblock %}
+{% endblock %}

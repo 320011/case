@@ -1,160 +1,161 @@
 {% extends 'base.html' %}
+{% load staticfiles %}
 
 {% block title %}
-  Create New Case
+    Create New Case
 {% endblock %}
 
 {% block header %}
-  Create New Case
+    Create New Case
 {% endblock %}
 
 {% block description %}
-  <div class="mb-3 alert alert-info">
-    Please fill out the following fields to create your case study.
-  </div>
+    <div class="mb-3 alert alert-info">
+        Please fill out the following fields to create your case study.
+    </div>
 {% endblock %}
 
 {% block body %}
 
-  <div class="card bg-light mb-3">
+    <div class="card bg-light mb-3">
 
-    <div class='card-body'>
-      {% if message.type and message.content %}
-        <div class="alert alert-{{ message.type }}">{{ message.content }}</div>
-      {% endif %}
-      {% if case_study_form.errors %}
-        {% for field in case_study_form %}
-          {% for error in field.errors %}
-            <div class="alert alert-danger">
-              <strong>{{ error|escape }}</strong>
-            </div>
-          {% endfor %}
-        {% endfor %}
-        {% for error in case_study_form.non_field_errors %}
-          <div class="alert alert-danger">
-            <strong>{{ error|escape }}</strong>
-          </div>
-        {% endfor %}
-      {% endif %}
+        <div class='card-body'>
+            {% if message.type and message.content %}
+                <div class="alert alert-{{ message.type }}">{{ message.content }}</div>
+            {% endif %}
+            {% if case_study_form.errors %}
+                {% for field in case_study_form %}
+                    {% for error in field.errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in case_study_form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        <strong>{{ error|escape }}</strong>
+                    </div>
+                {% endfor %}
+            {% endif %}
 
-      <form method="post" id="case_form">
-        {% csrf_token %}
-        <input type="hidden" name="submission_type" value="default" id="submission_type">
-        <!-- Sets the default submission_type to "default" -->
-        <label>Description: </label>
-        {{ case_study_form.description }} <br>
-        <label>Patient Height: </label>
-        {{ case_study_form.height }} <br>
-        <label>Patient Weight: </label>
-        {{ case_study_form.weight }} <br>
-        <label>Patient SCr: </label>
-        {{ case_study_form.scr }} <br>
-        <div class="row">
-          <div class="col">
-            <label>Patient Age Type: </label>
-            {{ case_study_form.age_type }} <br>
-          </div>
-          <div class="col">
-            <label>Patient Age: </label>
-            {{ case_study_form.age }} <br>
-          </div>
-        </div>
-        <label>Patient Sex: </label>
-        {{ case_study_form.sex }} <br>
-        <hr>
-        <br>
-        <!-- Medical history -->
-        <label>Patient Medical History: </label>
-        {{ medical_history_form.body }} <br>
-        <div class="input-group-append">
-          <a class="btn btn-primary" style="color: #fff" id="add_medical_history">Add Medical History</a>
-        </div>
-        <br>
-        <input type="hidden" name="remove_medical_history" value="false">
-        <div class="list-group">
-          {% for medical_history in medical_historys %}
-            <li class="list-group-item">{{ medical_history.body }}</li>
-          {% endfor %}
-        </div>
-        <br>
-        <hr>
-        <br>
-        <!-- Medication -->
-        <label>Patient Medication: </label>
-        {{ medication_form.name }}
-        <div class="mt-3">
-          <a class="btn btn-primary float-right" style="color: #fff" id="add_medication">Add Medication</a>
-        </div>
-        <br>
-        <input type="hidden" name="remove_medical_history" value="false">
-        <ul class="list-group mt-4">
-          {% for medication in medications %}
-            <li class="list-group-item">{{ medication.name }}</li>
-          {% endfor %}
-        </ul>
-        <br>
-        <hr>
-        <br>
-        <!-- Question -->
-        <label>Question: </label>
-        {{ case_study_form.question }} <br>
-        {#        <label>Question: </label>#}
-        {#        {{ case_study_question_form.question_choice }} <br>#}
+            <form method="post" id="case_form">
+                {% csrf_token %}
+                <input type="hidden" name="submission_type" value="default" id="submission_type">
+                <!-- Sets the default submission_type to "default" -->
+                <label>Description: </label>
+                {{ case_study_form.description }} <br>
+                <label>Patient Height: </label>
+                {{ case_study_form.height }} <br>
+                <label>Patient Weight: </label>
+                {{ case_study_form.weight }} <br>
+                <label>Patient SCr: </label>
+                {{ case_study_form.scr }} <br>
+                <div class="row">
+                    <div class="col">
+                        <label>Patient Age Type: </label>
+                        {{ case_study_form.age_type }} <br>
+                    </div>
+                    <div class="col">
+                        <label>Patient Age: </label>
+                        {{ case_study_form.age }} <br>
+                    </div>
+                </div>
+                <label>Patient Sex: </label>
+                {{ case_study_form.sex }} <br>
+                <hr>
+                <br>
+                <!-- Medical history -->
+                <label>Patient Medical History: </label>
+                {{ medical_history_form.body }} <br>
+                <div class="input-group-append">
+                    <a class="btn btn-primary" style="color: #fff" id="add_medical_history">Add Medical History</a>
+                </div>
+                <br>
+                <input type="hidden" name="remove_medical_history" value="false">
+                <div class="list-group">
+                    {% for medical_history in medical_histories %}
+                        <li class="list-group-item">{{ medical_history.body }}</li>
+                    {% endfor %}
+                </div>
+                <br>
+                <hr>
+                <br>
+                <!-- Medication -->
+                <label>Patient Medication: </label>
+                {{ medication_form.name }}
+                <div class="mt-3">
+                    <a class="btn btn-primary float-right" style="color: #fff" id="add_medication">Add Medication</a>
+                </div>
+                <br>
+                <input type="hidden" name="remove_medical_history" value="false">
+                <ul class="list-group mt-4">
+                    {% for medication in medications %}
+                        <li class="list-group-item">{{ medication.name }}</li>
+                    {% endfor %}
+                </ul>
+                <br>
+                <hr>
+                <br>
+                <!-- Question -->
+                <label>Question: </label>
+                {{ case_study_form.question }} <br>
+                {#        <label>Question: </label>#}
+                {#        {{ case_study_question_form.question_choice }} <br>#}
 
-        <!-- Case Study Answers -->
-        <div class="row mb-3">
-          <div class="col">
-            <label>Answer 1: </label>
-            {{ case_study_form.answer_1 }}
-          </div>
-          <div class="col">
-            <label>Answer 2: </label>
-            {{ case_study_form.answer_2 }}
-          </div>
-        </div>
-        <div class="row mb-3">
-          <div class="col">
-            <label>Answer 3: </label>
-            {{ case_study_form.answer_3 }}
-          </div>
-          <div class="col">
-            <label>Answer 4: </label>
-            {{ case_study_form.answer_4 }}
-          </div>
-        </div>
-        <!-- Case Study Tags -->
-        <label>Tags:</label>
-        <div class="input-group mb-2">
-          {{ case_study_tag_form.tag_choice }}
-          <div class="input-group-append">
-            <a class="btn btn-primary" style="color: #fff" id="add_tag">Add Tag</a>
-          </div>
-        </div>
-        {#        {{ case_study_tag_form.tag_choice }}#}
-        {#        <div><a class="btn btn-primary float-right mt-3" style="color: #fff" id="add_tag">Add Tag</a></div>#}
-        <div style="font-size: 25px" class="mt-2">
-          <input type="hidden" name="remove_tag" value="false">
-          {% for tag in tags %}
-            <input type="hidden" name="tag_choices" value="{{ tag.id }}">
-            <span class="badge badge-secondary">
+                <!-- Case Study Answers -->
+                <div class="row mb-3">
+                    <div class="col">
+                        <label>Answer 1: </label>
+                        {{ case_study_form.answer_1 }}
+                    </div>
+                    <div class="col">
+                        <label>Answer 2: </label>
+                        {{ case_study_form.answer_2 }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <label>Answer 3: </label>
+                        {{ case_study_form.answer_3 }}
+                    </div>
+                    <div class="col">
+                        <label>Answer 4: </label>
+                        {{ case_study_form.answer_4 }}
+                    </div>
+                </div>
+                <!-- Case Study Tags -->
+                <label>Tags:</label>
+                <div class="input-group mb-2">
+                    {{ case_study_tag_form.tag_choice }}
+                    <div class="input-group-append">
+                        <a class="btn btn-primary" style="color: #fff" id="add_tag">Add Tag</a>
+                    </div>
+                </div>
+                {#        {{ case_study_tag_form.tag_choice }}#}
+                {#        <div><a class="btn btn-primary float-right mt-3" style="color: #fff" id="add_tag">Add Tag</a></div>#}
+                <div style="font-size: 25px" class="mt-2">
+                    <input type="hidden" name="remove_tag" value="false">
+                    {% for tag in tags %}
+                        <input type="hidden" name="tag_choices" value="{{ tag.id }}">
+                        <span class="badge badge-secondary">
               {{ tag.tag.name }}
 {#              <span class="float-right badge badge-secondary">#}
 {#                <i class="fa fa-times"></i>#}
 {#              </span>#}
             </span>
-          {% endfor %}
+                    {% endfor %}
+                </div>
+                <br>
+                <hr>
+                {#        Purely for validation#}
+                {{ case_study_form.is_submitted.as_hidden }}
+
+                <input class="btn btn-primary float-left" type="submit" value="Save" id="save">
+                <input class="btn btn-primary float-right" type="submit" value="Submit" id="submit_button">
+            </form>
+
         </div>
-        <br>
-        <hr>
-        {#        Purely for validation#}
-        {{ case_study_form.is_submitted.as_hidden }}
-
-        <input class="btn btn-primary float-left" type="submit" value="Save" id="save">
-        <input class="btn btn-primary float-right" type="submit" value="Submit" id="submit_button">
-      </form>
-
     </div>
-  </div>
 
-  <script src="{% static "js/create_form.js" %}"></script>
+    <script src="{% static "js/create_form.js" %}"></script>
 {% endblock %}

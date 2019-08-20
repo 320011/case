@@ -81,7 +81,7 @@ class SignUpForm(UserCreationForm):
         ),
         label="Degree Commencement Year"
     )
-        
+
     class Meta:
         model = User
         fields = [
