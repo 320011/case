@@ -66,13 +66,13 @@
                 <br>
                 <!-- Medical history -->
                 <label>Patient Medical History: </label>
-                {{ medical_history_form.body }} <br>
-                <div class="input-group-append">
-                    <a class="btn btn-primary" style="color: #fff" id="add_medical_history">Add Medical History</a>
+                {{ medical_history_form.body }}
+                <div class="mt-3">
+                    <a class="btn btn-primary float-right" style="color: #fff" id="add_medical_history">Add Medical History</a>
                 </div>
                 <br>
                 <input type="hidden" name="remove_medical_history" value="false">
-                <div class="list-group">
+                <div class="list-group mt-4">
                     {% for medical_history in medical_histories %}
                         <li class="list-group-item">{{ medical_history.body }}</li>
                     {% endfor %}
@@ -105,24 +105,35 @@
                 <!-- Case Study Answers -->
                 <div class="row mb-3">
                     <div class="col">
-                        <label>Answer 1: </label>
-                        {{ case_study_form.answer_1 }}
+                        <label>Answer A: </label>
+                        {{ case_study_form.answer_a }}
                     </div>
                     <div class="col">
-                        <label>Answer 2: </label>
-                        {{ case_study_form.answer_2 }}
+                        <label>Answer B: </label>
+                        {{ case_study_form.answer_b }}
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col">
-                        <label>Answer 3: </label>
-                        {{ case_study_form.answer_3 }}
+                        <label>Answer C: </label>
+                        {{ case_study_form.answer_c }}
                     </div>
                     <div class="col">
-                        <label>Answer 4: </label>
-                        {{ case_study_form.answer_4 }}
+                        <label>Answer D: </label>
+                        {{ case_study_form.answer_d }}
                     </div>
                 </div>
+                <div class="mb-3">
+                  <label>Correct Answer: </label>
+                  {{ case_study_form.answer }}
+                </div>
+                <div>
+                  <label>Feedback for Answer: </label>
+                  {{ case_study_form.feedback }}
+                </div>
+                <br>
+                <hr>
+                <br>
                 <!-- Case Study Tags -->
                 <label>Tags:</label>
                 <div class="input-group mb-2">
