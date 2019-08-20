@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 from django import forms
-from .models import Question, Tag, CaseStudy, MedicalHistory, Medication #,TagRelationships
+from .models import Question, Tag, CaseStudy, MedicalHistory, Medication
 
 # populate patient particulars and description
 class CaseStudyForm(ModelForm):
@@ -17,8 +17,6 @@ class CaseStudyForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(CaseStudyForm, self).__init__(*args, **kwargs)
-
-        # you can iterate all fields here
         for fname, f in self.fields.items():
             f.widget.attrs['class'] = 'form-control'
 
@@ -37,8 +35,6 @@ class CaseStudyTagForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(CaseStudyTagForm, self).__init__(*args, **kwargs)
-
-        # you can iterate all fields here
         for fname, f in self.fields.items():
             f.widget.attrs['class'] = 'form-control'
 
@@ -47,11 +43,12 @@ class MedicalHistoryForm(ModelForm):
     class Meta:
         model = MedicalHistory
         fields = ['body']
+        widgets = {
+            'body': forms.Textarea(attrs={'rows': 1}),
+        }
     
     def __init__(self, *args, **kwargs):
         super(MedicalHistoryForm, self).__init__(*args, **kwargs)
-
-        # you can iterate all fields here
         for fname, f in self.fields.items():
             f.widget.attrs['class'] = 'form-control'
 
@@ -60,16 +57,11 @@ class MedicationForm(ModelForm):
     class Meta:
         model = Medication
         fields = ['name']
+        widgets = {
+            'name': forms.Textarea(attrs={'rows': 1}),
+        }
     
     def __init__(self, *args, **kwargs):
         super(MedicationForm, self).__init__(*args, **kwargs)
-
-        # you can iterate all fields here
         for fname, f in self.fields.items():
             f.widget.attrs['class'] = 'form-control'
-
-# # select tags for case study
-# class CaseTagForm(ModelForm):
-#     class Meta: 
-#         model = TagRelationships
-#         fields = ['tag']
