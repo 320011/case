@@ -2,5 +2,5 @@
 Hi {{ user.first_name }},
 
 Please click on the link below to confirm your registration:
-http://{{ domain }}{% url 'accounts:activate' uidb64=uid token=token %}
+{{ protocol }}://{{ domain }}{% url 'accounts:activate' %}?id={{ uid }}&token={{ token }}
 {% endautoescape %}
