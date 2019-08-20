@@ -8,13 +8,13 @@
     <div class="profile-container">
         <div class="profile-col-bio">
             <div class="bio-container">
-                <h1>{{ user }}</h1>
-                <h2>Second Year</h2>
-                <p>Case Stats</p>
-                <p>Case Stats</p>
-                <p>Case Stats</p>
-                <p>Case Stats</p>
-                <p>Case Stats</p>
+                <h1>{{ user.get_full_name }}</h1>
+                <h2>{{ user.university }} (Started {{ user.degree_commencement_year }})</h2>
+                <p>{{ user.email }}</p>
+                <p>{{ user.date_joined }}</p>
+                {% if user.is_staff %}
+                    <p>Staff</p>
+                {% endif %}
             </div>
         </div>
         <div class="profile-col-main" id="main">
