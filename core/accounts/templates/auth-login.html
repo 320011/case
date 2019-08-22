@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load css %}
 
 {% block title %}
     Log In | UWA Case
@@ -13,7 +14,7 @@
                 <p class="hint-text"></p>
                 {% for field in form %}
                     <div class="form-group">
-                        {{ field }}
+                        {{ field|addbootstrapstyle }}
                         {% if field.help_text %}
                             <small class="help_text">{{ field.help_text }}</small>
                         {% endif %}
