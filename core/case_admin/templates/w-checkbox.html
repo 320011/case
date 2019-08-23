@@ -1,1 +1,8 @@
-
+<input class="admin-text-input" type="text" value="{{ field.value }}" name="{{ field.key }}" 
+{% if ~field.write %}
+disabled
+{% endif %} 
+{% if field.value %}
+checked
+{% endif %} 
+/>

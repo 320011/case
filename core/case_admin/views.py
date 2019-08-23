@@ -57,8 +57,20 @@ schema = {
 }
 
 
-def populate_schema(schema):
-    
+def populate_data(schema):
+    users = User.objects.all()
+    data = {
+        "fields": [],
+    }
+    # add all users in the db
+    for u in users:
+        du = {}  # data user to be filled
+        # add each field to the data user
+        for f in schema.fields:
+            du[f.key] = schema[f.key]
+            du[f.key]["value"] = u[f.key]
+            du["rowId"] = u.id
+        data.insert()
 
 
 def render_schema(request, schema):
