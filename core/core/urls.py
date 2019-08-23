@@ -22,6 +22,6 @@ urlpatterns = [
     path('cases/', include('case_study.urls', namespace='cases')),
     path('user/', include('accounts.urls', namespace='accounts')),
     path('admin/', admin.site.urls),
-    path('caseadmin/', include('case_admin.urls', namesace='case_admin'),
+    path('caseadmin/', include('case_admin.urls', namesace='case_admin')),
 ]
 
