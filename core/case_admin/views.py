@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from ..accounts.models import User
+from accounts.models import User
 
 
 schema_user = {
@@ -74,17 +74,17 @@ schema_tag = {
 def populate_data(schema, model):
     records = model.objects.all()
     data = {
-        "endpoint": schema.endpoint,
+        "endpoint": schema["endpoint"],
         "fields": [],
     }
     # for all records in the db
     for r in records:
         d = {}  # data to be filled
         # add each field to the data
-        for f in schema.fields:
+        for f in schema["fields"]:
             r[f.key] = schema[f.key]
             r[f.key]["value"] = u[f.key]
-            r["entity"] = u.id
+            r["entity"] = r.id
         data.insert()
     return data
 
