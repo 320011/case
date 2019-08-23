@@ -4,8 +4,8 @@ from accounts.models import User
 
 schema_user = {
     "endpoint": "/api/v1/user",
-    "fields": [
-        {
+    "fields": {
+        "first_name": {
             "title": "First Name",
             "key": "first_name",
             "widget": {
@@ -13,7 +13,8 @@ schema_user = {
                 "maxchars": 40,
             },
             "write": True,
-        }, {
+        }, 
+        "last_name": {
             "title": "Last Name",
             "key": "last_name",
             "widget": {
@@ -21,7 +22,8 @@ schema_user = {
                 "maxchars": 60,
             },
             "write": True,
-        }, {
+        }, 
+        "email": {
             "title": "Email",
             "key": "email",
             "widget": {
@@ -29,7 +31,8 @@ schema_user = {
                 "maxchars": 250,
             },
             "write": True,
-        }, {
+        }, 
+        "university": {
             "title": "University",
             "key": "university",
             "widget": {
@@ -37,14 +40,16 @@ schema_user = {
                 "maxchars": 150,
             },
             "write": True,
-        }, {
+        }, 
+        "degree_commencement_year": {
             "title": "Degree Start",
             "key": "degree_commencement_year",
             "widget": {
                 "template": "w-number.html",
             },
             "write": True,
-        }, {
+        }, 
+        "is_staff": {
             "title": "Is Staff",
             "key": "is_staff",
             "widget": {
@@ -53,7 +58,7 @@ schema_user = {
             },
             "write": True,
         },
-    ]
+    }
 }
 
 schema_case = {
@@ -83,7 +88,7 @@ def populate_data(schema, model):
         # add each field to the data
         for f in schema["fields"]:
             fk = f["key"]
-            d[fk] = schema[fk]
+            d[fk] = schema["fields"][fk]
             d[fk]["value"] = u[fk]
             d["entity"] = r.id
         data.insert(d)
