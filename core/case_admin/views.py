@@ -97,7 +97,7 @@ def view_admin_user(request):
     return render(request, "case-admin.html", c)
 
 
-def view_admin_case(request)
+def view_admin_case(request):
     data = populate_data(schema_case, CaseStudy)
     c = {
         "title": "Case Study Admin",
@@ -106,7 +106,7 @@ def view_admin_case(request)
     return render(request, "case-admin.html", c)
 
 
-def view_admin_case_comment(request)
+def view_admin_case_comment(request):
     data = populate_data(schema_comment, CaseComment)
     c = {
         "title": "Comment Admin",
@@ -115,7 +115,7 @@ def view_admin_case_comment(request)
     return render(request, "case-admin.html", c)
 
 
-def view_admin_tag(request)
+def view_admin_tag(request):
     data = populate_data(schema_tag, Tag)
     c = {
         "title": "Tag Admin",
