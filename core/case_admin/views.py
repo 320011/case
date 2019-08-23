@@ -106,7 +106,7 @@ def view_admin_case(request):
     return render(request, "case-admin.html", c)
 
 
-def view_admin_case_comment(request):
+def view_admin_comment(request):
     data = populate_data(schema_comment, CaseComment)
     c = {
         "title": "Comment Admin",
