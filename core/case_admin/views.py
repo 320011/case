@@ -11,7 +11,7 @@ schema_user = {
                 "template": "w-text.html",
                 "maxchars": 40,
             },
-            "write": true,
+            "write": True,
         }, {
             "title": "Last Name",
             "key": "last_name",
@@ -19,7 +19,7 @@ schema_user = {
                 "template": "w-text.html",
                 "maxchars": 60,
             },
-            "write": true,
+            "write": True,
         }, {
             "title": "Email",
             "key": "email",
@@ -27,7 +27,7 @@ schema_user = {
                 "template": "w-email.html",
                 "maxchars": 250,
             },
-            "write": true,
+            "write": True,
         }, {
             "title": "University",
             "key": "university",
@@ -35,14 +35,14 @@ schema_user = {
                 "template": "w-text.html",
                 "maxchars": 150,
             },
-            "write": true,
+            "write": True,
         }, {
             "title": "Degree Start",
             "key": "degree_commencement_year",
             "widget": {
                 "template": "w-number.html",
             },
-            "write": true,
+            "write": True,
         }, {
             "title": "Is Staff",
             "key": "is_staff",
@@ -50,7 +50,7 @@ schema_user = {
                 "template": "w-checkbox.html",
                 "maxchars": 40,
             },
-            "write": true,
+            "write": True,
         },
     ]
 }
