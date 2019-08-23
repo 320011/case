@@ -91,7 +91,7 @@ def populate_data(schema, model):
 def view_admin_user(request):
     data = populate_data(schema_user, User)
     c = {
-        "title": "User Admin"
+        "title": "User Admin",
         "data": data
     }
     return render(request, "case-admin.html", c)
@@ -100,7 +100,7 @@ def view_admin_user(request):
 def view_admin_case(request)
     data = populate_data(schema_case, CaseStudy)
     c = {
-        "title": "Case Study Admin"
+        "title": "Case Study Admin",
         "data": data
     }
     return render(request, "case-admin.html", c)
@@ -109,7 +109,7 @@ def view_admin_case(request)
 def view_admin_case_comment(request)
     data = populate_data(schema_comment, CaseComment)
     c = {
-        "title": "Comment Admin"
+        "title": "Comment Admin",
         "data": data
     }
     return render(request, "case-admin.html", c)
@@ -118,7 +118,7 @@ def view_admin_case_comment(request)
 def view_admin_tag(request)
     data = populate_data(schema_tag, Tag)
     c = {
-        "title": "Tag Admin"
+        "title": "Tag Admin",
         "data": data
     }
     return render(request, "case-admin.html", c)
