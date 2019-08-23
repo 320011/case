@@ -88,7 +88,7 @@ def populate_data(schema, model):
     return data
 
 
-def view_admin_user(request)
+def view_admin_user(request):
     data = populate_data(schema_user, User)
     c = {
         "title": "User Admin"
