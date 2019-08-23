@@ -23,30 +23,30 @@ schema_user = {
         }, {
             "title": "Email",
             "key": "email",
-            "widget": 
+            "widget": {
                 "template": "w-email.html",
                 "maxchars": 250,
-            },,
+            },
             "write": true,
         }, {
             "title": "University",
             "key": "university",
-            "widget": 
+            "widget": {
                 "template": "w-text.html",
                 "maxchars": 150,
-            },,
+            },
             "write": true,
         }, {
             "title": "Degree Start",
             "key": "degree_commencement_year",
-            "widget": 
+            "widget": {
                 "template": "w-number.html",
             },
             "write": true,
         }, {
             "title": "Is Staff",
             "key": "is_staff",
-            "widget": 
+            "widget": {
                 "template": "w-checkbox.html",
                 "maxchars": 40,
             },
