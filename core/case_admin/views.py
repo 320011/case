@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from ..accounts.models import User
 
 
 schema_user = {
@@ -98,7 +99,7 @@ def view_admin_user(request):
 
 
 def view_admin_case(request):
-    data = populate_data(schema_case, CaseStudy)
+    data = populate_data(schema_case, User)
     c = {
         "title": "Case Study Admin",
         "data": data
@@ -107,7 +108,7 @@ def view_admin_case(request):
 
 
 def view_admin_comment(request):
-    data = populate_data(schema_comment, CaseComment)
+    data = populate_data(schema_comment, User)
     c = {
         "title": "Comment Admin",
         "data": data
@@ -116,7 +117,7 @@ def view_admin_comment(request):
 
 
 def view_admin_tag(request):
-    data = populate_data(schema_tag, Tag)
+    data = populate_data(schema_tag, User)
     c = {
         "title": "Tag Admin",
         "data": data
