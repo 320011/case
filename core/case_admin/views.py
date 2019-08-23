@@ -125,5 +125,5 @@ def view_admin_tag(request):
 
 
 def view_default(request):
-    return render(request, "default.html")
+    return render(request, "admin.html")
 
