@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load css %}
+
+{% block title %}
+  {{ title }} | UWA Case
+{% endblock %}
+
+{% block body %}
+  <table>
+    <thead>
+        <tr>
+          {% for field in data.fields %}
+            <td>
+              {{ field.title }}
+            </td>
+          {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+      {% for field in data.fields %}
+        <td>
+          {% include field.widget.template %}
+        </td>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
