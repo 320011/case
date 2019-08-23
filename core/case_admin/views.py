@@ -83,10 +83,10 @@ def populate_data(schema, model):
         # add each field to the data
         for f in schema["fields"]:
             fk = f["key"]
-            r[fk] = schema[fk]
-            r[fk]["value"] = u[fk]
-            r["entity"] = r.id
-        data.insert()
+            d[fk] = schema[fk]
+            d[fk]["value"] = u[fk]
+            d["entity"] = r.id
+        data.insert(d)
     return data
 
 
