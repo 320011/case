@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load css %}
+
+{% block title %}
+  Admin | UWA Case
+{% endblock %}
+
+{% block body %}
+<a href="{% url "case_admin:users" %}">Users</a>
+<a href="{% url "case_admin:cases" %}">Cases</a>
+<a href="{% url "case_admin:comments" %}">Comments</a>
+<a href="{% url "case_admin:tags" %}">Tags</a>
+{% endblock %}

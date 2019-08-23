@@ -2,10 +2,12 @@ from django.urls import path, re_path
 
 from . import views
 
+app_name = "case_admin"
+
 urlpatterns = [
-    re_path(r'^/api/v1/user/$', views.view_admin_user, name='user'),
-    re_path(r'^/api/v1/case/$', views.view_admin_case, name='case'),
-    re_path(r'^/api/v1/comment/$', views.view_admin_commment, name='comment'),
-    re_path(r'^/api/v1/tag/$', views.view_admin_tag, name='tag'),
-    
+    path("users/", views.view_admin_user, name='users'),
+    path("cases/", views.view_admin_case, name='cases'),
+    path("comments/", views.view_admin_commment, name='comments'),
+    path("tags/", views.view_admin_tag, name='tag'),
+    path("/", views.view_default, name='default'),
 ]

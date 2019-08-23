@@ -123,3 +123,7 @@ def view_admin_tag(request)
     }
     return render(request, "case-admin.html", c)
 
+
+def view_default(request):
+    return render(request, "default.html")
+
