@@ -1,8 +1,7 @@
-import json
+from django.shortcuts import render
 
 
-
-schema = {
+schema_user = {
     "endpoint": "/api/v1/user",
     "fields": [
         {
@@ -56,32 +55,71 @@ schema = {
     ]
 }
 
+schema_case = {
+    "endpoint": "/api/v1/case",
+    "fields": [],
+}
 
-def populate_data(schema):
-    users = User.objects.all()
+schema_comment = {
+    "endpoint": "/api/v1/comment",
+    "fields": [],
+}
+
+schema_tag = {
+    "endpoint": "/api/v1/tag",
+    "fields": [],
+}
+
+def populate_data(schema, model):
+    records = model.objects.all()
     data = {
+        "endpoint": schema.endpoint,
         "fields": [],
     }
-    # add all users in the db
-    for u in users:
-        du = {}  # data user to be filled
-        # add each field to the data user
+    # for all records in the db
+    for r in records:
+        d = {}  # data to be filled
+        # add each field to the data
         for f in schema.fields:
-            du[f.key] = schema[f.key]
-            du[f.key]["value"] = u[f.key]
-            du["rowId"] = u.id
+            r[f.key] = schema[f.key]
+            r[f.key]["value"] = u[f.key]
+            r["entity"] = u.id
         data.insert()
+    return data
 
 
-def render_schema(request, schema):
+def view_admin_user(request)
+    data = populate_data(schema_user, User)
     c = {
         "title": "User Admin"
-        "schema": schema
+        "data": data
     }
-    
     return render(request, "case-admin.html", c)
-    
-    
-    
-    
-    
+
+
+def view_admin_case(request)
+    data = populate_data(schema_case, CaseStudy)
+    c = {
+        "title": "Case Study Admin"
+        "data": data
+    }
+    return render(request, "case-admin.html", c)
+
+
+def view_admin_case_comment(request)
+    data = populate_data(schema_comment, CaseComment)
+    c = {
+        "title": "Comment Admin"
+        "data": data
+    }
+    return render(request, "case-admin.html", c)
+
+
+def view_admin_tag(request)
+    data = populate_data(schema_tag, Tag)
+    c = {
+        "title": "Tag Admin"
+        "data": data
+    }
+    return render(request, "case-admin.html", c)
+

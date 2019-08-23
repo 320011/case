@@ -9,7 +9,7 @@
   <table>
     <thead>
         <tr>
-          {% for field in schema.fields %}
+          {% for field in data.fields %}
             <td>
               {{ field.title }}
             </td>
@@ -17,7 +17,7 @@
         </tr>
     </thead>
     <tbody>
-      {% for field in schema.fields %}
+      {% for field in data.fields %}
         <td>
           {% include field.widget.template %}
         </td>
