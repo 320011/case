@@ -1,5 +1,5 @@
 from django.http import HttpResponseBadRequest, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
@@ -7,11 +7,11 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 from django.contrib.auth.decorators import login_required
-from .forms import SignUpForm
+from .forms import UserSettingsForm
 from .models import User
 from .tokens import account_activation_token
 from .decorators import anon_required
-
+from django.contrib import messages
 
 @login_required
 def view_profile(request):
@@ -105,3 +105,20 @@ def view_activate(request):
         c["message"] = "Your account has been successfully activated."
 
     return render(request, "activate-message.html", c)
+
+
+@login_required
+def view_settings(request):
+  if request.method == 'POST':
+    form = UserSettingsForm(request.POST, instance=request.user)
+    if form.is_valid():
+      form.save()
+      messages.success(request, 'Your account details have been updated!')
+      return render(request, "profile-settings.html", {'form': form})
+
+
+  else:
+    form = UserSettingsForm(instance=request.user)
+
+  return render(request, "profile-settings.html", {'form': form})
+
