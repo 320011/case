@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Settings | UWA Case
+{% endblock %}
+
+{% block body %}
+    <div class='container'>
+            <p> {{ message }} </p>
+    </div>
+    <div class='container'>
+    	    <div class='container'>
+        <div class='signup-form'>
+            <form method="post">
+                {% csrf_token %}
+                <h2>Settings</h2>
+                <p class="hint-text">Modify your account details.</p>
+                {% for field in form %}
+                    <div class="form-group">
+                        {{ field }}
+                        {% if field.help_text %}
+                            <small class="help_text">{{ field.help_text }}</small>
+                        {% endif %}
+                        {% for error in field.errors %}
+                            <p style="color: red">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+                                <div class="form-group">
+                    <button type="submit" class="btn btn-info btn-lg btn-block">Update settings</button>
+                </div>
+    </div>
+{% endblock %}

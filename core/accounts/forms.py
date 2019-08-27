@@ -93,3 +93,69 @@ class SignUpForm(UserCreationForm):
             "university",
             "degree_commencement_year"
         ]
+
+class UserSettingsForm(forms.ModelForm):
+
+    first_name = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "type": "text",
+                "name": "first_name",
+                "placeholder": "First Name"
+            }),
+        label="First Name"
+    )
+    last_name = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "type": "text",
+                "name": "last_name",
+                "placeholder": "Last Name"
+            }),
+        label="Last Name"
+    )
+    email = forms.EmailField(
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "type": "email",
+                "name": "email",
+                "placeholder": "Email"
+            }),
+        label="Email"
+    )
+
+    university = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "type": "text",
+                "name": "university",
+                "placeholder": "University"
+            }
+        ),
+        label="University"
+    )
+    degree_commencement_year = forms.IntegerField(
+        widget=forms.NumberInput(
+            attrs={
+                "class": "form-control",
+                "type": "text",
+                "name": "degree_commencement_year",
+                "placeholder": "Pharmacy Degree Commencement Year"
+            }
+        ),
+        label="Degree Commencement Year"
+    )
+
+    class Meta:
+        model = User
+        fields = [
+            "first_name",
+            "last_name",
+            "email",
+            "university",
+            "degree_commencement_year"
+        ]
