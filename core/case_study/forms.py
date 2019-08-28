@@ -23,7 +23,8 @@ class CaseStudyForm(ModelForm):
             "answer_d",
             "answer",
             "feedback",
-            "is_submitted"
+            "is_submitted",
+            "is_anonymous"
         ]
         widgets = {
             "description": forms.Textarea(attrs={"rows": 4}),
@@ -44,9 +45,6 @@ class CaseStudyForm(ModelForm):
         if is_submitted:
             age = self.cleaned_data.get("age")
             description = self.cleaned_data.get("description")
-            height = self.cleaned_data.get("height")
-            weight = self.cleaned_data.get("weight")
-            scr = self.cleaned_data.get("scr")
             age_type = self.cleaned_data.get("age_type")
             sex = self.cleaned_data.get("sex")
             question = self.cleaned_data.get("question")
@@ -56,11 +54,9 @@ class CaseStudyForm(ModelForm):
             answer_d = self.cleaned_data.get("answer_d")
             answer = self.cleaned_data.get("answer")
             feedback = self.cleaned_data.get("feedback")
+            check_fields = ["age", "description", "age_type", "sex", "question", "answer_a", "answer_b", "answer_c", "answer_d", "answer", "feedback"]
             if not age or \
                     not description or \
-                    not height or \
-                    not weight or \
-                    not scr or \
                     not age_type or \
                     not sex or \
                     not question or \
@@ -71,9 +67,11 @@ class CaseStudyForm(ModelForm):
                     not answer or \
                     not feedback:
                 errordict = {}
-                for item in self.cleaned_data:
+                for item in check_fields:
+                    print(self.cleaned_data[item])
                     if not self.cleaned_data[item]:
                         errordict[item] = "This is not a valid " + str(item).replace("_", " ")
+                print(errordict)
                 raise forms.ValidationError(errordict)
 
 

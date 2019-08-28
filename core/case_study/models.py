@@ -49,6 +49,7 @@ class CaseStudy(models.Model):
     date_created = models.DateTimeField(default=datetime.now)
     date_submitted = models.DateTimeField(null=True, blank=True)
     is_submitted = models.BooleanField(default=False)
+    is_anonymous = models.BooleanField(default=True)
     date_last_edited = models.DateTimeField(null=True, blank=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     # Don"t use FK here to Users, use integer instead and check later, as on_delete can"t be CASCADE
