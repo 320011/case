@@ -116,16 +116,6 @@ class UserSettingsForm(forms.ModelForm):
             }),
         label="Last Name"
     )
-    email = forms.EmailField(
-        widget=forms.TextInput(
-            attrs={
-                "class": "form-control",
-                "type": "email",
-                "name": "email",
-                "placeholder": "Email"
-            }),
-        label="Email"
-    )
 
     university = forms.CharField(
         widget=forms.TextInput(
@@ -155,7 +145,6 @@ class UserSettingsForm(forms.ModelForm):
         fields = [
             "first_name",
             "last_name",
-            "email",
             "university",
             "degree_commencement_year"
         ]
