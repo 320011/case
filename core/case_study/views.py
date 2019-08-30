@@ -184,6 +184,6 @@ def create_new_case(request, case_study_id):
 def view_case(request, case_study_id):
     case_study = CaseStudy.objects.get(pk=case_study_id)
     c = {
-        "case_study": case_study
+        "case": case_study
     }
     return render(request, "view_case.html", c)
