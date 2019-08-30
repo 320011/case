@@ -1,8 +1,9 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.utils import timezone
+
 from .forms import CaseStudyForm, CaseStudyTagForm, MedicalHistoryForm, MedicationForm  # , CaseTagForm
 from .models import Tag, TagRelationship, CaseStudy, MedicalHistory, Medication
 
@@ -177,3 +178,12 @@ def create_new_case(request, case_study_id):
                       "medical_history_form": medical_history_form,
                       "medication_form": medication_form,
                   })
+
+
+@login_required
+def view_case(request, case_study_id):
+    case_study = CaseStudy.objects.get(pk=case_study_id)
+    c = {
+        "case_study": case_study
+    }
+    return render(request, "view_case.html", c)
