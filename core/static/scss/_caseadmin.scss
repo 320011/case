@@ -1,0 +1,65 @@
+.admin-entity-row {
+  cursor: pointer;
+
+  td {
+    padding: 0 1rem 0 1rem;
+    border: 1px solid rgba(0,0,0, 0.1);
+  }
+
+  &:nth-child(even) {
+    background-color: rgba(0,0,0,0.05);
+  }
+}
+
+.admin-table-header {
+  border: 1px solid rgba(0,0,0, 0.1);
+  padding: 0 1rem 0 1rem;
+}
+
+.modal-body {
+  .admin-table {
+    width: 100%;
+    display: table;
+
+    .admin-row {
+      width: 100%;
+      padding: 0;
+      margin: 0;
+      display: table-row;
+
+      &:nth-child(even) {
+        background-color: rgba(0,0,0,0.05);
+      }
+
+      .admin-header {
+        display: table-cell;
+        text-align: right;
+        padding-right: 1rem;
+      }
+
+      .model-field {
+        display: table-cell;
+
+        .admin-input {
+          width: 100%;
+        }
+
+        .admin-input-text {
+
+        }
+
+        .admin-input-email {
+
+        }
+
+        .admin-input-number {
+
+        }
+
+        .admin-input-checkbox {
+
+        }
+      }
+    }
+  }
+}
