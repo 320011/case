@@ -9,7 +9,7 @@ function caseAdmin_fieldChanged(key, entity) {
     url: ´/api/v1/admin/${key}´,
     type: "PUT",
     dataType: "json",
-    data: update
+    data: update,
     success: (result, status, xhr) => {
       $e.val(result.value);
       console.log("Updated value", key, "for", entity);

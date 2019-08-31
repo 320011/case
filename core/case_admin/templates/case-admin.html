@@ -2,26 +2,30 @@
 {% load css %}
 
 {% block title %}
-  {{ title }} | UWA Case
+    {{ title }} | UWA Case
 {% endblock %}
 
 {% block body %}
-  <table>
-    <thead>
+    <table>
+        <thead>
         <tr>
-          {% for field in data.fields %}
-            <td>
-              {{ field.title }}
-            </td>
-          {% endfor %}
+            {% for field in data.entities.0 %}
+                <td>
+                    {{ field.title }}
+                </td>
+            {% endfor %}
         </tr>
-    </thead>
-    <tbody>
-      {% for field in data.fields %}
-        <td>
-          {% include field.widget.template %}
-        </td>
-      {% endfor %}
-    </tbody>
-  </table>
+        </thead>
+        <tbody>
+        {% for ent in data.entities %}
+            {{ ent.0.widget }}
+            {% for field in ent %}
+                <td>
+                    {{ ent.widget.template }}
+                    {% include ""|add:field.widget.template %}
+                </td>
+            {% endfor %}
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

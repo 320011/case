@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% load css %}
 
 {% block title %}
   TEST Admin | UWA Case
@@ -7,7 +6,7 @@
 
 {% block body %}
 <a href="{% url "case_admin:users" %}">Users</a>
-<a href="{% url "case_admin:cases" %}">Cases</a>
-<a href="{% url "case_admin:cases" %}">Comments</a>
-<a href="{% url "case_admin:tags" %}">Tags</a>
+<a href="{% url "case_admin:users" %}">Cases</a>
+<a href="{% url "case_admin:users" %}">Comments</a>
+<a href="{% url "case_admin:users" %}">Tags</a>
 {% endblock %}

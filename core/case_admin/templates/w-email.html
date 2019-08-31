@@ -2,7 +2,7 @@
 type="email" value="{{ field.value }}" 
 name="{{ field.key }}" 
 id="{{ field.key }}-{{ field.rowId }}"
-{% if ~field.write %}
+{% if not field.write %}
 disabled
 {% endif %}
 onclick="caseAdmin_fieldChanged('{{ field.key }}', '{{ field.rowId }}')"

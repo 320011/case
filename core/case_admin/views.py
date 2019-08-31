@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from accounts.models import User
+# from ..accounts.models import User
 
 
 schema_user = {
@@ -76,22 +77,23 @@ schema_tag = {
     "fields": [],
 }
 
+
 def populate_data(schema, model):
     records = model.objects.all()
     data = {
         "endpoint": schema["endpoint"],
-        "fields": [],
+        "entities": [],
     }
     # for all records in the db
     for r in records:
-        d = {}  # data to be filled
+        row_data = []  # this rows data
         # add each field to the data
         for f in schema["fields"]:
-            fk = f["key"]
-            d[fk] = schema["fields"][fk]
-            d[fk]["value"] = u[fk]
+            d = schema["fields"][f]
+            d["value"] = vars(User)[f]
             d["entity"] = r.id
-        data.insert(d)
+            row_data.append(d)
+        data["entities"].append(row_data)
     return data
 
 
@@ -99,7 +101,7 @@ def view_admin_user(request):
     data = populate_data(schema_user, User)
     c = {
         "title": "User Admin",
-        "data": data
+        "data": data,
     }
     return render(request, "case-admin.html", c)
 
