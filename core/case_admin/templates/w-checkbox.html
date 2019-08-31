@@ -1,8 +1,11 @@
-<input class="admin-text-input" type="text" value="{{ field.value }}" name="{{ field.key }}" 
+<input class="admin-input admin-input-checkbox"
+type="checkbox"
+name="{{ field.key }}"
+id="admin-inp-{{ field.key }}-{{ field.entity }}"
 {% if not field.write %}
 disabled
-{% endif %} 
+{% endif %}
 {% if field.value %}
 checked
-{% endif %} 
+{% endif %}
 />

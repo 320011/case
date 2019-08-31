@@ -1,10 +1,9 @@
-<input class="admin-input-text"
+<input class="admin-input admin-input-text"
 type="text"
 value="{{ field.value }}"
 name="{{ field.key }}"
-id="{{ field.key }}-{{ field.rowId }}"
+id="admin-inp-{{ field.key }}-{{ field.entity }}"
 {% if not field.write %}
 disabled
 {% endif %}
-onclick="caseAdmin_fieldChanged('{{ field.key }}', '{{ field.rowId }}')"
 />
