@@ -41,6 +41,7 @@ LOGIN_REDIRECT_URL = '/'
 INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'case_study.apps.CaseStudyConfig',
+    'case_admin.apps.CaseAdminConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

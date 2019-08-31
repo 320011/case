@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}
+    {{ title }} | UWA Case
+{% endblock %}
+
+{% block head %}
+    <script src="{% static "js/caseAdmin.js" %}"></script>
+{% endblock %}
+
+
+{% block body %}
+    <table>
+        <thead>
+        <tr>
+            {% for field in data.entities.0 %}
+                <th class="admin-table-header">
+                    {{ field.title }}
+                </th>
+            {% endfor %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for fields in data.entities %}
+            <tr class="admin-entity-row" data-toggle="modal" data-target="#entity-edit-modal-{{ fields.0.entity }}">
+                {% include "admin-tools-modal.html" %}
+                {% for field in fields %}
+                    <td>
+                        {{ field.value }}
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
