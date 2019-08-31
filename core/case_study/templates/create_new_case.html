@@ -11,7 +11,7 @@
 
 {% block description %}
     <div class="mb-3 alert alert-info">
-        Please fill out the following fields to create your case study.
+        Please fill out the following fields to create your case study. Required fields are marked with an asterisk (*). <br><br> Do not include any information that could potentially identify your patient.
     </div>
 {% endblock %}
 
@@ -42,30 +42,33 @@
                 {% csrf_token %}
                 <input type="hidden" name="submission_type" value="default" id="submission_type">
                 <!-- Sets the default submission_type to "default" -->
-                <label>Description: </label>
-                {{ case_study_form.description }} <br>
-                <label>Patient Height: </label>
-                {{ case_study_form.height }} <br>
-                <label>Patient Weight: </label>
-                {{ case_study_form.weight }} <br>
-                <label>Patient SCr: </label>
-                {{ case_study_form.scr }} <br>
                 <div class="row">
                     <div class="col">
-                        <label>Patient Age Type: </label>
+                        <label>Patient Age Type*: </label>
                         {{ case_study_form.age_type }} <br>
                     </div>
                     <div class="col">
-                        <label>Patient Age: </label>
+                        <label>Patient Age*: </label>
                         {{ case_study_form.age }} <br>
                     </div>
                 </div>
-                <label>Patient Sex: </label>
+                <label>Patient Sex*: </label>
                 {{ case_study_form.sex }} <br>
+                <label>Patient Height <small>(cm)</small>: </label>
+                {{ case_study_form.height }} <br>
+                <label>Patient Weight <small>(kg)</small>: </label>
+                {{ case_study_form.weight }} <br>
+                <label>Patient SCr <small>(μmol/L)</small>: </label>
+                {{ case_study_form.scr }} <br>
+                <label>Description* <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="The beginning of the description has been generated for you. Please finish the rest of the case in the text box."></i>: </label>
+                <div class="alert alert-warning" id="description_preview">
+                  A [Age – numerical, no units]-[yo/mo] [Sex – Male/Female] [(*optional* height/weight/SCr)] presents to your pharmacy ...
+                </div>
+                {{ case_study_form.description }} <br>
                 <hr>
                 <br>
                 <!-- Medical history -->
-                <label>Patient Medical History: </label>
+                <label>Patient Medical History*: </label>
                 {{ medical_history_form.body }}
                 <div class="mt-3">
                     <a class="btn btn-primary float-right" style="color: #fff" id="add_medical_history">Add Medical History</a>
@@ -81,7 +84,7 @@
                 <hr>
                 <br>
                 <!-- Medication -->
-                <label>Patient Medication: </label>
+                <label>Patient Medication*: </label>
                 {{ medication_form.name }}
                 <div class="mt-3">
                     <a class="btn btn-primary float-right" style="color: #fff" id="add_medication">Add Medication</a>
@@ -97,7 +100,7 @@
                 <hr>
                 <br>
                 <!-- Question -->
-                <label>Question: </label>
+                <label>Question*: </label>
                 {{ case_study_form.question }} <br>
                 {#        <label>Question: </label>#}
                 {#        {{ case_study_question_form.question_choice }} <br>#}
@@ -105,30 +108,30 @@
                 <!-- Case Study Answers -->
                 <div class="row mb-3">
                     <div class="col">
-                        <label>Answer A: </label>
+                        <label>Answer A*: </label>
                         {{ case_study_form.answer_a }}
                     </div>
                     <div class="col">
-                        <label>Answer B: </label>
+                        <label>Answer B*: </label>
                         {{ case_study_form.answer_b }}
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col">
-                        <label>Answer C: </label>
+                        <label>Answer C*: </label>
                         {{ case_study_form.answer_c }}
                     </div>
                     <div class="col">
-                        <label>Answer D: </label>
+                        <label>Answer D*: </label>
                         {{ case_study_form.answer_d }}
                     </div>
                 </div>
                 <div class="mb-3">
-                  <label>Correct Answer: </label>
+                  <label>Correct Answer*: </label>
                   {{ case_study_form.answer }}
                 </div>
                 <div>
-                  <label>Feedback for Answer: </label>
+                  <label>Feedback for Answer*: </label>
                   {{ case_study_form.feedback }}
                 </div>
                 <br>
@@ -149,12 +152,21 @@
                     {% for tag in tags %}
                         <input type="hidden" name="tag_choices" value="{{ tag.id }}">
                         <span class="badge badge-secondary">
-              {{ tag.tag.name }}
-{#              <span class="float-right badge badge-secondary">#}
-{#                <i class="fa fa-times"></i>#}
-{#              </span>#}
-            </span>
+                            {{ tag.tag.name }}
+                        </span>
                     {% endfor %}
+                </div>
+                <br>
+                <hr>
+                {% if user.is_staff %}
+                    <div class="mt-3 form-check">
+                        {{ case_study_form.is_anonymous }}
+                        <label class="form-check-label" for="id_is_anonymous">Anonymous Case</label>
+                    </div>
+                {% endif %}
+                <div class="mt-3 form-check">
+                    {{ case_study_form.confirm_patient_anonymous }}
+                    <label class="form-check-label" for="id_confirm_patient_anonymous">I confirm that I have not revealed any identifying information about the case study patient</label>
                 </div>
                 <br>
                 <hr>
@@ -167,6 +179,5 @@
 
         </div>
     </div>
-
     <script src="{% static "js/create_form.js" %}"></script>
 {% endblock %}

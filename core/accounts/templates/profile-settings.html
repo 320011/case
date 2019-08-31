@@ -1,20 +1,23 @@
 {% extends "base.html" %}
-{% load css %}
 
 {% block title %}
-    Log In | UWA Case
+    Settings | UWA Case
 {% endblock %}
 
 {% block body %}
-    <div class="container">
+    <div class='container'>
+            <p> {{ message }} </p>
+    </div>
+    <div class='container'>
+    	    <div class='container'>
         <div class='signup-form'>
             <form method="post">
                 {% csrf_token %}
-                <h2>Log In</h2>
-                <p class="hint-text"></p>
+                <h2>Settings</h2>
+                <p class="hint-text">Modify your account details.</p>
                 {% for field in form %}
                     <div class="form-group">
-                        {{ field|addbootstrapstyle }}
+                        {{ field }}
                         {% if field.help_text %}
                             <small class="help_text">{{ field.help_text }}</small>
                         {% endif %}
@@ -23,12 +26,8 @@
                         {% endfor %}
                     </div>
                 {% endfor %}
-                <div class="form-group">
-                    <button type="submit" class="btn btn-success btn-lg btn-block">Log In</button>
+                                <div class="form-group">
+                    <button type="submit" class="btn btn-info btn-lg btn-block">Update settings</button>
                 </div>
-                <p><a href="{% url "password_reset" %}">Forgot password?</a></p>
-            </form>
-            <div class="text-center">Don't have an account? <a href="{% url "accounts:signup" %}">Create One</a></div>
-        </div>
     </div>
 {% endblock %}

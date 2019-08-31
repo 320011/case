@@ -6,6 +6,7 @@ from .models import Tag, CaseStudy, MedicalHistory, Medication
 
 # populate patient particulars and description
 class CaseStudyForm(ModelForm):
+    confirm_patient_anonymous = forms.BooleanField(required=False)
     class Meta:
         model = CaseStudy
         fields = [
@@ -23,7 +24,9 @@ class CaseStudyForm(ModelForm):
             "answer_d",
             "answer",
             "feedback",
-            "is_submitted"
+            "is_submitted",
+            "is_anonymous",
+            "confirm_patient_anonymous"
         ]
         widgets = {
             "description": forms.Textarea(attrs={"rows": 4}),
@@ -37,16 +40,17 @@ class CaseStudyForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(CaseStudyForm, self).__init__(*args, **kwargs)
         for fname, f in self.fields.items():
-            f.widget.attrs["class"] = "form-control"
+            if fname == 'is_anonymous' or fname == 'confirm_patient_anonymous':
+                f.widget.attrs["class"] = "form-check-input"
+            else:
+                f.widget.attrs["class"] = "form-control"
 
     def clean(self):
+        print(self.cleaned_data)
         is_submitted = self.cleaned_data.get("is_submitted")
         if is_submitted:
             age = self.cleaned_data.get("age")
             description = self.cleaned_data.get("description")
-            height = self.cleaned_data.get("height")
-            weight = self.cleaned_data.get("weight")
-            scr = self.cleaned_data.get("scr")
             age_type = self.cleaned_data.get("age_type")
             sex = self.cleaned_data.get("sex")
             question = self.cleaned_data.get("question")
@@ -56,11 +60,10 @@ class CaseStudyForm(ModelForm):
             answer_d = self.cleaned_data.get("answer_d")
             answer = self.cleaned_data.get("answer")
             feedback = self.cleaned_data.get("feedback")
+            confirm_patient_anonymous = self.cleaned_data.get('confirm_patient_anonymous')
+            check_fields = ["age", "description", "age_type", "sex", "question", "answer_a", "answer_b", "answer_c", "answer_d", "answer", "feedback", "confirm_patient_anonymous"]
             if not age or \
                     not description or \
-                    not height or \
-                    not weight or \
-                    not scr or \
                     not age_type or \
                     not sex or \
                     not question or \
@@ -69,11 +72,17 @@ class CaseStudyForm(ModelForm):
                     not answer_c or \
                     not answer_d or \
                     not answer or \
-                    not feedback:
+                    not feedback or \
+                    not confirm_patient_anonymous:
                 errordict = {}
-                for item in self.cleaned_data:
+                for item in check_fields:
+                    print(self.cleaned_data[item])
                     if not self.cleaned_data[item]:
-                        errordict[item] = "This is not a valid " + str(item).replace("_", " ")
+                        if item == "confirm_patient_anonymous":
+                            errordict[item] = "Please confirm that you have not revealed any identifying information for the case study patient."
+                        else:
+                            errordict[item] = "This is not a valid " + str(item).replace("_", " ")
+                print(errordict)
                 raise forms.ValidationError(errordict)
 
 
