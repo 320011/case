@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from accounts.models import User
 from case_study.models import CaseStudy
+from core.decorators import staff_required
 import copy
 import json
 
@@ -100,11 +101,11 @@ def populate_data(schema, model):
     return data
 
 
-def put_user(request, id):
+def user_PUT(request, user_id):
     # get all the updates the user has requested
     updates = json.loads(request.body)
     # only apply updates to fields that are writable in the schema
-    usr = get_object_or_404(User, pk=id)  # get the user
+    usr = get_object_or_404(User, pk=user_id)  # get the user
     for field in schema_user["fields"]:
         key = field["key"]
         default_val = getattr(usr, key, None)  # default to what the user already had, then to None
@@ -116,18 +117,27 @@ def put_user(request, id):
     })
 
 
-def api_admin_user(request, id):
-    # put is an api endpoint used to update a user
+def user_DELETE(request, user_id):
+    User.objects.filter(pk=user_id).delete()
+    return JsonResponse({
+        "success": True,
+    })
+
+
+@staff_required
+def api_admin_user(request, user_id):
     if request.method == "PUT":
-        return put_user(request, id)
-    # post is an api endpoint used to create a new user
-    elif request.method == "POST":
-        pass
-    # delete is an api endpoint used to delete a user
+        return user_PUT(request, user_id)
     elif request.method == "DELETE":
-        pass
+        return user_DELETE(request, user_id)
+    else:
+        return JsonResponse({
+            "success": False,
+            "message": "Unsupported HTTP method: " + request.method
+        })
 
 
+@staff_required
 def view_admin_user(request):
     # get returns a template with all the users in a table
     data = populate_data(schema_user, User)
@@ -139,7 +149,7 @@ def view_admin_user(request):
     return render(request, "case-admin.html", c)
 
 
-
+@staff_required
 def view_admin_case(request):
     data = populate_data(schema_case, User)
     c = {
@@ -150,6 +160,7 @@ def view_admin_case(request):
     return render(request, "case-admin.html", c)
 
 
+@staff_required
 def view_admin_comment(request):
     data = populate_data(schema_comment, User)
     c = {
@@ -160,6 +171,7 @@ def view_admin_comment(request):
     return render(request, "case-admin.html", c)
 
 
+@staff_required
 def view_admin_tag(request):
     data = populate_data(schema_tag, User)
     c = {
@@ -170,5 +182,6 @@ def view_admin_tag(request):
     return render(request, "case-admin.html", c)
 
 
+@staff_required
 def view_default(request):
     return render(request, "admin.html")

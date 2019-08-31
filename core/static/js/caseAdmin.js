@@ -47,3 +47,28 @@ function admin_updateEntity(endpoint, entity) {
     console.log("Failed to update an entity. \nFatal Error:", err);
   });
 }
+
+function admin_deleteEntity(endpoint, entity) {
+  // ajax the deleted entity id to the server
+  fetch(endpoint + entity, {
+    method: "DELETE",
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "X-CSRFToken": getCookie("csrftoken"),
+    },
+    credentials: "same-origin",
+    body: JSON.stringify({}),
+  }).then(r => r.json()).then(resp => {
+    if (resp && resp.success) {
+      alert("Deleted an entity");
+      console.log("Deleted an entity.");
+    } else {
+      alert("Failed to delete an entity. \nError: " + resp.message);
+      console.log("Failed to delete an entity. \nError:", resp.message);
+    }
+  }).catch(err => {
+    alert("Failed to delete an entity. \nFatal Error: " + err);
+    console.log("Failed to delete an entity. \nFatal Error:", err);
+  });
+}

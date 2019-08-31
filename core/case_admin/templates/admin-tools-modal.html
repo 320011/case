@@ -22,7 +22,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger">Delete</button>
+                <button type="button" class="btn btn-danger" onclick="admin_deleteEntity('{{ data.endpoint }}', {{ fields.0.entity }})">Delete</button>
                 <button type="button" class="btn btn-primary" onclick="admin_updateEntity('{{ data.endpoint }}', {{ fields.0.entity }})">Update</button>
                 <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
             </div>
