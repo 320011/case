@@ -184,4 +184,4 @@ def view_admin_tag(request):
 
 @staff_required
 def view_default(request):
-    return render(request, "admin.html")
+    return render(request, "case-admin-landing.html")
