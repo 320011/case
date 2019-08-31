@@ -18,7 +18,7 @@ function admin_updateEntity(endpoint, entity) {
   for (let i = 0; i < inps.length; i++) {
     let inp = inps[i];
     if (inp.type === "checkbox") {
-      updates[inp.name] = inp.value === "on"; // checkbox sends string "on"/"off" and api expects a bool
+      updates[inp.name] = inp.checked;
     } else {
       updates[inp.name] = inp.value;
     }
