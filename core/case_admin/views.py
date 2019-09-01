@@ -75,9 +75,10 @@ schema_user = {
         {
             "title": "Password",
             "type": "action",
+            "key": "ACTION_RESET_PASSWORD",
             "widget": {
                 "template": "w-button.html",
-                "text": "Send Reset Link",
+                "text": "Send reset email",
                 "action": "RESET_PASSWORD",
             },
             "write": True,
@@ -85,6 +86,7 @@ schema_user = {
         {
             "title": "Login Session",
             "type": "action",
+            "key": "ACTION_LOGOUT",
             "widget": {
                 "template": "w-button.html",
                 "text": "Log user out",

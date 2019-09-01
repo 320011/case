@@ -8,3 +8,4 @@ venv/
 */static/css/
 *main
 core/core/secrets.py
+local_settings.py

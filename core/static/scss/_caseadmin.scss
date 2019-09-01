@@ -1,20 +1,11 @@
 .admin-entity-row {
   cursor: pointer;
-
-  td {
-    padding: 0 1rem 0 1rem;
-    border: 1px solid rgba(0,0,0, 0.1);
-  }
-
-  &:nth-child(even) {
-    background-color: rgba(0,0,0,0.05);
-  }
 }
 
-.admin-table-header {
-  border: 1px solid rgba(0,0,0, 0.1);
-  padding: 0 1rem 0 1rem;
-}
+//.admin-table-header {
+//  border: 1px solid rgba(0,0,0, 0.1);
+//  padding: 0 1rem 0 1rem;
+//}
 
 .modal-body {
   .admin-table {
@@ -28,7 +19,7 @@
       display: table-row;
 
       &:nth-child(even) {
-        background-color: rgba(0,0,0,0.05);
+        background-color: rgba(0,0,0,0.02);
       }
 
       .admin-header {
@@ -39,27 +30,67 @@
 
       .model-field {
         display: table-cell;
-
-        .admin-input {
-          width: 100%;
-        }
-
-        .admin-input-text {
-
-        }
-
-        .admin-input-email {
-
-        }
-
-        .admin-input-number {
-
-        }
-
-        .admin-input-checkbox {
-
-        }
       }
     }
+  }
+}
+.admin-input {
+  width: 100%;
+  margin: 0.1rem;
+}
+
+// when the screen is wide
+@media only screen and (min-width: 600px) {
+
+  .admin-table-narrow-header {
+    display: none;
+  }
+
+  .admin-table-cell-content {
+    width: 100%;
+    display: inline-block;
+  }
+}
+
+// when the screen is narrow
+@media only screen and (max-width: 600px) {
+
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
+
+  thead tr {
+    display: none;
+  }
+
+  tr {
+    margin: 0 0 1rem 0;
+  }
+
+  td {
+    border: none !important;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    padding-left: 50%;
+  }
+
+  td:before {
+    position: absolute;
+    top: 0;
+    left: 6px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
+  }
+
+  .admin-table-narrow-header {
+    display: inline-block;
+    width: 35%;
+    font-weight: bold;
+  }
+
+  .admin-table-cell-content {
+    width: 60%;
+    display: inline-block;
   }
 }

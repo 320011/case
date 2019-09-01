@@ -138,3 +138,9 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static/'),
 ]
+
+try:
+    from .local_settings import *
+    print('Loaded local_settings')
+except ImportError as e:
+    print("Warning: 'local_settings.py' does not exist")
