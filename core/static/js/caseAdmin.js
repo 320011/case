@@ -26,7 +26,7 @@ function admin_updateEntity(endpoint, entity) {
 
   // ajax the updated data to the server
   fetch(endpoint + entity, {
-    method: "PUT",
+    method: "PATCH",
     headers: {
       "Accept": "application/json",
       "Content-Type": "application/json",
@@ -73,6 +73,35 @@ function admin_deleteEntity(endpoint, entity) {
     }).catch(err => {
       alert("Failed to delete an entity. \nFatal Error: " + err);
       console.log("Failed to delete an entity. \nFatal Error:", err);
+    });
+  }
+}
+
+function admin_entityAction(endpoint, entity, action) {
+  if (confirm("Are you sure you want to perform this action?")) {
+    // ajax the action to the server
+    fetch(endpoint + entity, {
+      method: "POST", // use POST for actions
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCookie("csrftoken"),
+      },
+      credentials: "same-origin",
+      body: JSON.stringify({
+        action: action,
+      }),
+    }).then(r => r.json()).then(resp => {
+      if (resp && resp.success) {
+        alert("Success: " + resp.message);
+        console.log("Success:", resp.message);
+      } else {
+        alert("Failed to perform an action. \nError: " + resp.message);
+        console.log("Failed to perform an action. \nError:", resp.message);
+      }
+    }).catch(err => {
+      alert("Failed to perform an action. \nFatal Error: " + err);
+      console.log("Failed to perform an action. \nFatal Error:", err);
     });
   }
 }

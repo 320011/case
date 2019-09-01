@@ -27,7 +27,11 @@
                 {% include "admin-tools-modal.html" %}
                 {% for field in fields %}
                     <td>
-                        {{ field.value }}
+                        {% if field.type == "action" %}
+                            {% include ""|add:field.widget.template %}
+                        {% else %}
+                            {{ field.value }}
+                        {% endif %}
                     </td>
                 {% endfor %}
             </tr>
