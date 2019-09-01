@@ -7,6 +7,7 @@ $block-box-shadow: 5px 5px 12px 1px rgba(0, 0, 0, 0.3);
   .action-list {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     flex-shrink: 1;
     flex-grow: 1;
     flex-basis: 2rem;
