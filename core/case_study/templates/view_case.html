@@ -3,18 +3,70 @@
 {% load tags %}
 
 {% block title %}
-    Case {{ case.id }}
+  Case {{ case.id }}
 {% endblock %}
 
 {% block header %}
-    Case {{ case.id }}
+  Case {{ case.id }}
 {% endblock %}
 
 {% block description %}
 {% endblock %}
 
 {% block body %}
-  {{ case.get_age_in_words|an|title }} {{ case.age }}-{{ case.get_age_type }} {{ case.get_sex }} presents to your pharmacy {{ case.description }}
+  <style>
+    @media only screen and (max-width: 1026px) {
+      #details {
+        display: none;
+      }
+
+      #main {
+        width: 100%;
+        margin-left: 0;
+      }
+    }
+    #details {
+      flex: 1;
+      align-self: flex-start;
+    }
+    #main {
+      flex: 2;
+      margin-left: 10px;
+    }
+  </style>
+
+  <div class="row">
+    <div class="card col-3" id="details">
+      <div class="card-body">
+        Case Details: <br>
+        Author: Haolin Wu <br>
+        Created: <br><br>
+
+        Case Actions: <br>
+        Export <br>
+        Report <br>
+      </div>
+    </div>
+    <div class="card col" id="main">
+      <div class="card-body">
+        Case {{ case.id }} <br><br><br>
+        Case {{ case.id }} <br><br><br>
+        Case {{ case.id }} <br><br><br>
+        Case {{ case.id }} <br><br><br>
+        Case {{ case.id }} <br><br><br>
+        Case {{ case.id }} <br><br><br>
+        Case {{ case.id }} <br><br><br>
+        Case {{ case.id }} <br><br><br>
+        Case {{ case.id }} <br><br><br>
+        Case {{ case.id }} <br><br><br>
+        Case {{ case.id }} <br><br><br>
+        Case {{ case.id }} <br><br><br>
+
+      </div>
+    </div>
+  </div>
+  {{ case.get_age_in_words|an|title }} {{ case.age }}-{{ case.get_age_type }} {{ case.get_sex }} presents to your
+  pharmacy {{ case.description }}
   <br>
   <div>
     MHx:
