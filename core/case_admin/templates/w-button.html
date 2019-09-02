@@ -1,0 +1,7 @@
+<button class="admin-input admin-input-btn btn btn-primary"
+onclick="admin_entityAction('{{ data.endpoint }}', {{ fields.0.entity }}, '{{ field.widget.action }}')"
+{% if not field.write %}
+disabled
+{% endif %}>
+    {{ field.widget.text }}
+</button>

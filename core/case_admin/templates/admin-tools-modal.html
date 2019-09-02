@@ -15,7 +15,7 @@
                                 {{ field.title }}
                             </div>
                             <div class="admin-field">
-                                {% include ""|add:field.widget.template %}
+                                {% include field.widget.template %}
                             </div>
                         </div>
                     {% endfor %}
@@ -23,8 +23,8 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" onclick="admin_deleteEntity('{{ data.endpoint }}', {{ fields.0.entity }})">Delete</button>
-                <button type="button" class="btn btn-primary" onclick="admin_updateEntity('{{ data.endpoint }}', {{ fields.0.entity }})">Update</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" onclick="admin_updateEntity('{{ data.endpoint }}', {{ fields.0.entity }})">Update</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

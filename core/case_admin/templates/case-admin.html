@@ -6,16 +6,21 @@
 {% endblock %}
 
 {% block head %}
-    <script src="{% static "js/caseAdmin.js" %}"></script>
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.4/dist/bootstrap-table.min.css">
 {% endblock %}
 
 
 {% block body %}
-    <table>
+    <table
+            data-toggle="table"
+            data-search="true"
+            data-sortable="true"
+            id="admin-tools-table"
+            class="table table-striped table-bordered table-sm">
         <thead>
         <tr>
             {% for field in data.entities.0 %}
-                <th class="admin-table-header">
+                <th data-field="{{ field.key }}" data-sortable="true" scope="col" class="admin-table-header th-sm">
                     {{ field.title }}
                 </th>
             {% endfor %}
@@ -26,12 +31,24 @@
             <tr class="admin-entity-row" data-toggle="modal" data-target="#entity-edit-modal-{{ fields.0.entity }}">
                 {% include "admin-tools-modal.html" %}
                 {% for field in fields %}
-                    <td>
-                        {{ field.value }}
+                    <td class="admin-entity-cell">
+                        <div class="admin-table-narrow-header" class="th-sm">
+                            {{ field.title }}
+                        </div>
+                        <div class="admin-table-cell-content">
+                            {% if field.type == "action" %}
+                                {% include field.widget.template %}
+                            {% else %}
+                                {{ field.value }}
+                            {% endif %}
+                        </div>
                     </td>
                 {% endfor %}
             </tr>
         {% endfor %}
         </tbody>
     </table>
+
+    <script src="https://unpkg.com/bootstrap-table@1.15.4/dist/bootstrap-table.min.js"></script>
+    <script src="{% static "js/caseAdmin.js" %}"></script>
 {% endblock %}

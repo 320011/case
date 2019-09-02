@@ -7,7 +7,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 from django.contrib.auth.decorators import login_required
-from .forms import UserSettingsForm
+from .forms import UserSettingsForm, SignUpForm
 from .models import User
 from .tokens import account_activation_token
 from .decorators import anon_required
@@ -109,16 +109,12 @@ def view_activate(request):
 
 @login_required
 def view_settings(request):
-  if request.method == 'POST':
-    form = UserSettingsForm(request.POST, instance=request.user)
-    if form.is_valid():
-      form.save()
-      messages.success(request, 'Your account details have been updated!')
-      return render(request, "profile-settings.html", {'form': form})
-
-
-  else:
-    form = UserSettingsForm(instance=request.user)
-
-  return render(request, "profile-settings.html", {'form': form})
-
+    if request.method == 'POST':
+        form = UserSettingsForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your account details have been updated!')
+            return render(request, "profile-settings.html", {'form': form})
+    else:
+        form = UserSettingsForm(instance=request.user)
+    return render(request, "profile-settings.html", {'form': form})
