@@ -6,8 +6,13 @@ from django.contrib.sessions.models import Session
 from accounts.models import User
 from case_study.models import CaseStudy, Tag
 from core.decorators import staff_required
+from django.db import IntegrityError
 import copy
 import json
+import csv
+import base64
+from .forms import TagImportForm
+
 
 schema_user = {
     "endpoint": "/caseadmin/users/",
@@ -178,7 +183,7 @@ def delete_model(request, model, entity_id):
     })
 
 
-def user_ACTION_RESET_PASSWORD(request, usr):
+def user_action_reset_password(request, usr):
     form = PasswordResetForm({'email': usr.email})
     if form.is_valid():
         form.save(request=request, from_email=usr.email,
@@ -194,7 +199,7 @@ def user_ACTION_RESET_PASSWORD(request, usr):
         })
 
 
-def user_ACTION_LOGOUT(request, usr):
+def user_action_logout(request, usr):
     found_session = False
     for s in Session.objects.all():
         if int(s.get_decoded().get('_auth_user_id')) == usr.id:
@@ -221,15 +226,15 @@ def user_ACTION_LOGOUT(request, usr):
         })
 
 
-def user_ACTION(request, user_id):
+def user_action(request, user_id):
     # get all the updates the user has requested
     usr = get_object_or_404(User, pk=user_id)  # get the user
     data = json.loads(request.body)
     action = data["action"]
     if action == "RESET_PASSWORD":
-        return user_ACTION_RESET_PASSWORD(request, usr)
+        return user_action_reset_password(request, usr)
     elif action == "LOGOUT":
-        return user_ACTION_LOGOUT(request, usr)
+        return user_action_logout(request, usr)
     else:
         return JsonResponse({
             "success": False,
@@ -244,7 +249,7 @@ def api_admin_user(request, user_id):
     elif request.method == "DELETE":
         return delete_model_soft(request, user_id)
     elif request.method == "PUT":  # use PUT for actions
-        return user_ACTION(request, user_id)
+        return user_action(request, user_id)
     else:
         return JsonResponse({
             "success": False,
@@ -289,15 +294,6 @@ def view_admin_comment(request):
     return render(request, "case-admin.html", c)
 
 
-def post_tag(request):
-    body = json.loads(request.body)
-    Tag.objects.create(name=body["name"])
-    return JsonResponse({
-        "success": True,
-        "message": "Tag created"
-    })
-
-
 @staff_required
 def api_admin_tag(request, tag_id):
     if request.method == "PATCH":
@@ -307,8 +303,52 @@ def api_admin_tag(request, tag_id):
     else:
         return JsonResponse({
             "success": False,
-            "message": "Unsupported HTTP method: " + request.method
+            "message": "Unsupported HTTP method: " + request.method,
         })
+
+
+@staff_required
+def api_admin_tag_import(request):
+    form = TagImportForm(request.POST)
+    file = form["file"]
+    file_format = form["file_format"].value()
+    if file_format == "auto":
+        if file.name.endswith('.csv'):
+            file_format = "csv"
+        elif file.name.endswith('.json'):
+            file_format = "json"
+        elif file.name.endswith('.xlsx'):
+            file_format = "xlsx"
+        elif file.name.endswith('.xls'):
+            file_format = "xls"
+
+        return JsonResponse({
+            "success": False,
+            "message": "Automatic file format detection is NYI",
+        })
+
+    if file_format == "csv":
+
+        return JsonResponse({
+            "success": False,
+            "message": "File typ .csv is NYI",
+        })
+    elif file_format == "json":
+        return JsonResponse({
+            "success": False,
+            "message": "File typ .json is NYI",
+        })
+    elif file_format == "xlsx":
+        return JsonResponse({
+            "success": False,
+            "message": "File typ .xlsx is NYI",
+        })
+    else:
+        return JsonResponse({
+            "success": False,
+            "message": "Unknown file format: " + str(file_format),
+        })
+
 
 @staff_required
 def view_admin_tag(request):
@@ -324,7 +364,18 @@ def view_admin_tag(request):
         }
         return render(request, "case-admin.html", c)
     elif request.method == "POST":
-        return post_tag(request)
+        try:
+            body = json.loads(request.body)
+            Tag.objects.create(name=body["name"])
+            return JsonResponse({
+                "success": True,
+                "message": "Tag created",
+            })
+        except IntegrityError as e:
+            return JsonResponse({
+                "success": False,
+                "message": "Failed to create a tag: Tag name must be unique\n" + str(e.args[0]),
+            })
 
 
 @staff_required

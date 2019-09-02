@@ -11,6 +11,15 @@ function getCookie(name) {
   return null;
 }
 
+function toBase64(f) {
+  return new Promise((resolve, reject) => {
+    let reader = new FileReader();
+    reader.readAsDataURL(f);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
+}
+
 function admin_updateEntity(endpoint, entity) {
   // construct a user model with the updated data
   let inps = document.getElementById(`admin-table-${entity}`).getElementsByTagName("input");
@@ -118,7 +127,6 @@ function admin_newEntity(endpoint) {
       updates[inp.name] = inp.value;
     }
   }
-  console.log("this is hte new entiuty:", updates)
 
   // ajax the action to the server
   fetch(endpoint, {
@@ -136,11 +144,51 @@ function admin_newEntity(endpoint) {
       console.log("Success:", resp.message);
       location.reload();
     } else {
-      alert("Failed to perform an action. \nError: " + resp.message);
-      console.log("Failed to perform an action. \nError:", resp.message);
+      alert("Failed to create a new entity. \nError: " + resp.message);
+      console.log("Failed to create a new entity. \nError:", resp.message);
     }
   }).catch(err => {
-    alert("Failed to perform an action. \nFatal Error: " + err);
-    console.log("Failed to perform an action. \nFatal Error:", err);
+    alert("Failed to create a new entity. \nFatal Error: " + err);
+    console.log("Failed to create a new entity. \nFatal Error:", err);
   });
 }
+//
+// function admin_importEntity(endpoint) {
+//   // construct a user model with the updated data
+//   let inpFile = document.getElementById("import-file-input");
+//   let inpFormat = document.getElementById("import-file-format");
+//   if (inpFile.files.length !== 1) {
+//     alert("Please select a single file");
+//     return;
+//   }
+//   let body = {
+//     file: b64,
+//     format: inpFormat.value,
+//   };
+//   let formData = new FormData();
+//   formData.append(inpFile.files[0]);
+//   formData.append(inpFormat.value);
+//   // ajax the action to the server
+//   fetch(endpoint, {
+//     method: "POST",
+//     headers: {
+//       "Accept": "application/json",
+//       "Content-Type": "application/x-www-form-urlencoded",
+//       "X-CSRFToken": getCookie("csrftoken"),
+//     },
+//     credentials: "same-origin",
+//     body: formData,
+//   }).then(r => r.json()).then(resp => {
+//     if (resp && resp.success) {
+//       alert("Success: " + resp.message);
+//       console.log("Success:", resp.message);
+//       location.reload();
+//     } else {
+//       alert("Failed to create a new entity. \nError: " + resp.message);
+//       console.log("Failed to create a new entity. \nError:", resp.message);
+//     }
+//   }).catch(err => {
+//     alert("Failed to create a new entity. \nFatal Error: " + err);
+//     console.log("Failed to create a new entity. \nFatal Error:", err);
+//   });
+// }

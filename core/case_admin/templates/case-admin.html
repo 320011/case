@@ -16,14 +16,13 @@
     <div id="admin-table-toolbar" class="select" style="">
         {% if toolbar_new %}
             {% include "admin-tools-modal.html" with modal_entity_id="new" creating_new=True fields=schema.fields %}
-            <button class="form-control btn btn-primary"
-                    data-toggle="modal"
-                    data-target="#entity-edit-modal-new">
+            <button class="form-control btn btn-primary" data-toggle="modal" data-target="#entity-edit-modal-new">
                 New
             </button>
         {% endif %}
         {% if toolbar_import %}
-            <button class="form-control btn btn-primary" onclick="admin_entityImport()">
+            {% include "admin-tools-import-modal.html" %}
+            <button class="form-control btn btn-primary" data-toggle="modal" data-target="#entity-edit-modal-import">
                 Import
             </button>
         {% endif %}

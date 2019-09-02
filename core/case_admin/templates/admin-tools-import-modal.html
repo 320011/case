@@ -1,17 +1,31 @@
-<div class="modal" tabindex="-1" role="dialog" id="entity-edit-modal-{{ modal_entity_id }}">
+<div class="modal" tabindex="-1" role="dialog" id="entity-edit-modal-import">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Manage a {{ model_name }}</h5>
+                <h5 class="modal-title">Import {{ model_name }}s</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-
+                <div class="form-group">
+                    <form enctype="multipart/form-data" action="/caseadmin/tags/import" method="POST" id="import-modal-form">
+                        {% csrf_token %}
+                        <label for="import-file-input">File</label>
+                        <input name="file" type="file" class="form-control-file" id="import-file-input">
+                        <br>
+                        <label for="import-file-format">File Format</label>
+                        <select class="form-control" id="import-file-format">
+                            <option value="auto">Auto Detect</option>
+                            <option value="csv">Comma-separated Values (.csv)</option>
+                            <option value="json">JSON (.json)</option>
+                            <option value="xlsx">Microsoft Excel (.xlsx, .xls)</option>
+                        </select>
+                    </form>
+                </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success" onclick="admin_newEntity('{{ data.endpoint }}', {{ fields.0.entity }})">Create</button>
+                <button form="import-modal-form" type="submit" class="btn btn-success">Import</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
             </div>
         </div>
