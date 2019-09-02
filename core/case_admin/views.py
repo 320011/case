@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.sessions.models import Session
 from accounts.models import User
-from case_study.models import CaseStudy
+from case_study.models import CaseStudy, Tag
 from core.decorators import staff_required
 import copy
 import json
@@ -17,7 +17,7 @@ schema_user = {
             "key": "first_name",
             "widget": {
                 "template": "w-text.html",
-                "maxchars": 40,
+                "maxlength": 40,
             },
             "write": True,
         },
@@ -26,7 +26,7 @@ schema_user = {
             "key": "last_name",
             "widget": {
                 "template": "w-text.html",
-                "maxchars": 60,
+                "maxlength": 60,
             },
             "write": True,
         },
@@ -35,7 +35,7 @@ schema_user = {
             "key": "email",
             "widget": {
                 "template": "w-email.html",
-                "maxchars": 250,
+                "maxlength": 250,
             },
             "write": True,
         },
@@ -44,7 +44,7 @@ schema_user = {
             "key": "university",
             "widget": {
                 "template": "w-text.html",
-                "maxchars": 150,
+                "maxlength": 150,
             },
             "write": True,
         },
@@ -109,7 +109,17 @@ schema_comment = {
 
 schema_tag = {
     "endpoint": "/caseadmin/tags/",
-    "fields": [],
+    "fields": [
+        {
+            "title": "Tag",
+            "key": "name",
+            "widget": {
+                "template": "w-text.html",
+                "maxlength": 60,
+            },
+            "write": True,
+        },
+    ]
 }
 
 
@@ -133,6 +143,39 @@ def populate_data(schema, model):
             row_data.append(d)
         data["entities"].append(row_data)
     return data
+
+
+def patch_model(request, model, schema, entity_id):
+    # get all the updates the client has requested
+    updates = json.loads(request.body)
+    # only apply updates to fields that are writable in the schema
+    obj = get_object_or_404(model, pk=entity_id)  # get the entity
+    for field in schema["fields"]:
+        if field.get("type", "") != "action":  # ignore action fields
+            key = field["key"]
+            default_val = getattr(obj, key, None)  # default to what the entity already had, then to None
+            new_val = updates.get(key, default_val)
+            setattr(obj, key, new_val)
+    obj.save()  # save the user to the db
+    return JsonResponse({
+        "success": True,
+    })
+
+
+def delete_model_soft(request, model, entity_id):
+    obj = get_object_or_404(model, pk=entity_id)
+    obj.is_deleted = True
+    obj.save()
+    return JsonResponse({
+        "success": True,
+    })
+
+
+def delete_model(request, model, entity_id):
+    model.objects.filter(id=entity_id).delete()
+    return JsonResponse({
+        "success": True,
+    })
 
 
 def user_ACTION_RESET_PASSWORD(request, usr):
@@ -194,39 +237,13 @@ def user_ACTION(request, user_id):
         })
 
 
-def user_PATCH(request, user_id):
-    # get all the updates the user has requested
-    updates = json.loads(request.body)
-    # only apply updates to fields that are writable in the schema
-    usr = get_object_or_404(User, pk=user_id)  # get the user
-    for field in schema_user["fields"]:
-        if field.get("type", "") != "action":  # ignore action fields
-            key = field["key"]
-            default_val = getattr(usr, key, None)  # default to what the user already had, then to None
-            new_val = updates.get(key, default_val)
-            setattr(usr, key, new_val)
-    usr.save()  # save the user to the db
-    return JsonResponse({
-        "success": True,
-    })
-
-
-def user_DELETE(request, user_id):
-    usr = get_object_or_404(User, pk=user_id)
-    usr.is_deleted = True
-    usr.save()
-    return JsonResponse({
-        "success": True,
-    })
-
-
 @staff_required
 def api_admin_user(request, user_id):
     if request.method == "PATCH":
-        return user_PATCH(request, user_id)
+        return patch_model(request, User, schema_user, user_id)
     elif request.method == "DELETE":
-        return user_DELETE(request, user_id)
-    elif request.method == "POST":  # use POST for actions
+        return delete_model_soft(request, user_id)
+    elif request.method == "PUT":  # use PUT for actions
         return user_ACTION(request, user_id)
     else:
         return JsonResponse({
@@ -243,6 +260,7 @@ def view_admin_user(request):
         "title": "User Admin",
         "model_name": "User",
         "data": data,
+        "schema": schema_user,
     }
     return render(request, "case-admin.html", c)
 
@@ -253,7 +271,8 @@ def view_admin_case(request):
     c = {
         "title": "Case Study Admin",
         "model_name": "Case Study",
-        "data": data
+        "data": data,
+        "schema": schema_case,
     }
     return render(request, "case-admin.html", c)
 
@@ -264,20 +283,48 @@ def view_admin_comment(request):
     c = {
         "title": "Comment Admin",
         "model_name": "Comment",
-        "data": data
+        "data": data,
+        "schema": schema_comment,
     }
     return render(request, "case-admin.html", c)
+
+
+def post_tag(request):
+    body = json.loads(request.body)
+    Tag.objects.create(name=body["name"])
+    return JsonResponse({
+        "success": True,
+        "message": "Tag created"
+    })
 
 
 @staff_required
+def api_admin_tag(request, tag_id):
+    if request.method == "PATCH":
+        return patch_model(request, Tag, schema_tag, tag_id)
+    elif request.method == "DELETE":
+        return delete_model(request, Tag, tag_id)
+    else:
+        return JsonResponse({
+            "success": False,
+            "message": "Unsupported HTTP method: " + request.method
+        })
+
+@staff_required
 def view_admin_tag(request):
-    data = populate_data(schema_tag, User)
-    c = {
-        "title": "Tag Admin",
-        "model_name": "Tag",
-        "data": data
-    }
-    return render(request, "case-admin.html", c)
+    if request.method == "GET":
+        data = populate_data(schema_tag, Tag)
+        c = {
+            "title": "Tag Admin",
+            "model_name": "Tag",
+            "toolbar_new": True,
+            "toolbar_import": True,
+            "data": data,
+            "schema": schema_tag,
+        }
+        return render(request, "case-admin.html", c)
+    elif request.method == "POST":
+        return post_tag(request)
 
 
 @staff_required

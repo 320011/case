@@ -7,19 +7,38 @@
 
 {% block head %}
     <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.4/dist/bootstrap-table.min.css">
+    <link href="https://unpkg.com/bootstrap-table@1.15.4/dist/extensions/sticky-header/bootstrap-table-sticky-header.css" rel="stylesheet">
+
 {% endblock %}
 
 
 {% block body %}
+    <div id="admin-table-toolbar" class="select" style="">
+        {% if toolbar_new %}
+            {% include "admin-tools-modal.html" with modal_entity_id="new" creating_new=True fields=schema.fields %}
+            <button class="form-control btn btn-primary"
+                    data-toggle="modal"
+                    data-target="#entity-edit-modal-new">
+                New
+            </button>
+        {% endif %}
+        {% if toolbar_import %}
+            <button class="form-control btn btn-primary" onclick="admin_entityImport()">
+                Import
+            </button>
+        {% endif %}
+    </div>
     <table
             data-toggle="table"
             data-search="true"
             data-sortable="true"
+            data-show-export="true"
+            data-toolbar="#admin-table-toolbar"
             id="admin-tools-table"
             class="table table-striped table-bordered table-sm">
         <thead>
         <tr>
-            {% for field in data.entities.0 %}
+            {% for field in schema.fields %}
                 <th data-field="{{ field.key }}" data-sortable="true" scope="col" class="admin-table-header th-sm">
                     {{ field.title }}
                 </th>
@@ -29,7 +48,7 @@
         <tbody>
         {% for fields in data.entities %}
             <tr class="admin-entity-row" data-toggle="modal" data-target="#entity-edit-modal-{{ fields.0.entity }}">
-                {% include "admin-tools-modal.html" %}
+                {% include "admin-tools-modal.html" with modal_entity_id=fields.0.entity %}
                 {% for field in fields %}
                     <td class="admin-entity-cell">
                         <div class="admin-table-narrow-header" class="th-sm">
