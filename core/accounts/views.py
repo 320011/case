@@ -18,7 +18,6 @@ from .decorators import anon_required
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 
-
 @login_required
 def view_profile(request):
     c = {
@@ -134,7 +133,7 @@ def change_password(request):
             user = form.save()
             update_session_auth_hash(request, user)  # Important!
             messages.success(request, 'Your password was successfully updated!')
-            return redirect('change_password')
+            
         else:
             messages.error(request, 'Please correct the error below.')
     else:
