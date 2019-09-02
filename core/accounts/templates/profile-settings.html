@@ -12,7 +12,7 @@
     </div>
     <div class='container'>
     	    <div class='container'>
-        <div class='signup-form'>
+        <div class='form'>
             <form method="post">
                 {% csrf_token %}
                 <h2>Settings</h2>
@@ -38,7 +38,7 @@
                     <button type="submit" class="btn btn-danger btn-lg btn-block" onclick="return confirm('Are you sure to reset your Scorecard?')">Reset Scorecard</button>
                 </div>
     </div>
-
+<a class="text" href='{% url "accounts:change_password" %}'>Change Password?</a>
 
 <script>
 function clicked(e)
