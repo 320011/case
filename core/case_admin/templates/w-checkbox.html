@@ -1,11 +1,14 @@
-<input class="admin-input admin-input-checkbox"
-type="checkbox"
-name="{{ field.key }}"
-id="admin-inp-{{ field.key }}-{{ field.entity }}"
-{% if not field.write %}
-disabled
-{% endif %}
-{% if field.value %}
-checked
-{% endif %}
-/>
+<div class="checkbox">
+    <input class="admin-input admin-input-checkbox form-control"
+    type="checkbox"
+    name="{{ field.key }}"
+    id="admin-inp-{{ field.key }}-{{ field.entity }}"
+    {% if not field.write %}
+    disabled
+    {% endif %}
+    {% if field.value %}
+    checked
+    {% endif %}
+    />
+</div>
+

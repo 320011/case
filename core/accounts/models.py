@@ -58,6 +58,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)  # whether this user is still active
     is_staff = models.BooleanField(default=False)  # whether this user can access the admin site
+    is_deleted = models.BooleanField(default=False)  # used to soft delete a model
 
     # Assigns the new Manager to the User model
     objects = UserManager()
