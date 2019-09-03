@@ -9,7 +9,6 @@ from core.decorators import staff_required
 from django.db import IntegrityError
 import copy
 import json
-import csv
 import base64
 from .forms import TagImportForm
 
@@ -334,20 +333,32 @@ def tag_import_txt(request, file, file_format):
         })
 
 
-
-
 def tag_import_csv(request, file, file_format):
+    if file.content_type != "text/csv":
+        return JsonResponse({
+            "success": False,
+            "message": "Failed to import tags as text/csv\n\nPlease ensure your csv file contains one tag per line",
+        })
     tags = []
-    csv_file = csv(file.file)
-
-    for tag in file.file.readlines():
-        t = tag.decode("utf-8").strip()
+    lines = file.read().decode("utf-8").split("\n")
+    for line in lines:
+        t = line.strip()
         tags.append(Tag(name=t))
-    Tag.objects.bulk_create(tags)
-    return JsonResponse({
-        "success": True,
-        "message": "Imported {} tags".format(len(tags)),
-    })
+    try:
+        Tag.objects.bulk_create(tags, ignore_conflicts=True)
+        return JsonResponse({
+            "success": True,
+            "message": "Imported {} tags".format(len(tags)),
+        })
+    except IntegrityError as e:
+        return JsonResponse({
+            "success": False,
+            "message": """Failed to import tags as text/csv
+
+            Please ensure your csv file contains one tag per line
+
+            Error: """ + str(e.args[0]),
+        })
 
 
 @staff_required
