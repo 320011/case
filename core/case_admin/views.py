@@ -307,46 +307,69 @@ def api_admin_tag(request, tag_id):
         })
 
 
+def tag_import_txt(request, file, file_format):
+    tags = []
+    for tag in file.file.readlines():
+        t = tag.decode().strip()
+        tags.append(Tag(name=t))
+    Tag.objects.bulk_create(tags)
+    return JsonResponse({
+        "success": True,
+        "message": "Imported {} tags".format(len(tags)),
+    })
+
+
 @staff_required
 def api_admin_tag_import(request):
-    form = TagImportForm(request.POST)
-    file = form["file"]
-    file_format = form["file_format"].value()
-    if file_format == "auto":
-        if file.name.endswith('.csv'):
-            file_format = "csv"
-        elif file.name.endswith('.json'):
-            file_format = "json"
-        elif file.name.endswith('.xlsx'):
-            file_format = "xlsx"
-        elif file.name.endswith('.xls'):
-            file_format = "xls"
+    if request.method == "POST":
+        form = TagImportForm(request.POST)
+        file = request.FILES["file"]
+        file_format = str(form["file_format"].value())
+        if file_format == "auto":
+            if file.content_type == "text/csv":
+                file_format = "csv"
+            elif file.content_type == "application/json":
+                file_format = "json"
+            elif file.content_type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" or \
+                    file.name.endswith('.xlsx'):
+                file_format = "xlsx"
+            elif file.content_type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" or \
+                    file.name.endswith('.xls'):
+                file_format = "xls"
+            elif file.content_type == "text/plain":
+                file_format = "txt"
 
-        return JsonResponse({
-            "success": False,
-            "message": "Automatic file format detection is NYI",
-        })
-
-    if file_format == "csv":
-
-        return JsonResponse({
-            "success": False,
-            "message": "File typ .csv is NYI",
-        })
-    elif file_format == "json":
-        return JsonResponse({
-            "success": False,
-            "message": "File typ .json is NYI",
-        })
-    elif file_format == "xlsx":
-        return JsonResponse({
-            "success": False,
-            "message": "File typ .xlsx is NYI",
-        })
+        if file_format == "csv":
+            return JsonResponse({
+                "success": False,
+                "message": "File typ .csv is NYI",
+            })
+        elif file_format == "json":
+            return JsonResponse({
+                "success": False,
+                "message": "File typ .json is NYI",
+            })
+        elif file_format == "xlsx":
+            return JsonResponse({
+                "success": False,
+                "message": "File typ .xlsx is NYI",
+            })
+        elif file_format == "xls":
+            return JsonResponse({
+                "success": False,
+                "message": "File typ .xls is NYI",
+            })
+        elif file_format == "txt":
+            return tag_import_txt(request, file, file_format)
+        else:
+            return JsonResponse({
+                "success": False,
+                "message": "Unknown file format: " + str(file_format),
+            })
     else:
         return JsonResponse({
             "success": False,
-            "message": "Unknown file format: " + str(file_format),
+            "message": "Unsupported method: " + request.method,
         })
 
 
@@ -360,6 +383,8 @@ def view_admin_tag(request):
             "toolbar_new": True,
             "toolbar_import": True,
             "data": data,
+            "import_form": TagImportForm(),
+            "import_endpoint": "/caseadmin/tags/import",
             "schema": schema_tag,
         }
         return render(request, "case-admin.html", c)
