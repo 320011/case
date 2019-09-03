@@ -308,9 +308,40 @@ def api_admin_tag(request, tag_id):
 
 
 def tag_import_txt(request, file, file_format):
+    if file.content_type != "text/plain":
+        return JsonResponse({
+            "success": False,
+            "message": "Failed to import tags as text/plain\n\nPlease ensure your text file contains one tag per line",
+        })
     tags = []
     for tag in file.file.readlines():
-        t = tag.decode().strip()
+        t = tag.decode("utf-8").strip()
+        tags.append(Tag(name=t))
+    try:
+        Tag.objects.bulk_create(tags, ignore_conflicts=True)
+        return JsonResponse({
+            "success": True,
+            "message": "Imported {} tags".format(len(tags)),
+        })
+    except IntegrityError as e:
+        return JsonResponse({
+            "success": False,
+            "message": """Failed to import tags as text/plain
+            
+            Please ensure your text file contains one tag per line
+            
+            Error: """ + str(e.args[0]),
+        })
+
+
+
+
+def tag_import_csv(request, file, file_format):
+    tags = []
+    csv_file = csv(file.file)
+
+    for tag in file.file.readlines():
+        t = tag.decode("utf-8").strip()
         tags.append(Tag(name=t))
     Tag.objects.bulk_create(tags)
     return JsonResponse({
@@ -340,10 +371,7 @@ def api_admin_tag_import(request):
                 file_format = "txt"
 
         if file_format == "csv":
-            return JsonResponse({
-                "success": False,
-                "message": "File typ .csv is NYI",
-            })
+            return tag_import_csv(request, file, file_format)
         elif file_format == "json":
             return JsonResponse({
                 "success": False,
