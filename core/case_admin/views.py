@@ -104,7 +104,184 @@ schema_user = {
 
 schema_case = {
     "endpoint": "/caseadmin/cases/",
-    "fields": [],
+    "fields": [
+        {
+            "title": "date_created",
+            "key": "date_created",
+            "widget": {
+                "template": "w-date.html",
+            },
+            "write": True,
+        },
+        {
+            "title": "date_submitted",
+            "key": "date_submitted",
+            "widget": {
+                "template": "w-date.html",
+            },
+            "write": True,
+        },
+        {
+            "title": "is_submitted",
+            "key": "is_submitted",
+            "widget": {
+                "template": "w-checkbox.html",
+            },
+            "write": True,
+        },
+        {
+            "title": "is_anonymous",
+            "key": "is_anonymous",
+            "widget": {
+                "template": "w-checkbox.html",
+            },
+            "write": True,
+        },
+        {
+            "title": "date_last_edited",
+            "key": "date_last_edited",
+            "widget": {
+                "template": "w-date.html",
+            },
+            "write": True,
+        },
+        {
+            "title": "created_by",
+            "key": "created_by",
+            "widget": {
+                "template": "w-number.html",
+            },
+            "write": True,
+        },
+        {
+            "title": "last_edited_user",
+            "key": "date_created",
+            "widget": {
+                "template": "w-number.html",
+            },
+            "write": True,
+        },
+        {
+            "title": "is_deleted",
+            "key": "is_deleted",
+            "widget": {
+                "template": "w-checkbox.html",
+            },
+            "write": True,
+        },
+        {
+            "title": "height",
+            "key": "height",
+            "widget": {
+                "template": "w-number.html",
+            },
+            "write": True,
+        },
+        {
+            "title": "weight",
+            "key": "weight",
+            "widget": {
+                "template": "w-number.html",
+            },
+            "write": True,
+        },
+        {
+            "title": "scr",
+            "key": "scr",
+            "widget": {
+                "template": "w-number.html",
+            },
+            "write": True,
+        },
+        {
+            "title": "age_type",
+            "key": "age_type",
+            "widget": {
+                "template": "w-text.html",
+            },
+            "write": True,
+        },
+        {
+            "title": "age",
+            "key": "age",
+            "widget": {
+                "template": "w-number.html",
+            },
+            "write": True,
+        },
+        {
+            "title": "sex",
+            "key": "sex",
+            "widget": {
+                "template": "w-text.html",
+            },
+            "write": True,
+        },
+        {
+            "title": "description",
+            "key": "description",
+            "widget": {
+                "template": "w-text.html",
+            },
+            "write": True,
+        },
+        {
+            "title": "question",
+            "key": "question",
+            "widget": {
+                "template": "w-number.html",
+            },
+            "write": True,
+        },
+        {
+            "title": "answer_a",
+            "key": "answer_a",
+            "widget": {
+                "template": "w-text.html",
+            },
+            "write": True,
+        },
+        {
+            "title": "answer_b",
+            "key": "answer_b",
+            "widget": {
+                "template": "w-text.html",
+            },
+            "write": True,
+        },
+        {
+            "title": "answer_c",
+            "key": "answer_c",
+            "widget": {
+                "template": "w-text.html",
+            },
+            "write": True,
+        },
+        {
+            "title": "answer_d",
+            "key": "answer_d",
+            "widget": {
+                "template": "w-text.html",
+            },
+            "write": True,
+        },
+        {
+            "title": "answer",
+            "key": "answer",
+            "widget": {
+                "template": "w-text.html",
+            },
+            "write": True,
+        },
+        {
+            "title": "feedback",
+            "key": "feedback",
+            "widget": {
+                "template": "w-text.html",
+            },
+            "write": True,
+        },
+    ],
 }
 
 schema_comment = {
@@ -141,7 +318,7 @@ def populate_data(schema, model):
         for f in schema["fields"]:
             d = copy.deepcopy(f)
             if d.get("type", "") != "action":  # actions dont have keys
-                d["value"] = vars(r)[d["key"]]
+                d["value"] = vars(r).get(d.get("key", None), None)
             else:
                 d["value"] = f["widget"]["text"]
             d["entity"] = r.id
@@ -271,8 +448,23 @@ def view_admin_user(request):
 
 
 @staff_required
+def api_admin_case(request, case_id):
+    if request.method == "PATCH":
+        return patch_model(request, CaseStudy, schema_case, case_id)
+    elif request.method == "DELETE":
+        return delete_model_soft(request, case_id)
+    elif request.method == "PUT":  # use PUT for actions
+        return user_action(request, user_id)
+    else:
+        return JsonResponse({
+            "success": False,
+            "message": "Unsupported HTTP method: " + request.method
+        })
+
+
+@staff_required
 def view_admin_case(request):
-    data = populate_data(schema_case, User)
+    data = populate_data(schema_case, CaseStudy)
     c = {
         "title": "Case Study Admin",
         "model_name": "Case Study",
