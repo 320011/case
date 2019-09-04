@@ -337,8 +337,18 @@ def patch_model(request, model, schema, entity_id):
             key = field["key"]
             default_val = getattr(obj, key, None)  # default to what the entity already had, then to None
             new_val = updates.get(key, default_val)
-            setattr(obj, key, new_val)
-    obj.save()  # save the user to the db
+            model_type = model._meta.get_field(key).get_internal_type()
+            if model_type == "ForeignKey":
+                pass
+            elif model_type == "DateTimeField":
+                pass
+            else:
+                try:
+                    setattr(obj, key, new_val)
+                except Exception as e:
+                    setattr(obj, key, default_val)
+                    print("Failed to update field:", key+": Reverting to original value:", e)
+    obj.save()  # save the entity to the db
     return JsonResponse({
         "success": True,
     })
@@ -453,7 +463,7 @@ def api_admin_case(request, case_id):
         return patch_model(request, CaseStudy, schema_case, case_id)
     elif request.method == "DELETE":
         return delete_model_soft(request, case_id)
-    elif request.method == "PUT":  # use PUT for actions
+    elif False and request.method == "PUT":  # use PUT for actions
         return user_action(request, user_id)
     else:
         return JsonResponse({
