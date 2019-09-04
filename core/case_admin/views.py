@@ -462,7 +462,7 @@ def api_admin_case(request, case_id):
     if request.method == "PATCH":
         return patch_model(request, CaseStudy, schema_case, case_id)
     elif request.method == "DELETE":
-        return delete_model_soft(request, case_id)
+        return delete_model_soft(request, CaseStudy, case_id)
     elif False and request.method == "PUT":  # use PUT for actions
         return user_action(request, user_id)
     else:
