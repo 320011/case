@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.sessions.models import Session
 from accounts.models import User
-from case_study.models import CaseStudy, Tag
+from case_study.models import CaseStudy, Tag, Question
 from core.decorators import staff_required
 from django.db import IntegrityError
 import copy
@@ -143,9 +143,12 @@ schema_case = {
         },
         {
             "title": "Author",
+            "type": "foreignkey",
+            "model": User,
+            "allow_null": True,
             "key": "created_by",
             "widget": {
-                "template": "w-number.html",
+                "template": "w-select.html",
             },
             "write": True,
         },
@@ -161,10 +164,13 @@ schema_case = {
         },
         {
             "title": "User Last Edited",
+            "type": "foreignkey",
+            "model": User,
+            "allow_null": True,
             "key": "last_edited_user",
             "hide_in_table": True,
             "widget": {
-                "template": "w-number.html",
+                "template": "w-select.html",
             },
             "write": True,
         },
@@ -237,9 +243,12 @@ schema_case = {
         },
         {
             "title": "Question",
+            "type": "foreignkey",
+            "model": Question,
+            "allow_null": True,
             "key": "question",
             "widget": {
-                "template": "w-number.html",
+                "template": "w-select.html",
             },
             "write": True,
         },
@@ -338,21 +347,44 @@ def populate_data(schema, model):
         # add each field to the data
         for f in schema["fields"]:
             d = copy.deepcopy(f)
-            if d.get("type", "") == "action":  # actions dont have keys
-                d["value"] = f["widget"]["text"]
-            if d.get("value_format", None):  # format the value if we have to
-                formatter = value_formatters.get(d.get("value_format", ""), None)
-                val = vars(r).get(d.get("key", None), None)
-                if formatter:
-                    d["value"] = formatter(val)
-                else:
-                    d["value"] = val
-            else:
-                d["value"] = vars(r).get(d.get("key", None), None)
+            key = d.get("key", None)
+            record = vars(r)
             d["entity"] = r.id
+            d["value"] = record.get(key, None)
+
+            # send empty string instead of python None
             if d["value"] is None:
                 d["value"] = ""
             row_data.append(d)
+
+            # format the value if required
+            if d.get("value_format", None):
+                formatter = value_formatters.get(d.get("value_format", ""), None)
+                if formatter:
+                    d["value"] = formatter(d["value"])
+
+            # handle action fields
+            if d.get("type", "") == "action":
+                d["value"] = f["widget"]["text"]
+
+            # handle foreign key fields
+            elif d.get("type", "") == "foreignkey":
+                m = d.get("model", None)
+                if m:
+                    opts = []
+                    for opt in m.objects.all():
+                        opts.append({
+                            "id": opt.id,
+                            "name": str(opt),
+                            "selected": opt == d["value"],
+                        })
+                    d["options"] = opts
+                    d["selected"] = getattr(r, key)
+                    try:
+                        d["value"] = getattr(r, key + "_id")
+                    except:
+                        d["value"] = d["selected"]
+
         data["entities"].append(row_data)
     return data
 
@@ -369,7 +401,12 @@ def patch_model(request, model, schema, entity_id):
             new_val = updates.get(key, default_val)
             model_type = model._meta.get_field(key).get_internal_type()
             if model_type == "ForeignKey":
-                pass
+                if new_val == "null":
+                    new_val = None
+                else:
+                    fkm = field.get("model", None)
+                    if fkm is not None:
+                        new_val = fkm.objects.filter(pk=new_val)[0]
             if model_type == "DateTimeField":
                 try:
                     new_val = datetime.strptime(new_val, '%Y-%m-%dT%H:%M%S')
@@ -498,7 +535,7 @@ def api_admin_case(request, case_id):
     elif request.method == "DELETE":
         return delete_model_soft(request, CaseStudy, case_id)
     elif False and request.method == "PUT":  # use PUT for actions
-        return user_action(request, user_id)
+        return user_action(request, case_id)
     else:
         return JsonResponse({
             "success": False,

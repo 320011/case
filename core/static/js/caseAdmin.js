@@ -17,8 +17,6 @@ function admin_updateEntity(endpoint, entity) {
   let updates = {};
   for (let i = 0; i < inps.length; i++) {
     let inp = inps[i];
-    console.log("inp.name=" + inp.name)
-    console.log("inp.value=" + inp.value)
     if (inp.type === "checkbox") {
       updates[inp.name] = inp.checked;
     } else if (inp.type === "datetime-local") {
@@ -26,6 +24,12 @@ function admin_updateEntity(endpoint, entity) {
     } else {
       updates[inp.name] = inp.value;
     }
+  }
+  // get the <select> tags too
+  let sels = document.getElementById(`admin-table-${entity}`).getElementsByTagName("select");
+  for (let i = 0; i < sels.length; i++) {
+    let sel = sels[i];
+    updates[sel.name] = sel.value;
   }
 
   // ajax the updated data to the server
