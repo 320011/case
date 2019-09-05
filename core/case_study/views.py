@@ -25,6 +25,7 @@ def create_new_case(request, case_study_id):
     if request.method == "POST":
         # print(request.POST)
         # obtain forms with fields populated from POST request
+        case_study.age_type_choice = request.POST['age_type']
         case_study_form = CaseStudyForm(request.POST, instance=case_study)
         # case_study_question_form = CaseStudyQuestionForm(request.POST) 
         case_study_tag_form = CaseStudyTagForm(request.POST)

@@ -6,7 +6,14 @@ from .models import Tag, CaseStudy, MedicalHistory, Medication
 
 # populate patient particulars and description
 class CaseStudyForm(ModelForm):
+    YEARS = "Y"
+    MONTHS = "M"
+    AGE_CHOICES = [
+        (YEARS, "Years"),
+        (MONTHS, "Months")
+    ]
     confirm_patient_anonymous = forms.BooleanField(required=False)
+    age_type = forms.ChoiceField(choices=AGE_CHOICES)
     class Meta:
         model = CaseStudy
         fields = [

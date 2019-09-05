@@ -20,13 +20,6 @@ class Tag(models.Model):
 
 
 class CaseStudy(models.Model):
-    # Years Choices
-    YEARS = "Y"
-    MONTHS = "M"
-    AGE_CHOICES = [
-        (YEARS, "Years"),
-        (MONTHS, "Months")
-    ]
     # Sex Choices
     MALE = "M"
     FEMALE = "F"
@@ -59,12 +52,7 @@ class CaseStudy(models.Model):
     height = models.IntegerField(null=True, blank=True)
     weight = models.FloatField(null=True, blank=True)
     scr = models.FloatField(null=True, blank=True)
-    age_type = models.CharField(
-        max_length=1,
-        choices=AGE_CHOICES,
-        default=YEARS,
-        blank=True
-    )
+    age_type_choice = models.CharField(max_length=1, default='M', blank=True)
     age = models.IntegerField(null=True, blank=True)
     sex = models.CharField(
         max_length=1,
