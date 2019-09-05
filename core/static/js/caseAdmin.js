@@ -28,8 +28,6 @@ function admin_updateEntity(endpoint, entity) {
     }
   }
 
-  alert("sending updates: " + JSON.stringify(updates))
-
   // ajax the updated data to the server
   fetch(endpoint + entity, {
     method: "PATCH",

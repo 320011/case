@@ -1,5 +1,4 @@
 <textarea class="admin-input admin-input-textarea form-control"
-value="{{ field.value }}"
 name="{{ field.key }}"
 id="admin-inp-{{ field.key }}-{{ field.entity }}"
 {% if field.widget.maxlength %}
@@ -8,4 +7,6 @@ maxlength="{{ field.widget.maxlength }}"
 {% if not field.write %}
 disabled
 {% endif %}
-/>
+>
+{{ field.value }}
+</textarea>

@@ -9,11 +9,9 @@ from core.decorators import staff_required
 from django.db import IntegrityError
 import copy
 import json
-import base64
 from .forms import TagImportForm
 import openpyxl
 from datetime import datetime
-import re
 
 
 schema_user = {
@@ -103,13 +101,13 @@ schema_user = {
         },
     ]
 }
-
 schema_case = {
     "endpoint": "/caseadmin/cases/",
     "fields": [
         {
             "title": "Date Created",
             "key": "date_created",
+            "hide_in_table": True,
             "value_format": "datetime-local",
             "widget": {
                 "template": "w-datetime.html",
@@ -119,6 +117,7 @@ schema_case = {
         {
             "title": "Date Submitted",
             "key": "date_submitted",
+            "hide_in_table": True,
             "value_format": "datetime-local",
             "widget": {
                 "template": "w-datetime.html",
@@ -136,6 +135,7 @@ schema_case = {
         {
             "title": "Is Anonymous",
             "key": "is_anonymous",
+            "hide_in_table": True,
             "widget": {
                 "template": "w-checkbox.html",
             },
@@ -152,6 +152,7 @@ schema_case = {
         {
             "title": "Date Last Edited",
             "key": "date_last_edited",
+            "hide_in_table": True,
             "value_format": "datetime-local",
             "widget": {
                 "template": "w-datetime.html",
@@ -161,6 +162,7 @@ schema_case = {
         {
             "title": "User Last Edited",
             "key": "last_edited_user",
+            "hide_in_table": True,
             "widget": {
                 "template": "w-number.html",
             },
@@ -187,6 +189,7 @@ schema_case = {
             "key": "weight",
             "widget": {
                 "template": "w-number.html",
+                "step": "0.1",
             },
             "write": True,
         },
@@ -195,12 +198,14 @@ schema_case = {
             "key": "scr",
             "widget": {
                 "template": "w-number.html",
+                "step": "0.1",
             },
             "write": True,
         },
         {
             "title": "Age Type",
             "key": "age_type",
+            "hide_in_table": True,
             "widget": {
                 "template": "w-text.html",
             },
@@ -226,7 +231,7 @@ schema_case = {
             "title": "Description",
             "key": "description",
             "widget": {
-                "template": "w-text.html",
+                "template": "w-textarea.html",
             },
             "write": True,
         },
@@ -241,6 +246,7 @@ schema_case = {
         {
             "title": "Answer A",
             "key": "answer_a",
+            "hide_in_table": True,
             "widget": {
                 "template": "w-text.html",
             },
@@ -249,6 +255,7 @@ schema_case = {
         {
             "title": "Answer B",
             "key": "answer_b",
+            "hide_in_table": True,
             "widget": {
                 "template": "w-text.html",
             },
@@ -257,6 +264,7 @@ schema_case = {
         {
             "title": "Answer C",
             "key": "answer_c",
+            "hide_in_table": True,
             "widget": {
                 "template": "w-text.html",
             },
@@ -265,13 +273,14 @@ schema_case = {
         {
             "title": "Answer D",
             "key": "answer_d",
+            "hide_in_table": True,
             "widget": {
                 "template": "w-text.html",
             },
             "write": True,
         },
         {
-            "title": "Correct Answer",
+            "title": "Answer",
             "key": "answer",
             "widget": {
                 "template": "w-text.html",
@@ -282,12 +291,13 @@ schema_case = {
             "title": "Feedback",
             "key": "feedback",
             "widget": {
-                "template": "w-text.html",
+                "template": "w-textarea.html",
             },
             "write": True,
         },
     ],
 }
+
 
 schema_comment = {
     "endpoint": "/caseadmin/comments/",
@@ -340,6 +350,8 @@ def populate_data(schema, model):
             else:
                 d["value"] = vars(r).get(d.get("key", None), None)
             d["entity"] = r.id
+            if d["value"] is None:
+                d["value"] = ""
             row_data.append(d)
         data["entities"].append(row_data)
     return data
@@ -362,8 +374,8 @@ def patch_model(request, model, schema, entity_id):
                 try:
                     new_val = datetime.strptime(new_val, '%Y-%m-%dT%H:%M%S')
                 except:
-                    new_val = datetime.fromtimestamp(0)
-            elif model_type == "IntegerField" and new_val == "":
+                    new_val = None
+            elif model_type == "IntegerField" or model_type == "FloatField" and new_val == "":
                 new_val = 0
             try:
                 setattr(obj, key, new_val)
