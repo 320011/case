@@ -22,16 +22,19 @@ def create_new_case(request, case_study_id):
     medical_histories = MedicalHistory.objects.filter(case_study=case_study)
     medications = Medication.objects.filter(case_study=case_study)
     message = {"content": "", "type": ""}
+    # Check if the choice was in years format, if yes, integer division by 12.
+    if case_study.age_type == 'Y':
+        case_study.age = case_study.age // 12
     if request.method == "POST":
-        # print(request.POST)
+        # Fixes mutable error
+        request.POST = request.POST.copy()
         # obtain forms with fields populated from POST request
         case_study_form = CaseStudyForm(request.POST, instance=case_study)
-        # case_study_question_form = CaseStudyQuestionForm(request.POST) 
         case_study_tag_form = CaseStudyTagForm(request.POST)
         medical_history_form = MedicalHistoryForm(request.POST)
         medication_form = MedicationForm(request.POST)
 
-        # if user adds medical history 
+        # if user adds medical history
         if request.POST["submission_type"] == "medical_history":
             body = request.POST["body"]  # obtain medical history body
             if body:
@@ -114,8 +117,15 @@ def create_new_case(request, case_study_id):
                           })
 
         elif request.POST["submission_type"] == "save":
+            # Checking for the type on submission, if years, store the value as months
+            if request.POST['age_type'] == 'Y':
+                request.POST['age'] = int(request.POST['age']) * 12
             if case_study_form.is_valid():
                 case_study_form.save()
+                # When page is re rendered, the value from the database is taken, so if years, render the correct value
+                if request.POST['age_type'] == 'Y':
+                    request.POST['age'] = int(request.POST['age']) // 12
+                case_study_form = CaseStudyForm(request.POST, instance=case_study)
                 message["content"] = "Case Study Saved!"
                 message["type"] = "success"
                 return render(request, "create_new_case.html",
@@ -131,10 +141,14 @@ def create_new_case(request, case_study_id):
                                   "medication_form": medication_form,
                               })
         elif request.POST["submission_type"] == "submit":
+            if request.POST['age_type'] == 'Y':
+                request.POST['age'] = int(request.POST['age']) * 12
             if case_study_form.is_valid():
                 case_study_form.save()
                 case_study.date_submitted = timezone.now()
                 case_study.save()
+                if request.POST['age_type'] == 'Y':
+                    request.POST['age'] = int(request.POST['age']) // 12
                 case_study_form = CaseStudyForm(request.POST, instance=case_study)
                 return render(request, "create_new_case.html",
                               {
