@@ -12,6 +12,8 @@ import json
 import base64
 from .forms import TagImportForm
 import openpyxl
+from datetime import datetime
+import re
 
 
 schema_user = {
@@ -106,23 +108,25 @@ schema_case = {
     "endpoint": "/caseadmin/cases/",
     "fields": [
         {
-            "title": "date_created",
+            "title": "Date Created",
             "key": "date_created",
+            "value_format": "datetime-local",
             "widget": {
-                "template": "w-date.html",
+                "template": "w-datetime.html",
             },
             "write": True,
         },
         {
-            "title": "date_submitted",
+            "title": "Date Submitted",
             "key": "date_submitted",
+            "value_format": "datetime-local",
             "widget": {
-                "template": "w-date.html",
+                "template": "w-datetime.html",
             },
             "write": True,
         },
         {
-            "title": "is_submitted",
+            "title": "Is Submitted",
             "key": "is_submitted",
             "widget": {
                 "template": "w-checkbox.html",
@@ -130,7 +134,7 @@ schema_case = {
             "write": True,
         },
         {
-            "title": "is_anonymous",
+            "title": "Is Anonymous",
             "key": "is_anonymous",
             "widget": {
                 "template": "w-checkbox.html",
@@ -138,15 +142,7 @@ schema_case = {
             "write": True,
         },
         {
-            "title": "date_last_edited",
-            "key": "date_last_edited",
-            "widget": {
-                "template": "w-date.html",
-            },
-            "write": True,
-        },
-        {
-            "title": "created_by",
+            "title": "Author",
             "key": "created_by",
             "widget": {
                 "template": "w-number.html",
@@ -154,15 +150,24 @@ schema_case = {
             "write": True,
         },
         {
-            "title": "last_edited_user",
-            "key": "date_created",
+            "title": "Date Last Edited",
+            "key": "date_last_edited",
+            "value_format": "datetime-local",
+            "widget": {
+                "template": "w-datetime.html",
+            },
+            "write": True,
+        },
+        {
+            "title": "User Last Edited",
+            "key": "last_edited_user",
             "widget": {
                 "template": "w-number.html",
             },
             "write": True,
         },
         {
-            "title": "is_deleted",
+            "title": "Is Deleted",
             "key": "is_deleted",
             "widget": {
                 "template": "w-checkbox.html",
@@ -170,7 +175,7 @@ schema_case = {
             "write": True,
         },
         {
-            "title": "height",
+            "title": "Height",
             "key": "height",
             "widget": {
                 "template": "w-number.html",
@@ -178,7 +183,7 @@ schema_case = {
             "write": True,
         },
         {
-            "title": "weight",
+            "title": "Weight",
             "key": "weight",
             "widget": {
                 "template": "w-number.html",
@@ -186,7 +191,7 @@ schema_case = {
             "write": True,
         },
         {
-            "title": "scr",
+            "title": "Scr",
             "key": "scr",
             "widget": {
                 "template": "w-number.html",
@@ -194,7 +199,7 @@ schema_case = {
             "write": True,
         },
         {
-            "title": "age_type",
+            "title": "Age Type",
             "key": "age_type",
             "widget": {
                 "template": "w-text.html",
@@ -202,7 +207,7 @@ schema_case = {
             "write": True,
         },
         {
-            "title": "age",
+            "title": "Age",
             "key": "age",
             "widget": {
                 "template": "w-number.html",
@@ -210,7 +215,7 @@ schema_case = {
             "write": True,
         },
         {
-            "title": "sex",
+            "title": "Sex",
             "key": "sex",
             "widget": {
                 "template": "w-text.html",
@@ -218,7 +223,7 @@ schema_case = {
             "write": True,
         },
         {
-            "title": "description",
+            "title": "Description",
             "key": "description",
             "widget": {
                 "template": "w-text.html",
@@ -226,7 +231,7 @@ schema_case = {
             "write": True,
         },
         {
-            "title": "question",
+            "title": "Question",
             "key": "question",
             "widget": {
                 "template": "w-number.html",
@@ -234,7 +239,7 @@ schema_case = {
             "write": True,
         },
         {
-            "title": "answer_a",
+            "title": "Answer A",
             "key": "answer_a",
             "widget": {
                 "template": "w-text.html",
@@ -242,7 +247,7 @@ schema_case = {
             "write": True,
         },
         {
-            "title": "answer_b",
+            "title": "Answer B",
             "key": "answer_b",
             "widget": {
                 "template": "w-text.html",
@@ -250,7 +255,7 @@ schema_case = {
             "write": True,
         },
         {
-            "title": "answer_c",
+            "title": "Answer C",
             "key": "answer_c",
             "widget": {
                 "template": "w-text.html",
@@ -258,7 +263,7 @@ schema_case = {
             "write": True,
         },
         {
-            "title": "answer_d",
+            "title": "Answer D",
             "key": "answer_d",
             "widget": {
                 "template": "w-text.html",
@@ -266,7 +271,7 @@ schema_case = {
             "write": True,
         },
         {
-            "title": "answer",
+            "title": "Correct Answer",
             "key": "answer",
             "widget": {
                 "template": "w-text.html",
@@ -274,7 +279,7 @@ schema_case = {
             "write": True,
         },
         {
-            "title": "feedback",
+            "title": "Feedback",
             "key": "feedback",
             "widget": {
                 "template": "w-text.html",
@@ -305,6 +310,12 @@ schema_tag = {
 }
 
 
+value_formatters = {
+    "": lambda val: val,
+    "datetime-local": lambda val: val.strftime("%Y-%m-%dT%H:%M") if val else val,
+}
+
+
 def populate_data(schema, model):
     records = model.objects.all()
     data = {
@@ -317,10 +328,17 @@ def populate_data(schema, model):
         # add each field to the data
         for f in schema["fields"]:
             d = copy.deepcopy(f)
-            if d.get("type", "") != "action":  # actions dont have keys
-                d["value"] = vars(r).get(d.get("key", None), None)
-            else:
+            if d.get("type", "") == "action":  # actions dont have keys
                 d["value"] = f["widget"]["text"]
+            if d.get("value_format", None):  # format the value if we have to
+                formatter = value_formatters.get(d.get("value_format", ""), None)
+                val = vars(r).get(d.get("key", None), None)
+                if formatter:
+                    d["value"] = formatter(val)
+                else:
+                    d["value"] = val
+            else:
+                d["value"] = vars(r).get(d.get("key", None), None)
             d["entity"] = r.id
             row_data.append(d)
         data["entities"].append(row_data)
@@ -340,15 +358,19 @@ def patch_model(request, model, schema, entity_id):
             model_type = model._meta.get_field(key).get_internal_type()
             if model_type == "ForeignKey":
                 pass
-            elif model_type == "DateTimeField":
-                pass
-            else:
+            if model_type == "DateTimeField":
                 try:
-                    setattr(obj, key, new_val)
-                except Exception as e:
-                    setattr(obj, key, default_val)
-                    print("Failed to update field:", key+": Reverting to original value:", e)
-    obj.save()  # save the entity to the db
+                    new_val = datetime.strptime(new_val, '%Y-%m-%dT%H:%M%S')
+                except:
+                    new_val = datetime.fromtimestamp(0)
+            elif model_type == "IntegerField" and new_val == "":
+                new_val = 0
+            try:
+                setattr(obj, key, new_val)
+            except Exception as e:
+                setattr(obj, key, default_val)
+                print("Failed to update field:", key+": Reverting to original value:", e)
+    obj.save()
     return JsonResponse({
         "success": True,
     })

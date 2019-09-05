@@ -11,27 +11,24 @@ function getCookie(name) {
   return null;
 }
 
-function toBase64(f) {
-  return new Promise((resolve, reject) => {
-    let reader = new FileReader();
-    reader.readAsDataURL(f);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
-  });
-}
-
 function admin_updateEntity(endpoint, entity) {
   // construct a user model with the updated data
   let inps = document.getElementById(`admin-table-${entity}`).getElementsByTagName("input");
   let updates = {};
   for (let i = 0; i < inps.length; i++) {
     let inp = inps[i];
+    console.log("inp.name=" + inp.name)
+    console.log("inp.value=" + inp.value)
     if (inp.type === "checkbox") {
       updates[inp.name] = inp.checked;
+    } else if (inp.type === "datetime-local") {
+      updates[inp.name] = inp.value.toString();
     } else {
       updates[inp.name] = inp.value;
     }
   }
+
+  alert("sending updates: " + JSON.stringify(updates))
 
   // ajax the updated data to the server
   fetch(endpoint + entity, {
