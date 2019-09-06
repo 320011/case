@@ -23,8 +23,9 @@ def create_new_case(request, case_study_id):
     medications = Medication.objects.filter(case_study=case_study)
     message = {"content": "", "type": ""}
     # Check if the choice was in years format, if yes, integer division by 12.
-    if case_study.age_type == 'Y':
-        case_study.age = case_study.age // 12
+    if case_study.age:
+        if case_study.age_type == 'Y':
+            case_study.age = case_study.age // 12
     if request.method == "POST":
         # Fixes mutable error
         request.POST = request.POST.copy()
