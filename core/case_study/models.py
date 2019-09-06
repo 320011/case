@@ -1,8 +1,10 @@
-from django.db import models
 # from django.contrib.auth.models import User
 from datetime import datetime
-from accounts.models import User
+
+from django.db import models
 from num2words import num2words
+
+from accounts.models import User
 
 
 # blank=True means that the field is not required
@@ -86,13 +88,15 @@ class CaseStudy(models.Model):
     )
     feedback = models.TextField(null=True, blank=True)
 
-    def get_age_in_words(self):
-        return num2words(self.age)
+    def get_age_string(self):
+        if self.age_type == 'Y':
+            return str(self.age // 12) + '-yo'
+        return str(self.age) + '-mo'
 
-    def get_age_type(self):
-        if self.age_type == 'M':
-            return 'mo'
-        return 'yo'
+    def get_age_in_words(self):
+        if self.age_type == 'Y':
+            return num2words(self.age // 12)
+        return num2words(self.age)
 
     def get_sex(self):
         if self.sex == 'F':
