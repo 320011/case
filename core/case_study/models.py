@@ -13,7 +13,7 @@ class Question(models.Model):
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=60)
+    name = models.CharField(max_length=60, blank=False, unique=True, null=False)
 
     def __str__(self):
         return self.name
