@@ -21,6 +21,7 @@
                     </div>
                 </a>
             </div>
+            {% if user.is_staff %}
             <div class="action-container">
                 <a class="action-link" href="{% url "case_admin:default" %}">
                     <div class="action-card">
@@ -35,6 +36,7 @@
                     </div>
                 </a>
             </div>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

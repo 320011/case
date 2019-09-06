@@ -1,11 +1,39 @@
 .admin-entity-row {
   cursor: pointer;
+  margin-bottom: 0;
 }
 
 //.admin-table-header {
 //  border: 1px solid rgba(0,0,0, 0.1);
 //  padding: 0 1rem 0 1rem;
 //}
+
+#admin-table-toolbar {
+  display: flex;
+
+  .form-control {
+    margin-right: 1rem;
+    min-width: 6rem;
+  }
+
+  button {
+    color: white;
+
+    &:active {
+      background-color: #235d87;
+    }
+
+    &:focus {
+      background-color: #007BFF;
+    }
+  }
+}
+
+.icon-add {
+  &:before {
+    content: "Add";
+  }
+}
 
 .modal-body {
   .admin-table {

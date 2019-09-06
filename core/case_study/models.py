@@ -14,14 +14,13 @@ class Question(models.Model):
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=60)
+    name = models.CharField(max_length=60, blank=False, unique=True, null=False)
 
     def __str__(self):
         return self.name
 
 
 class CaseStudy(models.Model):
-    # Years Choices
     YEARS = "Y"
     MONTHS = "M"
     AGE_CHOICES = [
@@ -63,8 +62,7 @@ class CaseStudy(models.Model):
     age_type = models.CharField(
         max_length=1,
         choices=AGE_CHOICES,
-        default=YEARS,
-        blank=True
+        default=YEARS
     )
     age = models.IntegerField(null=True, blank=True)
     sex = models.CharField(
