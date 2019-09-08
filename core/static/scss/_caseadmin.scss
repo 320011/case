@@ -122,3 +122,11 @@
     display: inline-block;
   }
 }
+
+//.select2.select2-container.select2-container--default.select2-container--below {
+//  min-width: 200px;
+//}
+
+.select2-dropdown {
+  z-index: 999999999;
+}

@@ -1,0 +1,18 @@
+<div>
+    <select class=""
+            name="{{ field.key }}"
+            id="admin-inp-{{ field.key }}-{{ field.entity }}"
+            {% if not field.write %}disabled{% endif %}
+            required
+            multiple="multiple">
+
+    </select>
+    <script>
+        $(document).ready(function() {
+            $("#admin-inp-{{ field.key }}-{{ field.entity }}").select2({
+                data: {{ field.options_json|safe }},
+                width: "resolve",
+            });
+        });
+    </script>
+</div>

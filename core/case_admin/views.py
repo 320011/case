@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.sessions.models import Session
 from accounts.models import User
-from case_study.models import CaseStudy, Tag, Question
+from case_study.models import CaseStudy, Tag, Question, TagRelationship
 from core.decorators import staff_required
 from django.db import IntegrityError
 import copy
@@ -12,6 +12,7 @@ import json
 from .forms import TagImportForm
 import openpyxl
 from datetime import datetime
+import json
 
 
 schema_user = {
@@ -242,6 +243,25 @@ schema_case = {
             "write": True,
         },
         {
+            "title": "Tags",
+            "type": "foreignkey-multiple",
+            "model": {
+                "model": Tag,
+                "key": "name",
+            },
+            "relation": {
+                "model": TagRelationship,
+                "model_fkey": "tag",
+                "related_fkey": "case_study",
+            },
+            "key": "tags",
+            "widget": {
+                "template": "w-foreignkey-collection.html",
+                "multiple": True,
+            },
+            "write": True,
+        },
+        {
             "title": "Question",
             "type": "foreignkey",
             "model": Question,
@@ -379,11 +399,25 @@ def populate_data(schema, model):
                             "selected": opt == d["value"],
                         })
                     d["options"] = opts
+                    d["options_json"] = json.dumps(opts)
                     d["selected"] = getattr(r, key)
                     try:
                         d["value"] = getattr(r, key + "_id")
                     except:
                         d["value"] = d["selected"]
+
+            # handle foreign key collections
+            elif d.get("type", "") == "foreignkey-multiple":
+                m = d.get("model", None)
+                if m:
+                    opts = []
+                    for opt in m["model"].objects.all():
+                        opts.append({
+                            "id": opt.id,
+                            "text": str(opt),
+                        })
+                    d["options"] = opts
+                    d["options_json"] = json.dumps(opts)
 
         data["entities"].append(row_data)
     return data
@@ -395,7 +429,27 @@ def patch_model(request, model, schema, entity_id):
     # only apply updates to fields that are writable in the schema
     obj = get_object_or_404(model, pk=entity_id)  # get the entity
     for field in schema["fields"]:
-        if field.get("type", "") != "action":  # ignore action fields
+        if field.get("type", "") == "foreignkey-multiple":
+            key = field["key"]
+            fk_model = field.get("model", None)
+            fk_relation = field.get("relation", None)
+            selected_fks = updates.get(key, None)
+            # delete all current relations
+            kwargs = {fk_relation["related_fkey"]: entity_id}
+            fk_relation["model"].objects.filter(**kwargs).delete()
+            # create new relations based on the selected fks
+            new_relations = []
+            for sfk in selected_fks:
+                entity_relation = model.objects.get(id=entity_id)
+                entity_model = fk_model["model"].objects.get(id=int(sfk))
+                kwargs = {
+                    fk_relation["model_fkey"]: entity_model,
+                    fk_relation["related_fkey"]: entity_relation,
+                }
+                new_rel = fk_relation["model"](**kwargs)
+                new_relations.append(new_rel)
+                fk_relation["model"].objects.bulk_create(new_relations)
+        elif field.get("type", "") != "action":  # ignore action fields
             key = field["key"]
             default_val = getattr(obj, key, None)  # default to what the entity already had, then to None
             new_val = updates.get(key, default_val)
@@ -528,6 +582,28 @@ def view_admin_user(request):
     return render(request, "case-admin.html", c)
 
 
+def case_action_add_tag(request, usr):
+
+    return JsonResponse({
+        "success": False,
+        "message": "This user does not currently have a log in session.",
+    })
+
+
+def case_action(request, case_id):
+    # get all the updates the user has requested
+    case = get_object_or_404(CaseStudy, pk=case_id)  # get the user
+    data = json.loads(request.body)
+    action = data["action"]
+    if action == "ADD_TAG":
+        return case_action_add_tag(request, case)
+    else:
+        return JsonResponse({
+            "success": False,
+            "message": "Unknown action: " + action,
+        })
+
+
 @staff_required
 def api_admin_case(request, case_id):
     if request.method == "PATCH":
@@ -535,7 +611,7 @@ def api_admin_case(request, case_id):
     elif request.method == "DELETE":
         return delete_model_soft(request, CaseStudy, case_id)
     elif False and request.method == "PUT":  # use PUT for actions
-        return user_action(request, case_id)
+        return case_action(request, case_id)
     else:
         return JsonResponse({
             "success": False,

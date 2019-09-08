@@ -29,7 +29,15 @@ function admin_updateEntity(endpoint, entity) {
   let sels = document.getElementById(`admin-table-${entity}`).getElementsByTagName("select");
   for (let i = 0; i < sels.length; i++) {
     let sel = sels[i];
-    updates[sel.name] = sel.value;
+    if (sel.multiple) {
+      updates[sel.name] = [];
+      for (let j = 0; j < sel.selectedOptions.length; j++) {
+        updates[sel.name].push(sel.selectedOptions[j].value);
+      }
+      console.log(updates[sel.name])
+    } else {
+      updates[sel.name] = sel.value;
+    }
   }
 
   // ajax the updated data to the server
