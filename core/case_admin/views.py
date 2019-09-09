@@ -186,7 +186,7 @@ schema_case = {
             "write": True,
         },
         {
-            "title": "Height",
+            "title": "Height (cm)",
             "key": "height",
             "widget": {
                 "template": "w-number.html",
@@ -194,7 +194,7 @@ schema_case = {
             "write": True,
         },
         {
-            "title": "Weight",
+            "title": "Weight (kg)",
             "key": "weight",
             "widget": {
                 "template": "w-number.html",
@@ -203,7 +203,7 @@ schema_case = {
             "write": True,
         },
         {
-            "title": "Scr",
+            "title": "Scr (μmol/L)",
             "key": "scr",
             "widget": {
                 "template": "w-number.html",
@@ -212,7 +212,7 @@ schema_case = {
             "write": True,
         },
         {
-            "title": "Age Type",
+            "title": "Age Display Type",
             "type": "choices",
             "key": "age_type",
             "hide_in_table": True,
