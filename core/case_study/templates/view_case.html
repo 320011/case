@@ -17,26 +17,27 @@
   <style>
     @media only screen and (max-width: 1026px) {
       #details {
-        display: none;
+        width: 100%
       }
 
       #main {
-        width: 100%;
-        margin-left: 0;
+        margin-left: 0 !important;
       }
     }
+
     #details {
       flex: 1;
       align-self: flex-start;
     }
+
     #main {
       flex: 2;
       margin-left: 10px;
     }
   </style>
 
-  <div class="row">
-    <div class="card col-3" id="details">
+  <div class="row" id="row-container">
+    <div class="card col-3 mb-3" id="details">
       <div class="card-body">
         Case Details: <br>
         Author: Haolin Wu <br>
@@ -74,4 +75,23 @@
       {{ history }}
     {% endfor %}
   </div>
+
+  <script>
+    $(document).ready(function () {
+      if (window.innerWidth < 1026) {
+        $('#row-container').removeClass('row');
+        $('#details').removeClass('col-3');
+      }
+    });
+
+    $(window).resize(function () {
+      if (window.innerWidth < 1026) {
+        $('#row-container').removeClass('row');
+        $('#details').removeClass('col-3');
+      } else {
+        $('#row-container').addClass('row');
+        $('#details').addClass('col-3');
+      }
+    });
+  </script>
 {% endblock %}
