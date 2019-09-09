@@ -199,11 +199,13 @@ def create_new_case(request, case_study_id):
 def view_case(request, case_study_id):
     case_study = CaseStudy.objects.get(pk=case_study_id)
     mhx = MedicalHistory.objects.filter(case_study=case_study)
+    medications = Medication.objects.filter(case_study=case_study)
     tags = TagRelationship.objects.filter(case_study=case_study)
     print(mhx)
     c = {
         "case": case_study,
         "mhx": mhx,
+        "medications": medications,
         "tags": tags
     }
     return render(request, "view_case.html", c)
