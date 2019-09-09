@@ -39,42 +39,57 @@
   <div class="row" id="row-container">
     <div class="card col-3 mb-3" id="details">
       <div class="card-body">
-        Case Details: <br>
-        Author: Haolin Wu <br>
-        Created: <br><br>
-
-        Case Actions: <br>
+        <h5 class="mb-1"><strong>Details</strong></h5>
+        <div>Average Score:</div>
+        {% if user.is_staff and not case.is_anonymous %}
+          <div>Author: {{ case.created_by }}</div>
+        {% endif %}
+        <div>Created: {{ case.date_created|date:"M d, Y" }}</div>
+      </div>
+      <div class="card-body border-top">
+        <h5 class="mb-1"><strong>Actions</strong></h5>
         Export <br>
-        Report <br>
+        Report Case Study <br>
+        <div class="float-right">
+          <a href="#" class="btn btn-primary btn-sm">Edit</a>
+          <a href="#" class="btn btn-danger btn-sm">Delete</a>
+        </div>
       </div>
     </div>
     <div class="card col" id="main">
       <div class="card-body">
-        Case {{ case.id }} <br><br><br>
-        Case {{ case.id }} <br><br><br>
-        Case {{ case.id }} <br><br><br>
-        Case {{ case.id }} <br><br><br>
-        Case {{ case.id }} <br><br><br>
-        Case {{ case.id }} <br><br><br>
-        Case {{ case.id }} <br><br><br>
-        Case {{ case.id }} <br><br><br>
-        Case {{ case.id }} <br><br><br>
-        Case {{ case.id }} <br><br><br>
-        Case {{ case.id }} <br><br><br>
-        Case {{ case.id }} <br><br><br>
+        <div>
+          <h5 class="text-center"><strong>Case {{ case.id }}</strong></h5>
+          Description:
+          <div class="card mt-2 mb-3 bg-light">
+            <div class="card-body">
+              {{ case.get_age_in_words|an|title }} {{ case.get_age_string }} {{ case.get_sex }} {{ case.get_optionals }} presents to your
+              pharmacy {{ case.description }}
+            </div>
+          </div>
+
+        </div>
+
+        MHx:
+        <ul style="display: inherit; list-style-type: inherit">
+          {% for history in mhx %}
+            <li>{{ history }}</li>
+          {% endfor %}
+        </ul>
+
+        Medication:
+        <ul style="display: inherit; list-style-type: inherit">
+          {% for medication in medications %}
+            <li>{{ medication }}</li>
+          {% endfor %}
+        </ul>
+
 
       </div>
     </div>
   </div>
-  {{ case.get_age_in_words|an|title }} {{ case.get_age_string }} {{ case.get_sex }} presents to your
-  pharmacy {{ case.description }}
+
   <br>
-  <div>
-    MHx:
-    {% for history in mhx %}
-      {{ history }}
-    {% endfor %}
-  </div>
 
   <script>
     $(document).ready(function () {
