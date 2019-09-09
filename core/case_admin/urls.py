@@ -10,6 +10,7 @@ urlpatterns = [
     path("cases/", case.view_admin_case, name='cases'),
     path("cases/<int:case_id>", case.api_admin_case, name='api_cases'),
     path("questions/", question.view_admin_question, name='questions'),
+    path("questions/import", question.api_admin_question_import, name='tquestion_import'),
     path("questions/<int:question_id>", question.api_admin_question, name='api_questions'),
     #path("comments/", views.view_admin_commment, name='comments'),
     path("tags/", tag.view_admin_tag, name='tags'),
