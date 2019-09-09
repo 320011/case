@@ -20,7 +20,6 @@ class Tag(models.Model):
 
 
 class CaseStudy(models.Model):
-    # Years Choices
     YEARS = "Y"
     MONTHS = "M"
     AGE_CHOICES = [
@@ -61,8 +60,7 @@ class CaseStudy(models.Model):
     age_type = models.CharField(
         max_length=1,
         choices=AGE_CHOICES,
-        default=YEARS,
-        blank=True
+        default=YEARS
     )
     age = models.IntegerField(null=True, blank=True)
     sex = models.CharField(

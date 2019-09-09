@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
                 ('height', models.IntegerField(blank=True, null=True)),
                 ('weight', models.FloatField(blank=True, null=True)),
                 ('scr', models.FloatField(blank=True, null=True)),
-                ('age_type', models.CharField(blank=True, choices=[('Y', 'Years'), ('M', 'Months')], default='Y', max_length=1)),
+                ('age_type', models.CharField(choices=[('Y', 'Years'), ('M', 'Months')], default='Y', max_length=1)),
                 ('age', models.IntegerField(blank=True, null=True)),
                 ('sex', models.CharField(blank=True, choices=[('M', 'Male'), ('F', 'Female')], default='M', max_length=1)),
                 ('description', models.TextField(blank=True, null=True)),

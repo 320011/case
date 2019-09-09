@@ -46,7 +46,6 @@ class CaseStudyForm(ModelForm):
                 f.widget.attrs["class"] = "form-control"
 
     def clean(self):
-        print(self.cleaned_data)
         is_submitted = self.cleaned_data.get("is_submitted")
         if is_submitted:
             age = self.cleaned_data.get("age")
@@ -76,13 +75,11 @@ class CaseStudyForm(ModelForm):
                     not confirm_patient_anonymous:
                 errordict = {}
                 for item in check_fields:
-                    print(self.cleaned_data[item])
                     if not self.cleaned_data[item]:
                         if item == "confirm_patient_anonymous":
                             errordict[item] = "Please confirm that you have not revealed any identifying information for the case study patient."
                         else:
                             errordict[item] = "This is not a valid " + str(item).replace("_", " ")
-                print(errordict)
                 raise forms.ValidationError(errordict)
 
 
