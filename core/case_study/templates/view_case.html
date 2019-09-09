@@ -63,26 +63,41 @@
           Description:
           <div class="card mt-2 mb-3 bg-light">
             <div class="card-body">
-              {{ case.get_age_in_words|an|title }} {{ case.get_age_string }} {{ case.get_sex }} {{ case.get_optionals }} presents to your
+              {{ case.get_age_in_words|an|title }} {{ case.get_age_string }} {{ case.get_sex }} {{ case.get_optionals }}
+              presents to your
               pharmacy {{ case.description }}
             </div>
           </div>
-
         </div>
-
         MHx:
         <ul style="display: inherit; list-style-type: inherit">
           {% for history in mhx %}
             <li>{{ history }}</li>
           {% endfor %}
         </ul>
-
         Medication:
         <ul style="display: inherit; list-style-type: inherit">
           {% for medication in medications %}
             <li>{{ medication }}</li>
           {% endfor %}
         </ul>
+        Question:
+        <div class="card mt-2 mb-3">
+          <div class="card-body">
+            <div><strong>{{ case.question }}</strong></div>
+          </div>
+          <div class="card-body pt-0" id="questions">
+            <div class="list-group mb-3" id="list-tab" role="tablist">
+              <a class="list-group-item" onclick="handleClick(this);" id="A" disabled>A. {{ case.answer_a }}</a>
+              <a class="list-group-item" onclick="handleClick(this);" id="B">B. {{ case.answer_b }}</a>
+              <a class="list-group-item" onclick="handleClick(this);" id="C">C. {{ case.answer_c }}</a>
+              <a class="list-group-item" onclick="handleClick(this);" id="D">D. {{ case.answer_c }}</a>
+            </div>
+            <a class="btn btn-primary float-right" style="color: #FFF">Submit Response</a>
+          </div>
+          <div class="card-body pt-0" id="feedback">
+          </div>
+        </div>
 
 
       </div>
@@ -108,5 +123,27 @@
         $('#details').addClass('col-3');
       }
     });
+
+    function handleClick(e) {
+      let a = document.getElementById('A');
+      let b = document.getElementById('B');
+      let c = document.getElementById('C');
+      let d = document.getElementById('D');
+      if (a.classList.contains('list-group-item-warning')) {
+        a.classList.remove('list-group-item-warning');
+      }
+      if (b.classList.contains('list-group-item-warning')) {
+        b.classList.remove('list-group-item-warning');
+      }
+      if (c.classList.contains('list-group-item-warning')) {
+        c.classList.remove('list-group-item-warning');
+      }
+      if (d.classList.contains('list-group-item-warning')) {
+        d.classList.remove('list-group-item-warning');
+      }
+      e.classList.add('list-group-item-warning');
+      e.classList.add('clicked');
+
+    }
   </script>
 {% endblock %}
