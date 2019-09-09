@@ -1,4 +1,4 @@
-<div>
+<div id="admin-inp-{{ field.key }}-{{ field.entity }}-select-parent">
     <select class="admin-input admin-input-select form-control"
             name="{{ field.key }}"
             id="admin-inp-{{ field.key }}-{{ field.entity }}"
@@ -11,7 +11,12 @@
     </select>
     <script>
         $(document).ready(function() {
-            $("#admin-inp-{{ field.key }}-{{ field.entity }}").select2();
+            $("#admin-inp-{{ field.key }}-{{ field.entity }}").select2({
+                dropdownParent: $("#admin-inp-{{ field.key }}-{{ field.entity }}-select-parent"),
+                {% if field.widget.tags %}
+                    tags: true,
+                {% endif %}
+            });
         });
     </script>
 </div>

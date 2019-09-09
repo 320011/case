@@ -1,4 +1,4 @@
-<div>
+<div id="admin-inp-{{ field.key }}-{{ field.entity }}-select-parent">
     <select class="admin-input admin-input-select form-control"
             name="{{ field.key }}"
             id="admin-inp-{{ field.key }}-{{ field.entity }}"
@@ -12,7 +12,7 @@
     <script>
         $(document).ready(function() {
             $("#admin-inp-{{ field.key }}-{{ field.entity }}").select2().select2({
-                dropdownParent: $("#entity-edit-modal-{{ modal_entity_id }}")
+                dropdownParent: $("#admin-inp-{{ field.key }}-{{ field.entity }}-select-parent"),
             });
         });
     </script>

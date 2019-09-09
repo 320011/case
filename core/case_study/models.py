@@ -99,7 +99,13 @@ class MedicalHistory(models.Model):
     body = models.TextField(null=True, blank=True)
     case_study = models.ForeignKey(CaseStudy, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.body
+
 
 class Medication(models.Model):
     name = models.TextField(null=True, blank=True)
     case_study = models.ForeignKey(CaseStudy, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name

@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.sessions.models import Session
 from accounts.models import User
-from case_study.models import CaseStudy, Tag, Question, TagRelationship
+from case_study.models import CaseStudy, Tag, Question, TagRelationship, MedicalHistory, Medication
 from core.decorators import staff_required
 from django.db import IntegrityError
 import copy
@@ -14,6 +14,7 @@ import openpyxl
 from datetime import datetime
 import json
 from django.db import transaction
+from django.core.exceptions import FieldDoesNotExist
 
 schema_user = {
     "endpoint": "/caseadmin/users/",
@@ -102,6 +103,7 @@ schema_user = {
         },
     ]
 }
+
 schema_case = {
     "endpoint": "/caseadmin/cases/",
     "fields": [
@@ -219,7 +221,7 @@ schema_case = {
             "write": True,
         },
         {
-            "title": "Age",
+            "title": "Age (months)",
             "key": "age",
             "widget": {
                 "template": "w-number.html",
@@ -243,8 +245,40 @@ schema_case = {
             "write": True,
         },
         {
+            "title": "Medical History",
+            "type": "foreignkey-multiple-custom",
+            "model": {
+                "model": MedicalHistory,
+                "key": "body",
+                "related_fkey": "case_study",
+            },
+            "key": "mhx",
+            "widget": {
+                "template": "w-foreignkey-collection.html",
+                "multiple": True,
+                "tags": True
+            },
+            "write": True,
+        },
+        {
+            "title": "Medication",
+            "type": "foreignkey-multiple-custom",
+            "model": {
+                "model": Medication,
+                "key": "name",
+                "related_fkey": "case_study",
+            },
+            "key": "medication",
+            "widget": {
+                "template": "w-foreignkey-collection.html",
+                "multiple": True,
+                "tags": True
+            },
+            "write": True,
+        },
+        {
             "title": "Tags",
-            "type": "foreignkey-multiple",
+            "type": "foreignkey-multiple-relation",
             "model": {
                 "model": Tag,
                 "key": "name",
@@ -412,8 +446,26 @@ def populate_data(schema, model):
                             "selected": d["selected"] == "null"
                         })
                     d["options"] = opts
-            # handle foreign key collections
-            elif d.get("type", "") == "foreignkey-multiple":
+            # handle foreign key collections with cutom user input (select2.tags = true)
+            elif d.get("type", "") == "foreignkey-multiple-custom":
+                # the model is the actual data we are interested in linking to our entity
+                fk_mod = d.get("model", None)
+                # the relation is the model that links us
+                if fk_mod:
+                    # get all the objects belonging to this entity
+                    kwargs = {fk_mod.get("related_fkey", ""): int(r.id)}
+                    selected_models = fk_mod["model"].objects.filter(**kwargs)
+                    # get all the models these relations point to
+                    opts = []
+                    for s in selected_models:
+                        opts.append({
+                            "id": str(s),
+                            "name": str(s),
+                            "selected": True,
+                        })
+                    d["options"] = opts
+            # handle foreign key collections when they relate two models together with a thrid
+            elif d.get("type", "") == "foreignkey-multiple-relation":
                 # the model is the actual data we are interested in linking to our entity
                 fk_mod = d.get("model", None)
                 # the relation is the model that links us
@@ -452,7 +504,25 @@ def patch_model(request, model, schema, entity_id):
     # only apply updates to fields that are writable in the schema
     obj = get_object_or_404(model, pk=entity_id)  # get the entity
     for field in schema["fields"]:
-        if field.get("type", "") == "foreignkey-multiple":
+        if field.get("type", "") == "foreignkey-multiple-custom":
+            key = field["key"]
+            fk_model = field.get("model", None)
+            selected_fks = updates.get(key, None)
+            # delete all current relations
+            kwargs = {fk_model["related_fkey"]: entity_id}
+            fk_model["model"].objects.filter(**kwargs).delete()
+            # create new relations based on the selected fks
+            new_models = []
+            for sfk in selected_fks:
+                entity_model = model.objects.get(id=entity_id)
+                kwargs = {
+                    fk_model["key"]: str(sfk),
+                    fk_model["related_fkey"]: entity_model,
+                }
+                new_model = fk_model["model"](**kwargs)
+                new_models.append(new_model)
+            fk_model["model"].objects.bulk_create(new_models)
+        elif field.get("type", "") == "foreignkey-multiple-relation":
             key = field["key"]
             fk_model = field.get("model", None)
             fk_relation = field.get("relation", None)
@@ -473,10 +543,18 @@ def patch_model(request, model, schema, entity_id):
                 new_relations.append(new_rel)
             fk_relation["model"].objects.bulk_create(new_relations)
         elif field.get("type", "") != "action":  # ignore action fields
-            key = field["key"]
-            default_val = getattr(obj, key, None)  # default to what the entity already had, then to None
+            key = field.get("key")
+            if key:
+                # default to what the entity already had, then to None
+                default_val = getattr(obj, key, None)
+                try:
+                    model_type = model._meta.get_field(key).get_internal_type()
+                except FieldDoesNotExist:
+                    model_type = None
+            else:
+                default_val = None
+                model_type = None
             new_val = updates.get(key, default_val)
-            model_type = model._meta.get_field(key).get_internal_type()
             if model_type == "ForeignKey":
                 if new_val == "null":
                     new_val = None
@@ -497,8 +575,9 @@ def patch_model(request, model, schema, entity_id):
             try:
                 setattr(obj, key, new_val)
             except Exception as e:
-                setattr(obj, key, default_val)
-                print("Failed to update field:", key+": Reverting to original value:", e)
+                if key:
+                    setattr(obj, key, default_val)
+                    print("Failed to update field:", key+": Reverting to original value:", e)
     obj.save()
     return JsonResponse({
         "success": True,
