@@ -103,6 +103,37 @@ class CaseStudy(models.Model):
             return 'female'
         return 'male'
 
+    def get_optionals(self):
+        if self.height:
+            height = str(self.height) + 'cm'
+        else:
+            height = None
+        if self.weight:
+            weight = str(self.weight) + 'kg'
+        else:
+            weight = None
+        if self.scr:
+            scr = str(self.scr) + 'μmol/L'
+        else:
+            scr = None
+        optional_array = [height, weight, scr]
+        optionals = ''
+        if not height and not weight and not scr:
+            return optionals
+        else:
+            output = '['
+            for optional in optional_array:
+                if optional:
+                    output += optional + '/'
+            if output.endswith('/'):
+                output = output[:-1]
+            output += ']'
+            optionals = output
+        return optionals
+
+
+
+
 
 class TagRelationship(models.Model):
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
@@ -120,3 +151,6 @@ class MedicalHistory(models.Model):
 class Medication(models.Model):
     name = models.TextField(null=True, blank=True)
     case_study = models.ForeignKey(CaseStudy, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
