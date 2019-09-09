@@ -63,7 +63,7 @@
                                     <input type="checkbox" disabled {% if field.value %}checked{% endif %}>
                                     {{ field.value }}
                                 {% elif field.widget.template == "w-select.html" %}
-                                    {{ field.selected }}
+                                    {{ field.value }}
                                 {% else %}
                                     {{ field.value }}
                                 {% endif %}

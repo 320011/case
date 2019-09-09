@@ -13,7 +13,7 @@ from .forms import TagImportForm
 import openpyxl
 from datetime import datetime
 import json
-
+from django.db import transaction
 
 schema_user = {
     "endpoint": "/caseadmin/users/",
@@ -368,14 +368,12 @@ def populate_data(schema, model):
         for f in schema["fields"]:
             d = copy.deepcopy(f)
             key = d.get("key", None)
-            record = vars(r)
             d["entity"] = r.id
-            d["value"] = record.get(key, None)
+            d["value"] = vars(r).get(key, None)
 
             # send empty string instead of python None
             if d["value"] is None:
                 d["value"] = ""
-            row_data.append(d)
 
             # format the value if required
             if d.get("value_format", None):
@@ -386,43 +384,68 @@ def populate_data(schema, model):
             # handle action fields
             if d.get("type", "") == "action":
                 d["value"] = f["widget"]["text"]
-
             # handle foreign key fields
             elif d.get("type", "") == "foreignkey":
+                # get the selected entity
+                d["selected"] = vars(r).get(key + "_id", "null")
+                # get the foreign key's model
                 m = d.get("model", None)
                 if m:
+                    # add all the possible options to the dropdown and mark the selected one
                     opts = []
+                    selected = None
                     for opt in m.objects.all():
+                        is_sel = d["selected"] == opt.id
                         opts.append({
                             "id": opt.id,
                             "name": str(opt),
-                            "selected": opt == d["value"],
+                            "selected": is_sel,
+                        })
+                        if is_sel:
+                            # save value here while we have more data than just ID
+                            d["value"] = str(opt)
+                    # if this field allows null add a null option to the top of the dropdown
+                    if f["allow_null"]:
+                        opts.insert(0, {
+                            "id": "null",
+                            "name": "----------",
+                            "selected": d["selected"] == "null"
                         })
                     d["options"] = opts
-                    d["options_json"] = json.dumps(opts)
-                    d["selected"] = getattr(r, key)
-                    try:
-                        d["value"] = getattr(r, key + "_id")
-                    except:
-                        d["value"] = d["selected"]
-
             # handle foreign key collections
             elif d.get("type", "") == "foreignkey-multiple":
-                m = d.get("model", None)
-                if m:
+                # the model is the actual data we are interested in linking to our entity
+                fk_mod = d.get("model", None)
+                # the relation is the model that links us
+                fk_rel = d.get("relation", None)
+                if fk_mod and fk_rel:
+                    # get all the relation objects belonging to this entity
+                    kwargs = {fk_rel.get("related_fkey", ""): int(r.id)}
+                    selected_relations = fk_rel["model"].objects.filter(**kwargs)
+                    # get all the models these relations point to
+                    selected_models = []
+                    for s in selected_relations:
+                        selected_models.append(vars(s).get(fk_rel.get("model_fkey", "") + "_id"))
+                    # add all the possible options to the dropdown and mark the selected ones
                     opts = []
-                    for opt in m["model"].objects.all():
+                    for opt in fk_mod["model"].objects.all():
+                        is_selected = False
+                        for sel_id in selected_models:
+                            if sel_id == opt.id:
+                                is_selected = True
+                                break
                         opts.append({
                             "id": opt.id,
-                            "text": str(opt),
+                            "name": str(opt),
+                            "selected": is_selected
                         })
                     d["options"] = opts
-                    d["options_json"] = json.dumps(opts)
-
+            row_data.append(d)
         data["entities"].append(row_data)
     return data
 
 
+@transaction.atomic
 def patch_model(request, model, schema, entity_id):
     # get all the updates the client has requested
     updates = json.loads(request.body)
@@ -448,7 +471,7 @@ def patch_model(request, model, schema, entity_id):
                 }
                 new_rel = fk_relation["model"](**kwargs)
                 new_relations.append(new_rel)
-                fk_relation["model"].objects.bulk_create(new_relations)
+            fk_relation["model"].objects.bulk_create(new_relations)
         elif field.get("type", "") != "action":  # ignore action fields
             key = field["key"]
             default_val = getattr(obj, key, None)  # default to what the entity already had, then to None
@@ -460,7 +483,10 @@ def patch_model(request, model, schema, entity_id):
                 else:
                     fkm = field.get("model", None)
                     if fkm is not None:
-                        new_val = fkm.objects.filter(pk=new_val)[0]
+                        if new_val == "":
+                            new_val = None
+                        else:
+                            new_val = fkm.objects.filter(pk=new_val)[0]
             if model_type == "DateTimeField":
                 try:
                     new_val = datetime.strptime(new_val, '%Y-%m-%dT%H:%M%S')
@@ -479,6 +505,7 @@ def patch_model(request, model, schema, entity_id):
     })
 
 
+@transaction.atomic
 def delete_model_soft(request, model, entity_id):
     obj = get_object_or_404(model, pk=entity_id)
     obj.is_deleted = True
@@ -488,6 +515,7 @@ def delete_model_soft(request, model, entity_id):
     })
 
 
+@transaction.atomic
 def delete_model(request, model, entity_id):
     model.objects.filter(id=entity_id).delete()
     return JsonResponse({

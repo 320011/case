@@ -92,7 +92,7 @@ class TagRelationship(models.Model):
     case_study = models.ForeignKey(CaseStudy, on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.tag)
+        return "Tags {} as {}".format(str(self.case_study), str(self.tag))
 
 
 class MedicalHistory(models.Model):

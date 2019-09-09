@@ -4,12 +4,14 @@
             id="admin-inp-{{ field.key }}-{{ field.entity }}"
             {% if not field.write %}disabled{% endif %}
             required
-            {% if field.widget.multiple %}multiple{% endif %}>
-        {% if field.allow_null %}
-            <option value="null" {% if field.value == "null" %}selected{% endif %}>----------</option>
-        {% endif %}
+            {% if field.widget.multiple %}multiple="multiple"{% endif %}>
         {% for opt in field.options %}
-            <option value="{{ opt.id }}" {% if opt.id == field.value %}selected{% endif %}>{{ opt.name }}</option>
+            <option value="{{ opt.id }}" {% if opt.selected %}selected="selected"{% endif %}>{{ opt.name }}</option>
         {% endfor %}
     </select>
+    <script>
+        $(document).ready(function() {
+            $("#admin-inp-{{ field.key }}-{{ field.entity }}").select2().select2();
+        });
+    </script>
 </div>
