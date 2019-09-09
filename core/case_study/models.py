@@ -54,7 +54,8 @@ class CaseStudy(models.Model):
     is_anonymous = models.BooleanField(default=True)
     date_last_edited = models.DateTimeField(null=True, blank=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name="created_by")
-    last_edited_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="last_edited_user")
+    last_edited_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,
+                                         related_name="last_edited_user")
     is_deleted = models.BooleanField(default=False)
     # Case study fields
     height = models.IntegerField(null=True, blank=True)
@@ -165,3 +166,10 @@ class Medication(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Attempt(models.Model):
+    user_answer = models.CharField(max_length=1, null=True)
+    case_study = models.ForeignKey(CaseStudy, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    attempt_date = models.DateTimeField(null=True)
