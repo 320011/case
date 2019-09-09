@@ -213,11 +213,16 @@ schema_case = {
         },
         {
             "title": "Age Type",
+            "type": "choices",
             "key": "age_type",
             "hide_in_table": True,
             "widget": {
-                "template": "w-text.html",
+                "template": "w-select.html",
             },
+            "choices": [
+                ("Y", "Years"),
+                ("M", "Months")
+            ],
             "write": True,
         },
         {
@@ -230,10 +235,15 @@ schema_case = {
         },
         {
             "title": "Sex",
+            "type": "choices",
             "key": "sex",
             "widget": {
-                "template": "w-text.html",
+                "template": "w-select.html",
             },
+            "choices": [
+                ("M", "Male"),
+                ("F", "Female")
+            ],
             "write": True,
         },
         {
@@ -418,6 +428,16 @@ def populate_data(schema, model):
             # handle action fields
             if d.get("type", "") == "action":
                 d["value"] = f["widget"]["text"]
+            # handle choices fields
+            elif d.get("type", "") == "choices":
+                opts = []
+                for c in d["choices"]:
+                    opts.append({
+                        "id": c[0],
+                        "name": str(c[1]),
+                        "selected": c[0] == d["value"],
+                    })
+                d["options"] = opts
             # handle foreign key fields
             elif d.get("type", "") == "foreignkey":
                 # get the selected entity
