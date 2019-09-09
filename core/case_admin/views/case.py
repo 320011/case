@@ -1,12 +1,10 @@
-import json
-
 from accounts.models import User
 from case_study.models import CaseStudy, Tag, Question, TagRelationship, MedicalHistory, Medication
 from core.decorators import staff_required
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
 from django.shortcuts import render
-from .common import populate_data, delete_model, delete_model_soft, patch_model, value_formatters
+
+from .common import populate_data, delete_model_soft, patch_model
 
 schema_case = {
     "endpoint": "/caseadmin/cases/",

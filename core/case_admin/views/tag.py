@@ -1,20 +1,13 @@
-import copy
 import json
-from datetime import datetime
 
 import openpyxl
-from accounts.models import User
-from case_study.models import CaseStudy, Tag, Question, TagRelationship, MedicalHistory, Medication
+from case_study.models import Tag
 from core.decorators import staff_required
-from django.contrib.auth.forms import PasswordResetForm
-from django.contrib.sessions.models import Session
-from django.core.exceptions import FieldDoesNotExist
 from django.db import IntegrityError
-from django.db import transaction
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 
+from .common import populate_data, delete_model, patch_model
 from ..forms import TagImportForm
 
 schema_tag = {

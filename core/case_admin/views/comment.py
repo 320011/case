@@ -1,18 +1,8 @@
-import copy
-import json
-from datetime import datetime
-
-import openpyxl
 from accounts.models import User
 from core.decorators import staff_required
-from django.contrib.auth.forms import PasswordResetForm
-from django.contrib.sessions.models import Session
-from django.core.exceptions import FieldDoesNotExist
-from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 
-from ..forms import TagImportForm
+from .common import populate_data
 
 schema_comment = {
     "endpoint": "/caseadmin/comments/",
