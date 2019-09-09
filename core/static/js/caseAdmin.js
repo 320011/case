@@ -11,15 +11,6 @@ function getCookie(name) {
   return null;
 }
 
-function toBase64(f) {
-  return new Promise((resolve, reject) => {
-    let reader = new FileReader();
-    reader.readAsDataURL(f);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
-  });
-}
-
 function admin_updateEntity(endpoint, entity) {
   // construct a user model with the updated data
   let inps = document.getElementById(`admin-table-${entity}`).getElementsByTagName("input");
@@ -28,8 +19,24 @@ function admin_updateEntity(endpoint, entity) {
     let inp = inps[i];
     if (inp.type === "checkbox") {
       updates[inp.name] = inp.checked;
+    } else if (inp.type === "datetime-local") {
+      updates[inp.name] = inp.value.toString();
     } else {
       updates[inp.name] = inp.value;
+    }
+  }
+  // get the <select> tags too
+  let sels = document.getElementById(`admin-table-${entity}`).getElementsByTagName("select");
+  for (let i = 0; i < sels.length; i++) {
+    let sel = sels[i];
+    if (sel.multiple) {
+      updates[sel.name] = [];
+      for (let j = 0; j < sel.selectedOptions.length; j++) {
+        updates[sel.name].push(sel.selectedOptions[j].value);
+      }
+      console.log(updates[sel.name])
+    } else {
+      updates[sel.name] = sel.value;
     }
   }
 

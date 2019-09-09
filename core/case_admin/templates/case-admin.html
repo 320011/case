@@ -8,7 +8,7 @@
 {% block head %}
     <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.4/dist/bootstrap-table.min.css">
     <link href="https://unpkg.com/bootstrap-table@1.15.4/dist/extensions/sticky-header/bootstrap-table-sticky-header.css" rel="stylesheet">
-
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/css/select2.min.css" rel="stylesheet" />
 {% endblock %}
 
 
@@ -38,9 +38,11 @@
         <thead>
         <tr>
             {% for field in schema.fields %}
-                <th data-field="{{ field.key }}" data-sortable="true" scope="col" class="admin-table-header th-sm">
-                    {{ field.title }}
-                </th>
+                {% if not field.hide_in_table %}
+                    <th data-field="{{ field.key }}" data-sortable="true" scope="col" class="admin-table-header th-sm">
+                        {{ field.title }}
+                    </th>
+                {% endif %}
             {% endfor %}
         </tr>
         </thead>
@@ -49,18 +51,25 @@
             <tr class="admin-entity-row" data-toggle="modal" data-target="#entity-edit-modal-{{ fields.0.entity }}">
                 {% include "admin-tools-modal.html" with modal_entity_id=fields.0.entity %}
                 {% for field in fields %}
-                    <td class="admin-entity-cell">
-                        <div class="admin-table-narrow-header" class="th-sm">
-                            {{ field.title }}
-                        </div>
-                        <div class="admin-table-cell-content">
-                            {% if field.type == "action" %}
-                                {% include field.widget.template %}
-                            {% else %}
-                                {{ field.value }}
-                            {% endif %}
-                        </div>
-                    </td>
+                    {% if not field.hide_in_table %}
+                        <td class="admin-entity-cell">
+                            <div class="admin-table-narrow-header" class="th-sm">
+                                {{ field.title }}
+                            </div>
+                            <div class="admin-table-cell-content">
+                                {% if field.type == "action" %}
+                                    {% include field.widget.template %}
+                                {% elif field.widget.template == "w-checkbox.html" %}
+                                    <input type="checkbox" disabled {% if field.value %}checked{% endif %}>
+                                    {{ field.value }}
+                                {% elif field.widget.template == "w-select.html" %}
+                                    {{ field.value }}
+                                {% else %}
+                                    {{ field.value }}
+                                {% endif %}
+                            </div>
+                        </td>
+                    {% endif %}
                 {% endfor %}
             </tr>
         {% endfor %}
@@ -68,5 +77,6 @@
     </table>
 
     <script src="https://unpkg.com/bootstrap-table@1.15.4/dist/bootstrap-table.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/js/select2.min.js"></script>
     <script src="{% static "js/caseAdmin.js" %}"></script>
 {% endblock %}
