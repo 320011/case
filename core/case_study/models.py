@@ -130,8 +130,17 @@ class CaseStudy(models.Model):
             optionals = output
         return optionals
 
-
-
+    # For Case View's AJAX Request
+    def get_answer_from_character(self, character):
+        if character == 'A':
+            return self.answer_a
+        elif character == 'B':
+            return self.answer_b
+        elif character == 'C':
+            return self.answer_c
+        elif character == 'D':
+            return self.answer_d
+        return None
 
 
 class TagRelationship(models.Model):
