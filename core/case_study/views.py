@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.http import HttpResponseRedirect, JsonResponse
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
 
@@ -209,3 +209,24 @@ def view_case(request, case_study_id):
         "tags": tags
     }
     return render(request, "view_case.html", c)
+
+
+def validate_answer(request, case_study_id):
+    case = get_object_or_404(CaseStudy, pk=case_study_id)
+    choice = request.GET.get('choice', None)
+    success = False
+    if choice == case.answer:
+        success = True
+    print(choice)
+    message = "<strong>Correct Answer: " + case.answer + "</strong><br><em>" + case.get_answer_from_character(
+        case.answer) + "</em><br>You answered incorrectly. Your answer was <strong>" + choice + "</strong>, " + case.get_answer_from_character(
+        choice)
+    if success:
+        message = "<strong>Correct Answer: " + case.answer + "</strong><br><em>" + case.get_answer_from_character(
+        case.answer) + "</em><br>You answered correctly."
+    data = {
+        'success': success,
+        'answer_message': message,
+        'feedback': case.feedback
+    }
+    return JsonResponse(data)
