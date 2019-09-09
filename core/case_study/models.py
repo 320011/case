@@ -53,9 +53,8 @@ class CaseStudy(models.Model):
     is_submitted = models.BooleanField(default=False)
     is_anonymous = models.BooleanField(default=True)
     date_last_edited = models.DateTimeField(null=True, blank=True)
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    # Don"t use FK here to Users, use integer instead and check later, as on_delete can"t be CASCADE
-    last_edited_user = models.IntegerField(null=True, blank=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name="created_by")
+    last_edited_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="last_edited_user")
     is_deleted = models.BooleanField(default=False)
     # Case study fields
     height = models.IntegerField(null=True, blank=True)
@@ -138,6 +137,9 @@ class CaseStudy(models.Model):
 class TagRelationship(models.Model):
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
     case_study = models.ForeignKey(CaseStudy, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return "Tags {} as {}".format(str(self.case_study), str(self.tag))
 
 
 class MedicalHistory(models.Model):
