@@ -93,13 +93,20 @@
               <a class="list-group-item" onclick="handleClick(this);" id="C">C. {{ case.answer_c }}</a>
               <a class="list-group-item" onclick="handleClick(this);" id="D">D. {{ case.answer_c }}</a>
             </div>
-            <a class="btn btn-primary float-right" style="color: #FFF">Submit Response</a>
+            <a class="btn btn-primary float-right" style="color: #FFF" id="submit_response">Submit Response</a>
           </div>
           <div class="card-body pt-0" id="feedback">
+            <div class="alert mb-3" id="feedback_alert"></div>
+            Feedback:
+            <div class="card mt-2 mb-3 bg-light">
+              <div class="card-body" id="feedback_text"></div>
+            </div>
+            <div class="float-right">
+              <a class="btn btn-primary" id="attempt_again" style="color: #FFF">Attempt Again</a>
+              <a href="#" class="btn btn-primary">Join Conversation</a>
+            </div>
           </div>
         </div>
-
-
       </div>
     </div>
   </div>
@@ -131,19 +138,58 @@
       let d = document.getElementById('D');
       if (a.classList.contains('list-group-item-warning')) {
         a.classList.remove('list-group-item-warning');
+        a.classList.remove('clicked');
       }
       if (b.classList.contains('list-group-item-warning')) {
         b.classList.remove('list-group-item-warning');
+        b.classList.remove('clicked');
       }
       if (c.classList.contains('list-group-item-warning')) {
         c.classList.remove('list-group-item-warning');
+        c.classList.remove('clicked');
       }
       if (d.classList.contains('list-group-item-warning')) {
         d.classList.remove('list-group-item-warning');
+        d.classList.remove('clicked');
       }
       e.classList.add('list-group-item-warning');
       e.classList.add('clicked');
 
     }
+  </script>
+  <script>
+    $("#feedback").toggle();
+    $("#submit_response").click(function () {
+      let element = document.getElementsByClassName('clicked')[0];
+      console.log(element.id)
+
+      if (element) {
+        $.ajax({
+          url: '/cases/ajax/validate_answer/' + '{{ case.id }}',
+          dataType: 'json',
+          data: {
+            'choice': element.id
+          },
+          success: function (data) {
+            {#$('#questions').slideUp('slow', function(){ $(this).remove(); });#}
+            $('#questions').slideUp('slow');
+            $('#feedback').slideDown('slow');
+            if (data.success) {
+              $('#feedback_alert').removeClass('alert-danger').addClass('alert-success').html(data.answer_message)
+            } else {
+              $('#feedback_alert').removeClass('alert-success').addClass('alert-danger').html(data.answer_message)
+            }
+            $('#feedback_text').html(data.feedback);
+            console.log(data.answer_message)
+          }
+        });
+      }
+
+    });
+
+    $('#attempt_again').click(function() {
+      $('#questions').slideDown('slow');
+      $('#feedback').slideUp('slow')
+    })
   </script>
 {% endblock %}
