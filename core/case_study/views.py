@@ -1,12 +1,12 @@
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
 
 from .forms import CaseStudyForm, CaseStudyTagForm, MedicalHistoryForm, MedicationForm  # , CaseTagForm
-from .models import Tag, TagRelationship, CaseStudy, MedicalHistory, Medication
+from .models import Tag, TagRelationship, CaseStudy, MedicalHistory, Medication, Attempt
 
 
 @login_required
@@ -45,7 +45,8 @@ def create_new_case(request, case_study_id):
                 if created:
                     messages.success(request, 'Medical History added!')
                 else:
-                    messages.error(request, 'This medical history already exists. If it is a repeated condition, please include when the condition occured.')
+                    messages.error(request,
+                                   'This medical history already exists. If it is a repeated condition, please include when the condition occured.')
 
             medical_history_form = MedicalHistoryForm(request.POST)
             return render(request, "create_new_case.html",
@@ -184,8 +185,18 @@ def view_case(request, case_study_id):
     mhx = MedicalHistory.objects.filter(case_study=case_study)
     medications = Medication.objects.filter(case_study=case_study)
     tags = TagRelationship.objects.filter(case_study=case_study)
+    total_average = case_study.get_average_score()
+    user_average = case_study.get_average_score(user=request.user)
+    user_attempts = len(Attempt.objects.filter(case_study=case_study, user=request.user))
+    total_attempts = len(Attempt.objects.filter(case_study=case_study))
     print(mhx)
     c = {
+        "attempts": {
+            "total_average": total_average,
+            "total_attempts": total_attempts,
+            "user_average": user_average,
+            "user_attempts": user_attempts
+        },
         "case": case_study,
         "mhx": mhx,
         "medications": medications,
@@ -207,7 +218,18 @@ def validate_answer(request, case_study_id):
     if success:
         message = "<strong>Correct Answer: " + case.answer + "</strong><br><em>" + case.get_answer_from_character(
             case.answer) + "</em><br>You answered correctly."
+    Attempt.objects.create(user_answer=choice, case_study=case, user=request.user, attempt_date=timezone.now())
+    total_average = case.get_average_score()
+    user_average = case.get_average_score(user=request.user)
+    user_attempts = len(Attempt.objects.filter(case_study=case, user=request.user))
+    total_attempts = len(Attempt.objects.filter(case_study=case))
     data = {
+        'attempts': {
+            'total_average': total_average,
+            'total_attempts': total_attempts,
+            'user_average': user_average,
+            'user_attempts': user_attempts
+        },
         'success': success,
         'answer_message': message,
         'feedback': case.feedback
