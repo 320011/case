@@ -54,9 +54,6 @@
         <div>My Score: <span id="user_average">{{ attempts.user_average }}</span></div>
         <div>Total Attempts: <span id="total_attempts">{{ attempts.total_attempts }}</span></div>
         <div class="mb-3">My Attempts: <span id="user_attempts">{{ attempts.user_attempts }}</span></div>
-        {% if user.is_staff and not case.is_anonymous %}
-          <div>Author: {{ case.created_by }}</div>
-        {% endif %}
         <div>
           {% for tag in tags %}
             <span class="badge badge-secondary">{{ tag.tag }}</span>
@@ -76,7 +73,7 @@
     <div class="card col" id="main">
       <div class="card-body">
         <div>
-          <h5 class="text-center"><strong>Case {{ case.id }}</strong></h5>
+          <h5 class="text-center"><strong>Case <span id="case_id">{{ case.id }}</span></strong></h5>
           Description:
           <div class="card mt-2 mb-3 bg-light">
             <div class="card-body">

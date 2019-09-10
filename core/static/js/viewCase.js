@@ -44,10 +44,11 @@ function handleClick(e) {
 
 $("#submit_response").click(function () {
   let element = document.getElementsByClassName('clicked')[0];
+  let id = document.getElementById('case_id').innerText;
 
   if (element) {
     $.ajax({
-      url: '{% url "cases:validate-answer" case.id %}',
+      url: '/cases/ajax/validate_answer/' + id,
       dataType: 'json',
       data: {
         'choice': element.id
