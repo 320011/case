@@ -103,7 +103,6 @@
             </div>
             <div class="float-right">
               <a class="btn btn-primary" id="attempt_again" style="color: #FFF">Attempt Again</a>
-              <a href="#" class="btn btn-primary">Join Conversation</a>
             </div>
           </div>
         </div>
@@ -171,7 +170,7 @@
             'choice': element.id
           },
           success: function (data) {
-            {#$('#questions').slideUp('slow', function(){ $(this).remove(); });#}
+            // {#$('#questions').slideUp('slow', function(){ $(this).remove(); });#}
             $('#questions').slideUp('slow');
             $('#feedback').slideDown('slow');
             if (data.success) {
@@ -191,5 +190,8 @@
       $('#questions').slideDown('slow');
       $('#feedback').slideUp('slow')
     })
+
+    
+
   </script>
 {% endblock %}
