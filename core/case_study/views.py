@@ -189,7 +189,6 @@ def view_case(request, case_study_id):
     user_average = case_study.get_average_score(user=request.user)
     user_attempts = len(Attempt.objects.filter(case_study=case_study, user=request.user))
     total_attempts = len(Attempt.objects.filter(case_study=case_study))
-    print(mhx)
     c = {
         "attempts": {
             "total_average": total_average,
@@ -211,7 +210,6 @@ def validate_answer(request, case_study_id):
     success = False
     if choice == case.answer:
         success = True
-    print(choice)
     message = "<strong>Correct Answer: " + case.answer + "</strong><br><em>" + case.get_answer_from_character(
         case.answer) + "</em><br>You answered incorrectly. Your answer was <strong>" + choice + "</strong>, " + case.get_answer_from_character(
         choice)
