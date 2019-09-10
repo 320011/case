@@ -143,6 +143,16 @@ class CaseStudy(models.Model):
             return self.answer_d
         return None
 
+    def get_average_score(self, user=None):
+        attempts = len(Attempt.objects.filter(case_study=self))
+        correct_attempts = len(Attempt.objects.filter(case_study=self, user_answer=self.answer))
+        if user:
+            attempts = len(Attempt.objects.filter(case_study=self, user=user))
+            correct_attempts = len(Attempt.objects.filter(case_study=self, user_answer=self.answer, user=user))
+        if attempts:
+            return round(correct_attempts/attempts*100, 2)
+        return None
+
 
 class TagRelationship(models.Model):
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
