@@ -1,0 +1,38 @@
+<div class="modal" tabindex="-1" role="dialog" id="entity-edit-modal-{{ modal_entity_id }}">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Manage a {{ model_name }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="admin-table" id="admin-table-{{ fields.0.entity }}">
+                    {% for field in fields %}
+                        <div class="admin-row">
+                            <div class="admin-header">
+                                {{ field.title }}
+                            </div>
+                            <div class="admin-field">
+                                {% include field.widget.template %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% if creating_new %}
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" onclick="admin_newEntity('{{ data.endpoint }}', {{ fields.0.entity }})">Create</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
+            {% else %}
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" onclick="admin_deleteEntity('{{ data.endpoint }}', {{ fields.0.entity }})">Delete</button>
+                    <button type="button" class="btn btn-success" onclick="admin_updateEntity('{{ data.endpoint }}', {{ fields.0.entity }})">Update</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>

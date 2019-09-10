@@ -1,0 +1,12 @@
+<input class="admin-input admin-input-number form-control"
+type="number"
+{% if field.widget.step %}
+step="{{ field.widget.step }}"
+{% endif %}
+value="{{ field.value }}"
+name="{{ field.key }}" 
+id="admin-inp-{{ field.key }}-{{ field.entity }}"
+{% if not field.write %}
+disabled
+{% endif %}
+/>

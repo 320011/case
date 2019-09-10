@@ -1,0 +1,12 @@
+<input class="admin-input admin-input-text form-control"
+type="text"
+value="{{ field.value }}"
+name="{{ field.key }}"
+id="admin-inp-{{ field.key }}-{{ field.entity }}"
+{% if field.widget.maxlength %}
+maxlength="{{ field.widget.maxlength }}"
+{% endif %}
+{% if not field.write %}
+disabled
+{% endif %}
+/>

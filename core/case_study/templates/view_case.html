@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load tags %}
+
+{% block title %}
+  Case {{ case.id }}
+{% endblock %}
+
+{% block header %}
+  Case {{ case.id }}
+{% endblock %}
+
+{% block description %}
+{% endblock %}
+
+{% block body %}
+  <style>
+    @media only screen and (max-width: 1026px) {
+      #details {
+        width: 100%
+      }
+
+      #main {
+        margin-left: 0 !important;
+      }
+    }
+
+    #details {
+      flex: 1;
+      align-self: flex-start;
+    }
+
+    #main {
+      flex: 2;
+      margin-left: 10px;
+    }
+  </style>
+
+  <div class="row" id="row-container">
+    <div class="card col-3 mb-3" id="details">
+      <div class="card-body">
+        <h5 class="mb-2"><strong>Details</strong></h5>
+        <div class="mb-3">
+          <div>Created: {{ case.date_created|date:"M d, Y" }}</div>
+          {% if user.is_staff %}
+            <div>Created By: {{ case.created_by }}</div>
+          {% else %}
+            {% if not case.is_anonymous and case.created_by.is_staff %}
+              <div>Created By: {{ case.created_by }}</div>
+            {% endif %}
+          {% endif %}
+        </div>
+        <div>Average Score: <span id="total_average">{{ attempts.total_average }}</span></div>
+        <div>My Score: <span id="user_average">{{ attempts.user_average }}</span></div>
+        <div>Total Attempts: <span id="total_attempts">{{ attempts.total_attempts }}</span></div>
+        <div class="mb-3">My Attempts: <span id="user_attempts">{{ attempts.user_attempts }}</span></div>
+        <div>
+          {% for tag in tags %}
+            <span class="badge badge-secondary">{{ tag.tag }}</span>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="card-body border-top">
+        <h5 class="mb-2"><strong>Actions</strong></h5>
+        Export <br>
+        Report Case Study <br>
+        <div class="float-right">
+          <a href="#" class="btn btn-primary btn-sm">Edit</a>
+          <a href="#" class="btn btn-danger btn-sm">Delete</a>
+        </div>
+      </div>
+    </div>
+    <div class="card col" id="main">
+      <div class="card-body">
+        <div>
+          <h5 class="text-center"><strong>Case <span id="case_id">{{ case.id }}</span></strong></h5>
+          Description:
+          <div class="card mt-2 mb-3 bg-light">
+            <div class="card-body">
+              {{ case.get_age_in_words|an|title }} {{ case.get_age_string }} {{ case.get_sex }} {{ case.get_optionals }}
+              presents to your
+              pharmacy {{ case.description }}
+            </div>
+          </div>
+        </div>
+        MHx:
+        <ul style="display: inherit; list-style-type: inherit">
+          {% for history in mhx %}
+            <li>{{ history }}</li>
+          {% endfor %}
+        </ul>
+        Medication:
+        <ul style="display: inherit; list-style-type: inherit">
+          {% for medication in medications %}
+            <li>{{ medication }}</li>
+          {% endfor %}
+        </ul>
+        Question:
+        <div class="card mt-2 mb-3">
+          <div class="card-body">
+            <div><strong>{{ case.question }}</strong></div>
+          </div>
+          <div class="card-body pt-0" id="questions">
+            <div class="list-group mb-3" id="list-tab" role="tablist">
+              <a class="list-group-item" onclick="handleClick(this);" id="A" disabled>A. {{ case.answer_a }}</a>
+              <a class="list-group-item" onclick="handleClick(this);" id="B">B. {{ case.answer_b }}</a>
+              <a class="list-group-item" onclick="handleClick(this);" id="C">C. {{ case.answer_c }}</a>
+              <a class="list-group-item" onclick="handleClick(this);" id="D">D. {{ case.answer_d }}</a>
+            </div>
+            <a class="btn btn-primary float-right" style="color: #FFF" id="submit_response">Submit Response</a>
+          </div>
+          <div class="card-body pt-0" id="feedback">
+            <div class="alert mb-3" id="feedback_alert"></div>
+            Feedback:
+            <div class="card mt-2 mb-3 bg-light">
+              <div class="card-body" id="feedback_text"></div>
+            </div>
+            <div class="float-right">
+              <a class="btn btn-primary" id="attempt_again" style="color: #FFF">Attempt Again</a>
+              <a href="#" class="btn btn-primary">Join Conversation</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <br>
+  <script src="{% static "js/viewCase.js" %}"></script>
+{% endblock %}

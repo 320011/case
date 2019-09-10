@@ -1,0 +1,8 @@
+{% autoescape off %}
+Hi {{ user.first_name }},
+
+Thank you for signing up with UWA Case.
+
+Please click the link below to activate your account:
+{{ protocol }}://{{ domain }}{% url 'accounts:activate' %}?id={{ uid }}&token={{ token }}
+{% endautoescape %}

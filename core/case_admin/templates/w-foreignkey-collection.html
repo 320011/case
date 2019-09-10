@@ -1,0 +1,22 @@
+<div id="admin-inp-{{ field.key }}-{{ field.entity }}-select-parent">
+    <select class="admin-input admin-input-select form-control"
+            name="{{ field.key }}"
+            id="admin-inp-{{ field.key }}-{{ field.entity }}"
+            {% if not field.write %}disabled{% endif %}
+            required
+            multiple="multiple">
+        {% for opt in field.options %}
+            <option value="{{ opt.id }}" {% if opt.selected %}selected="selected"{% endif %}>{{ opt.name }}</option>
+        {% endfor %}
+    </select>
+    <script>
+        $(document).ready(function() {
+            $("#admin-inp-{{ field.key }}-{{ field.entity }}").select2({
+                dropdownParent: $("#admin-inp-{{ field.key }}-{{ field.entity }}-select-parent"),
+                {% if field.widget.tags %}
+                    tags: true,
+                {% endif %}
+            });
+        });
+    </script>
+</div>

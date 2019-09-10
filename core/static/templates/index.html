@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}
+    UWA Case
+{% endblock %}
+
+{% block body %}
+    <div class="action-list-container">
+        <div class="action-list">
+            <div class="action-container">
+                <a class="action-link" href="{% url "default" %}">
+                    <div class="action-card">
+                        <p>View Existing Cases</p>
+                    </div>
+                </a>
+            </div>
+            <div class="action-container">
+                <a class="action-link" href="{% url "cases:start-new-case" %}">
+                    <div class="action-card">
+                        <p>Submit New Case</p>
+                    </div>
+                </a>
+            </div>
+            {% if user.is_staff %}
+            <div class="action-container">
+                <a class="action-link" href="{% url "case_admin:default" %}">
+                    <div class="action-card">
+                        <p>Admin</p>
+                    </div>
+                </a>
+            </div>
+            <div class="action-container">
+                <a class="action-link" href="{% url "default" %}">
+                    <div class="action-card">
+                        <p>Analytics</p>
+                    </div>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

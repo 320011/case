@@ -1,0 +1,140 @@
+.admin-entity-row {
+  cursor: pointer;
+  margin-bottom: 0;
+}
+
+//.admin-table-header {
+//  border: 1px solid rgba(0,0,0, 0.1);
+//  padding: 0 1rem 0 1rem;
+//}
+
+#admin-table-toolbar {
+  display: flex;
+
+  .form-control {
+    margin-right: 1rem;
+    min-width: 6rem;
+  }
+
+  button {
+    color: white;
+
+    &:active {
+      background-color: #235d87;
+    }
+
+    &:focus {
+      background-color: #007BFF;
+    }
+  }
+}
+
+.icon-add {
+  &:before {
+    content: "Add";
+  }
+}
+
+.modal-body {
+  .admin-table {
+    width: 100%;
+    display: table;
+
+    .admin-row {
+      width: 100%;
+      padding: 0;
+      margin: 0;
+      display: table-row;
+
+      &:nth-child(even) {
+        background-color: rgba(0,0,0,0.02);
+      }
+
+      .admin-header {
+        display: table-cell;
+        text-align: right;
+        padding-right: 1rem;
+      }
+
+      .model-field {
+        display: table-cell;
+      }
+    }
+  }
+}
+.admin-input {
+  width: 100%;
+  margin: 0.1rem;
+}
+
+// when the screen is wide
+@media only screen and (min-width: 600px) {
+
+  .admin-table-narrow-header {
+    display: none;
+  }
+
+  .admin-table-cell-content {
+    width: 100%;
+    display: inline-block;
+  }
+}
+
+// when the screen is narrow
+@media only screen and (max-width: 600px) {
+
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
+
+  thead tr {
+    display: none;
+  }
+
+  tr {
+    margin: 0 0 1rem 0;
+  }
+
+  td {
+    border: none !important;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    padding-left: 50%;
+  }
+
+  td:before {
+    position: absolute;
+    top: 0;
+    left: 6px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
+  }
+
+  .admin-table-narrow-header {
+    display: inline-block;
+    width: 35%;
+    font-weight: bold;
+  }
+
+  .admin-table-cell-content {
+    width: 60%;
+    display: inline-block;
+  }
+
+  .admin-entity-cell {
+    border-bottom: 1px solid rgba(0,0,0,0.1) !important;
+  }
+}
+
+.select2.select2-container.select2-container--default.select2-container--below {
+  min-width: 200px;
+}
+
+.select2-selection__rendered {
+  min-width: 200px;
+}
+
+.select2-dropdown {
+  z-index: 999999999;
+}

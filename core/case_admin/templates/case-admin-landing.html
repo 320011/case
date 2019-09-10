@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}
+  Admin | UWA Case
+{% endblock %}
+
+{% block body %}
+    <div class="action-list-container">
+        <div class="action-list">
+            <div class="action-container">
+                <a class="action-link" href="{% url "case_admin:users" %}">
+                    <div class="action-card">
+                        <p>Users</p>
+                    </div>
+                </a>
+            </div>
+            <div class="action-container">
+                <a class="action-link" href="{% url "case_admin:cases" %}">
+                    <div class="action-card">
+                        <p>Cases</p>
+                    </div>
+                </a>
+            </div>
+            <div class="action-container">
+                <a class="action-link" href="{% url "case_admin:questions" %}">
+                    <div class="action-card">
+                        <p>Questions</p>
+                    </div>
+                </a>
+            </div>
+            <div class="action-container">
+                <a class="action-link" href="{% url "case_admin:users" %}">
+                    <div class="action-card">
+                        <p>Comments</p>
+                    </div>
+                </a>
+            </div>
+            <div class="action-container">
+                <a class="action-link" href="{% url "case_admin:tags" %}">
+                    <div class="action-card">
+                        <p>Tags</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
