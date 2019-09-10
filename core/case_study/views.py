@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
@@ -17,12 +18,11 @@ def start_new_case(request):
 
 @login_required
 def create_new_case(request, case_study_id):
-    # returns object (case_study), and boolean specifiying whether an object was created
+    # returns object (case_study), and boolean specifying whether an object was created
     case_study, created = CaseStudy.objects.get_or_create(pk=case_study_id)
     relevant_tags = TagRelationship.objects.filter(case_study=case_study)  # return Tags for that case_study
     medical_histories = MedicalHistory.objects.filter(case_study=case_study)
     medications = Medication.objects.filter(case_study=case_study)
-    message = {"content": "", "type": ""}
     # Check if the choice was in years format, if yes, integer division by 12.
     if case_study.age:
         if case_study.age_type == 'Y':
@@ -43,19 +43,14 @@ def create_new_case(request, case_study_id):
                 # get or create new medical history relationship in the database
                 mhx, created = MedicalHistory.objects.get_or_create(body=body, case_study=case_study)
                 if created:
-                    message["content"] = "Medical history added!"
-                    message["type"] = "success"
+                    messages.success(request, 'Medical History added!')
                 else:
-                    message["content"] = "This medical history already exists. " \
-                                         "If it is a repeated condition, please " \
-                                         "include when the condition occured."
-                    message["type"] = "danger"
+                    messages.error(request, 'This medical history already exists. If it is a repeated condition, please include when the condition occured.')
 
             medical_history_form = MedicalHistoryForm(request.POST)
             return render(request, "create_new_case.html",
                           {
                               "case_study_form": case_study_form,
-                              "message": message,
                               "tags": relevant_tags,
                               "medical_histories": medical_histories,
                               "medications": medications,
@@ -72,21 +67,16 @@ def create_new_case(request, case_study_id):
                 # get or create new medication relationship in the database
                 medication, created = Medication.objects.get_or_create(name=name, case_study=case_study)
                 if created:
-                    message["content"] = "Medication added!"
-                    message["type"] = "success"
+                    messages.success(request, 'Medication added!')
                 else:
-                    message["content"] = "This medication already exists."
-                    message["type"] = "danger"
-
+                    messages.error(request, 'This medication already exists.')
             medication_form = MedicationForm(request.POST)
             return render(request, "create_new_case.html",
                           {
                               "case_study_form": case_study_form,
-                              "message": message,
                               "tags": relevant_tags,
                               "medical_histories": medical_histories,
                               "medications": medications,
-                              # "case_study_question_form": case_study_question_form,
                               "case_study_tag_form": case_study_tag_form,
                               "medical_history_form": medical_history_form,
                               "medication_form": medication_form,
@@ -98,17 +88,14 @@ def create_new_case(request, case_study_id):
             # get or create new tag relationship in the database
             created_tag_relationship, created = TagRelationship.objects.get_or_create(tag=tag, case_study=case_study)
             if created:
-                message["content"] = "Tag added!"
-                message["type"] = "success"
+                messages.success(request, 'Tag added!')
             else:
-                message["content"] = "This tag already exists."
-                message["type"] = "danger"
+                messages.error(request, 'This tag already exists.')
 
             case_study_tag_form = CaseStudyTagForm()
             return render(request, "create_new_case.html",
                           {
                               "case_study_form": case_study_form,
-                              "message": message,
                               "tags": relevant_tags,
                               "medical_histories": medical_histories,
                               "medications": medications,
@@ -128,16 +115,13 @@ def create_new_case(request, case_study_id):
                 if request.POST['age_type'] == 'Y':
                     request.POST['age'] = int(request.POST['age']) // 12
                 case_study_form = CaseStudyForm(request.POST, instance=case_study)
-                message["content"] = "Case Study Saved!"
-                message["type"] = "success"
+                messages.success(request, 'Case Study saved!')
                 return render(request, "create_new_case.html",
                               {
                                   "case_study_form": case_study_form,
                                   "tags": relevant_tags,
-                                  "message": message,
                                   "medical_histories": medical_histories,
                                   "medications": medications,
-                                  # "case_study_question_form": case_study_question_form,
                                   "case_study_tag_form": case_study_tag_form,
                                   "medical_history_form": medical_history_form,
                                   "medication_form": medication_form,
@@ -149,6 +133,9 @@ def create_new_case(request, case_study_id):
                 case_study_form.save()
                 case_study.date_submitted = timezone.now()
                 case_study.save()
+                messages.success(request, 'Case Study created!')
+                return HttpResponseRedirect(reverse('cases:view-case', args=[case_study.id]))
+            else:
                 if request.POST['age_type'] == 'Y':
                     request.POST['age'] = int(request.POST['age']) // 12
                 case_study_form = CaseStudyForm(request.POST, instance=case_study)
@@ -170,25 +157,21 @@ def create_new_case(request, case_study_id):
                               "tags": relevant_tags,
                               "medical_histories": medical_histories,
                               "medications": medications,
-                              # "case_study_question_form": case_study_question_form,
                               "case_study_tag_form": case_study_tag_form,
                               "medical_history_form": medical_history_form,
                               "medication_form": medication_form,
                           })
     else:
         case_study_form = CaseStudyForm(instance=case_study)
-        # case_study_question_form = CaseStudyQuestionForm()
         case_study_tag_form = CaseStudyTagForm()
         medical_history_form = MedicalHistoryForm()
         medication_form = MedicationForm()
-        # case_tag_form = CaseTagForm()
     return render(request, "create_new_case.html",
                   {
                       "case_study_form": case_study_form,
                       "tags": relevant_tags,
                       "medical_histories": medical_histories,
                       "medications": medications,
-                      # "case_study_question_form": case_study_question_form,
                       "case_study_tag_form": case_study_tag_form,
                       "medical_history_form": medical_history_form,
                       "medication_form": medication_form,
@@ -223,7 +206,7 @@ def validate_answer(request, case_study_id):
         choice)
     if success:
         message = "<strong>Correct Answer: " + case.answer + "</strong><br><em>" + case.get_answer_from_character(
-        case.answer) + "</em><br>You answered correctly."
+            case.answer) + "</em><br>You answered correctly."
     data = {
         'success': success,
         'answer_message': message,
