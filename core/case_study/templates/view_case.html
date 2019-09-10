@@ -40,7 +40,16 @@
     <div class="card col-3 mb-3" id="details">
       <div class="card-body">
         <h5 class="mb-2"><strong>Details</strong></h5>
-        <div class="mb-3">Created: {{ case.date_created|date:"M d, Y" }}</div>
+        <div class="mb-3">
+          <div>Created: {{ case.date_created|date:"M d, Y" }}</div>
+          {% if user.is_staff %}
+            <div>Created By: {{ case.created_by }}</div>
+          {% else %}
+            {% if not case.is_anonymous and case.created_by.is_staff %}
+              <div>Created By: {{ case.created_by }}</div>
+            {% endif %}
+          {% endif %}
+        </div>
         <div>Average Score: <span id="total_average">{{ attempts.total_average }}</span></div>
         <div>My Score: <span id="user_average">{{ attempts.user_average }}</span></div>
         <div>Total Attempts: <span id="total_attempts">{{ attempts.total_attempts }}</span></div>
