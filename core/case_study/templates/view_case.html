@@ -91,7 +91,7 @@
               <a class="list-group-item" onclick="handleClick(this);" id="A" disabled>A. {{ case.answer_a }}</a>
               <a class="list-group-item" onclick="handleClick(this);" id="B">B. {{ case.answer_b }}</a>
               <a class="list-group-item" onclick="handleClick(this);" id="C">C. {{ case.answer_c }}</a>
-              <a class="list-group-item" onclick="handleClick(this);" id="D">D. {{ case.answer_c }}</a>
+              <a class="list-group-item" onclick="handleClick(this);" id="D">D. {{ case.answer_d }}</a>
             </div>
             <a class="btn btn-primary float-right" style="color: #FFF" id="submit_response">Submit Response</a>
           </div>
@@ -161,11 +161,10 @@
     $("#feedback").toggle();
     $("#submit_response").click(function () {
       let element = document.getElementsByClassName('clicked')[0];
-      console.log(element.id)
 
       if (element) {
         $.ajax({
-          url: '/cases/ajax/validate_answer/' + '{{ case.id }}',
+          url: '{% url "cases:validate-answer" case.id %}',
           dataType: 'json',
           data: {
             'choice': element.id
@@ -180,7 +179,6 @@
               $('#feedback_alert').removeClass('alert-success').addClass('alert-danger').html(data.answer_message)
             }
             $('#feedback_text').html(data.feedback);
-            console.log(data.answer_message)
           }
         });
       }
