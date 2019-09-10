@@ -39,15 +39,23 @@
   <div class="row" id="row-container">
     <div class="card col-3 mb-3" id="details">
       <div class="card-body">
-        <h5 class="mb-1"><strong>Details</strong></h5>
-        <div>Average Score:</div>
+        <h5 class="mb-2"><strong>Details</strong></h5>
+        <div class="mb-3">Created: {{ case.date_created|date:"M d, Y" }}</div>
+        <div>Average Score: <span id="total_average">{{ attempts.total_average }}</span></div>
+        <div>My Score: <span id="user_average">{{ attempts.user_average }}</span></div>
+        <div>Total Attempts: <span id="total_attempts">{{ attempts.total_attempts }}</span></div>
+        <div class="mb-3">My Attempts: <span id="user_attempts">{{ attempts.user_attempts }}</span></div>
         {% if user.is_staff and not case.is_anonymous %}
           <div>Author: {{ case.created_by }}</div>
         {% endif %}
-        <div>Created: {{ case.date_created|date:"M d, Y" }}</div>
+        <div>
+          {% for tag in tags %}
+            <span class="badge badge-secondary">{{ tag.tag }}</span>
+          {% endfor %}
+        </div>
       </div>
       <div class="card-body border-top">
-        <h5 class="mb-1"><strong>Actions</strong></h5>
+        <h5 class="mb-2"><strong>Actions</strong></h5>
         Export <br>
         Report Case Study <br>
         <div class="float-right">
@@ -112,82 +120,5 @@
   </div>
 
   <br>
-
-  <script>
-    $(document).ready(function () {
-      if (window.innerWidth < 1026) {
-        $('#row-container').removeClass('row');
-        $('#details').removeClass('col-3');
-      }
-    });
-
-    $(window).resize(function () {
-      if (window.innerWidth < 1026) {
-        $('#row-container').removeClass('row');
-        $('#details').removeClass('col-3');
-      } else {
-        $('#row-container').addClass('row');
-        $('#details').addClass('col-3');
-      }
-    });
-
-    function handleClick(e) {
-      let a = document.getElementById('A');
-      let b = document.getElementById('B');
-      let c = document.getElementById('C');
-      let d = document.getElementById('D');
-      if (a.classList.contains('list-group-item-warning')) {
-        a.classList.remove('list-group-item-warning');
-        a.classList.remove('clicked');
-      }
-      if (b.classList.contains('list-group-item-warning')) {
-        b.classList.remove('list-group-item-warning');
-        b.classList.remove('clicked');
-      }
-      if (c.classList.contains('list-group-item-warning')) {
-        c.classList.remove('list-group-item-warning');
-        c.classList.remove('clicked');
-      }
-      if (d.classList.contains('list-group-item-warning')) {
-        d.classList.remove('list-group-item-warning');
-        d.classList.remove('clicked');
-      }
-      e.classList.add('list-group-item-warning');
-      e.classList.add('clicked');
-
-    }
-  </script>
-  <script>
-    $("#feedback").toggle();
-    $("#submit_response").click(function () {
-      let element = document.getElementsByClassName('clicked')[0];
-
-      if (element) {
-        $.ajax({
-          url: '{% url "cases:validate-answer" case.id %}',
-          dataType: 'json',
-          data: {
-            'choice': element.id
-          },
-          success: function (data) {
-            {#$('#questions').slideUp('slow', function(){ $(this).remove(); });#}
-            $('#questions').slideUp('slow');
-            $('#feedback').slideDown('slow');
-            if (data.success) {
-              $('#feedback_alert').removeClass('alert-danger').addClass('alert-success').html(data.answer_message)
-            } else {
-              $('#feedback_alert').removeClass('alert-success').addClass('alert-danger').html(data.answer_message)
-            }
-            $('#feedback_text').html(data.feedback);
-          }
-        });
-      }
-
-    });
-
-    $('#attempt_again').click(function() {
-      $('#questions').slideDown('slow');
-      $('#feedback').slideUp('slow')
-    })
-  </script>
+  <script src="{% static "js/viewCase.js" %}"></script>
 {% endblock %}
