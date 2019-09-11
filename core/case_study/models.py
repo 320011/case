@@ -188,7 +188,8 @@ class Comment(models.Model):
     comment = models.TextField(null=True, blank=True)
     case_study = models.ForeignKey(CaseStudy, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    # is_anon = models.BooleanField()
+    is_anon = models.BooleanField(null=True)
+    comment_date = models.DateTimeField(null=True)
 
     def __str__(self):
         return self.comment
@@ -197,7 +198,6 @@ class CommentVote(models.Model):
     voteType = models.BooleanField()
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    
     
     def get_vote_score(self, comment):
         vote_object = CommentVotes.objects.filter(comment=comment)

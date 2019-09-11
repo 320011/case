@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
@@ -211,7 +211,6 @@ def view_case(request, case_study_id):
 def validate_answer(request, case_study_id):
     case = get_object_or_404(CaseStudy, pk=case_study_id)
     choice = request.GET.get('choice', None)
-    # case_id = request.GET.get('case_id', None)
     success = False
     # Get message
     if choice == case.answer:
@@ -244,6 +243,23 @@ def validate_answer(request, case_study_id):
         'comments': comments_json
     }
     return JsonResponse(data)
+
+def submit_comment(request, case_study_id):
+    case = get_object_or_404(CaseStudy, pk=case_study_id)
+    comment_body = request.GET.get('comment_body', None)
+    comment_is_anon = request.GET.get('comment_is_anon', None)
+    # Create comment 
+    comment = Comment.objects.create(comment=comment_body, case_study=case, user=request.user, is_anon=comment_is_anon, comment_date=timezone.now())
+    comment_list = serializers.serialize('json', [comment])
+    data = {
+        'comments': comment_list
+    }
+    return HttpResponse(comment_list, content_type="text/json-comment-filtered" )
+
+def test_view(request, case_study_id):
+    case_study = CaseStudy.objects.get(pk=case_study_id)
+    return render(request, "test_view.html")
+
 
 def show_comments(request, case_study_id):
     case = get_object_or_404(CaseStudy, pk=case_study_id)
