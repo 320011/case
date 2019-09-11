@@ -7,34 +7,43 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count
 from .forms import UserSettingsForm, LogInForm, SignUpForm
 from .models import User
+from case_study.models import CaseStudy, Attempt, TagRelationship
 from .tokens import account_activation_token
 from .decorators import anon_required
 from django.contrib import messages
 
 @login_required
 def view_profile(request):
+    user = request.user
+    attempts = Attempt.objects.filter(user=request.user).distinct().values('case_study').annotate(case_count=Count('case_study')).filter(case_count__gt=0).order_by('case_study')
+    cases = CaseStudy.objects.filter(id__in=[item['case_study'] for item in attempts])
+
+    total_average, user_average, user_attempts, total_attempts, tags = [], [], [], [], []
+    for case in cases:
+        total_average.append(case.get_average_score())
+        user_average.append(case.get_average_score(user=request.user))
+        user_attempts.append(len(Attempt.objects.filter(case_study=case, user=request.user)))
+        total_attempts.append(len(Attempt.objects.filter(case_study=case)))
+        tags.append(TagRelationship.objects.filter(case_study=case))
+
+    cases = list(zip(cases, total_average, user_average, user_attempts, total_attempts, tags))
+
+    total_score = sum([a*b for a,b in zip(user_average, user_attempts)])
+    total_tries = sum(user_attempts)
+    if total_tries == 0:
+        overall_score = 'N/A'
+    else:
+        overall_score = float("{0:.2f}".format(total_score/total_tries))
+
     c = {
-        "title": "Cases | My Profile",
-        "user_cases": [
-                          {
-                              "title": "Case 1: XYZ",
-                              "description": "This is a cool case description provided by a user. "
-                                             "This is a cool case description provided by a user. "
-                                             "This is a cool case description provided by a user. "
-                                             "This is a cool case description provided by a user. "
-                                             "This is a cool case description provided by a user. "
-                                             "This is a cool case description provided by a user. "
-                                             "This is a cool case description provided by a user. ",
-                              "pass_rate": 75,
-                              "view_count": 565688,
-                              "patient_sex": "M",
-                              "patient_age": 86
-                          },
-                      ] * 5,
+        'cases' : cases,
+        'user' : user,
+        'overall_score' : overall_score
     }
-    return render(request, "profile-cases.html", c)
+    return render(request, "profile-base.html", c)
 
 
 @login_required

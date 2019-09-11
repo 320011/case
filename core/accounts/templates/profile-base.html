@@ -1,31 +1,100 @@
 {% extends "base.html" %}
+{% load staticfiles %}
+{% load tags %}
 
 {% block title %}
     My Profile | UWA Case
 {% endblock %}
 
+{% block header %}
+  Case {{ case.id }}
+{% endblock %}
+
 {% block body %}
-    <div class="profile-container">
-        <div class="profile-col-bio" id="bio">
-            <div class="bio-container">
-                <h1>{{ user.get_full_name }}</h1>
-                <h2>{{ user.university }} (Started {{ user.degree_commencement_year }})</h2>
-                <p>{{ user.email }}</p>
-                <p>{{ user.date_joined }}</p>
-                {% if user.is_staff %}
-                    <p>Staff</p>
-                {% endif %}
-            </div>
-        </div>
-        <div class="profile-col-main" id="main">
-            <div class="profile-content-tabs">
-                <a href="{% url "users:profile" %}">Cases</a>
-                <a href="{% url "users:profile_results" %}">Results</a>
-            </div>
-            <div class="profile-content">
-                {% block profile_content %}
-                {% endblock %}
-            </div>
-        </div>
-    </div>
+<style>
+    @media only screen and (max-width: 1026px) {
+      #details {
+        width: 100%
+      }
+
+      #main {
+        margin-left: 0 !important;
+      }
+    }
+
+    #details {
+      flex: 1;
+      align-self: flex-start;
+    }
+
+    #main {
+      flex: 2;
+      margin-left: 10px;
+    }
+</style>
+
+<div class="row" id="row-container">
+    <div class="card col-3 mb-3" id="details">
+		<div class="card-body">
+			<h5 class="mb-2"><strong>Personal Info</strong></h5>
+			<div class="mb-0">
+				<div><strong>{{ user.get_full_name }}</strong></div>
+			</div>
+			<div><span id="user_uni">{{ user.university }} (Started {{ user.degree_commencement_year }})</span></div>
+			<div><span id="user_email">{{ user.email }}</span></div>
+			</br>
+			<div>Overall score: <span id="overall_score">{{ overall_score }}</span></div>
+		</div>
+		<div class="card-body border-top">
+			<h5 class="mb-2"><strong>Actions</strong></h5>
+			Filter <br>
+			<div class="float-right">
+				<a href="#" class="btn btn-danger btn-sm">Reset my score</a>
+			</div>
+		</div>
+	</div>
+	
+	
+	<div class="col" id="main">
+		{% if cases %}
+			{% for case, total_average, user_average, user_attempts, total_attempts, tags in cases %}
+			<div class="card-body card mb-4">
+				<div>
+					<a class="action-link" href="{% url "cases:view-case" case_study_id=case.id %}">
+						<h5 class="text-center"><strong>Case <span id="case_id">{{ case.id }}</span></strong></h5>
+					</a>
+					<div class="float-right">
+						{% for tag in tags %}
+							<span class="badge badge-secondary">{{ tag.tag }}</span>
+						{% endfor %}
+					</div>
+					</br>
+					<div class="card mt-2 mb-3 bg-light">
+						<div class="card-body">
+							{{ case.get_age_in_words|an|title }} {{ case.get_age_string }} {{ case.get_sex }} {{ case.get_optionals }}
+							presents to your
+							pharmacy {{ case.description }}
+						</div>
+					</div>
+					<div class="float-left">
+						<div>Avg Score: <span id="total_average">{{ total_average }}</span></div>
+						<div>My Score: <span id="user_average">{{ user_average }}</span></div>
+					</div>
+					<div class="float-right">
+						<div>Total Attempts: <span id="total_attempts">{{ total_attempts }}</span></div>
+						<div>My Attempts: <span id="user_attempts">{{ user_attempts }}</span></div>
+					</div>
+					
+				</div>
+			</div>
+			{% endfor %}
+		{% else %}
+		<div class="card-body card mb-4">
+			<h5 class="text-center"><strong>No results to show. Please try some case studies.</strong></h5>
+		</div>
+		{% endif %}
+	</div>
+	
+	
+</div>
 {% endblock %}
