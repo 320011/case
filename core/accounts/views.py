@@ -67,7 +67,7 @@ def view_signup(request):
             c = {
                 "message": "An activation link has been "
                            "sent to {}. Please confirm your "
-                           "email address to completed "
+                           "email address to complete "
                            "registration.".format(to_email)
             }
             return render(request, "activate-message.html", c)

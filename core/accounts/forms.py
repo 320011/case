@@ -13,7 +13,8 @@ class SignUpForm(UserCreationForm):
                 "class": "form-control",
                 "type": "text",
                 "name": "first_name",
-                "placeholder": "First Name"
+                "placeholder": "First Name",
+                "autofocus": "autofocus"
             }),
         label="First Name"
     )
