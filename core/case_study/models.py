@@ -183,3 +183,28 @@ class Attempt(models.Model):
     case_study = models.ForeignKey(CaseStudy, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     attempt_date = models.DateTimeField(null=True)
+
+class Comment(models.Model):
+    comment = models.TextField(null=True, blank=True)
+    case_study = models.ForeignKey(CaseStudy, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    # is_anon = models.BooleanField()
+
+    def __str__(self):
+        return self.comment
+
+class CommentVote(models.Model):
+    voteType = models.BooleanField()
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    
+    
+    def get_vote_score(self, comment):
+        vote_object = CommentVotes.objects.filter(comment=comment)
+        count = 0
+        for obj in vote_object:
+            if obj.voteType == True:
+                count = count + 1
+            else:
+                count = count - 1
+        return count

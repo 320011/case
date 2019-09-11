@@ -169,19 +169,27 @@
       e.classList.add('clicked');
 
     }
+    function printComments(comments){
+      var comment_string = "";
+      for(comment in comments){
+        
+      }
+    }
   </script>
   <script>
     $("#feedback").toggle();
     $("#submit_response").click(function () {
       let element = document.getElementsByClassName('clicked')[0];
-      console.log(element.id)
+      let case_id = document.getElementById('case_id').innerHTML; 
+      console.log(case_id)
 
       if (element) {
         $.ajax({
           url: '/cases/ajax/validate_answer/' + '{{ case.id }}',
           dataType: 'json',
           data: {
-            'choice': element.id
+            'choice': element.id,
+            'case_id': case_id
           },
           success: function (data) {
             // {#$('#questions').slideUp('slow', function(){ $(this).remove(); });#}
@@ -193,7 +201,11 @@
               $('#feedback_alert').removeClass('alert-success').addClass('alert-danger').html(data.answer_message)
             }
             $('#feedback_text').html(data.feedback);
-            console.log(data.answer_message)
+            $('#total_average').html(data.attempts.total_average);
+            $('#user_average').html(data.attempts.user_average);
+            $('#total_attempts').html(data.attempts.total_attempts);
+            $('#user_attempts').html(data.attempts.user_attempts);
+            console.log(data.comments);
           }
         });
       }
