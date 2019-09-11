@@ -1,13 +1,13 @@
 from django.http import HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.contrib.auth import login
+from django.contrib.auth import login, authenticate
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 from django.contrib.auth.decorators import login_required
-from .forms import UserSettingsForm, SignUpForm
+from .forms import UserSettingsForm, LogInForm, SignUpForm
 from .models import User
 from .tokens import account_activation_token
 from .decorators import anon_required
@@ -43,6 +43,32 @@ def view_profile_results(request):
         "title": "Results | My Profile",
     }
     return render(request, "profile-results.html", c)
+
+
+def view_login(request):
+    if request.method == "POST":
+        form = LogInForm(data = request.POST)
+        if form.is_valid():
+            email = request.POST['email']
+            password = request.POST['password']
+            user = authenticate(email=email, password=password)
+            dbuser = User.objects.filter(email=email)
+            
+            if user is not None:
+                if user.is_active:
+                    login(request, user)
+                    return redirect('/')
+            elif user is None and dbuser:
+                messages.error(request,'Please confirm your email address to login.')
+            else:
+                messages.error(request,'The email or password entered is incorrect.')
+    else:
+        form = LogInForm()
+    
+    c = {
+        "form": form
+    }
+    return render(request, "auth-login.html", c)
 
 
 @anon_required
