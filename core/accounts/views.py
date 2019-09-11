@@ -4,6 +4,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 from django.contrib.auth.decorators import login_required
@@ -14,10 +15,8 @@ from case_study.models import CaseStudy, Attempt, TagRelationship
 from .tokens import account_activation_token
 from .decorators import anon_required
 from django.contrib import messages
-from django.views.decorators.csrf import csrf_exempt
 
 @login_required
-@csrf_exempt
 def view_profile(request):
     user = request.user
     attempts = Attempt.objects.filter(user=request.user).distinct().values('case_study').annotate(case_count=Count('case_study')).filter(case_count__gt=0).order_by('case_study')
