@@ -206,7 +206,7 @@ def patch_model(request, model, schema, entity_id):
                     new_val = datetime.strptime(new_val, '%Y-%m-%dT%H:%M%S')
                 except:
                     new_val = None
-            elif model_type == "IntegerField" or model_type == "FloatField" and new_val == "":
+            elif (model_type == "IntegerField" or model_type == "FloatField") and new_val == "":
                 new_val = 0
             try:
                 setattr(obj, key, new_val)
