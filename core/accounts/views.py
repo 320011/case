@@ -14,13 +14,43 @@ from case_study.models import CaseStudy, Attempt, TagRelationship
 from .tokens import account_activation_token
 from .decorators import anon_required
 from django.contrib import messages
+from django.views.decorators.csrf import csrf_exempt
 
 @login_required
+@csrf_exempt
 def view_profile(request):
     user = request.user
     attempts = Attempt.objects.filter(user=request.user).distinct().values('case_study').annotate(case_count=Count('case_study')).filter(case_count__gt=0).order_by('case_study')
     cases = CaseStudy.objects.filter(id__in=[item['case_study'] for item in attempts])
 
+    # extract all the tags related to user's submitted cases and also the user averages and user
+    # attempts to calculate the overall score of the user
+    all_tags, user_average, user_attempts = [], [], []
+    for case in cases:
+        all_tags.append(TagRelationship.objects.filter(case_study=case))
+        user_average.append(case.get_average_score(user=request.user))
+        user_attempts.append(len(Attempt.objects.filter(case_study=case, user=request.user)))
+
+    total_score = sum([a*b for a,b in zip(user_average, user_attempts)])
+    total_tries = sum(user_attempts)
+    if total_tries == 0:
+        overall_score = 'N/A'
+    else:
+        overall_score = float("{0:.2f}".format(total_score/total_tries))
+
+    # if the user filter the cases by tags, then the view needs to be updated
+    if request.POST.get("filter_tag") and request.POST['filter_tag'] == 'All':
+        pass
+    elif request.POST.get("filter_tag"):
+        filter_ids = []
+        for case in cases:
+            case_tags = TagRelationship.objects.filter(case_study=case)
+            for tag in case_tags:
+                if tag.tag.name == request.POST['filter_tag']:
+                    filter_ids.append(case.id)
+        cases = CaseStudy.objects.filter(id__in=[item for item in filter_ids])
+
+    # all of these are calculated per case to be shown
     total_average, user_average, user_attempts, total_attempts, tags = [], [], [], [], []
     for case in cases:
         total_average.append(case.get_average_score())
@@ -31,17 +61,11 @@ def view_profile(request):
 
     cases = list(zip(cases, total_average, user_average, user_attempts, total_attempts, tags))
 
-    total_score = sum([a*b for a,b in zip(user_average, user_attempts)])
-    total_tries = sum(user_attempts)
-    if total_tries == 0:
-        overall_score = 'N/A'
-    else:
-        overall_score = float("{0:.2f}".format(total_score/total_tries))
-
     c = {
         'cases' : cases,
         'user' : user,
-        'overall_score' : overall_score
+        'overall_score' : overall_score,
+        'all_tags' : all_tags
     }
     return render(request, "profile-base.html", c)
 

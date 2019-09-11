@@ -47,8 +47,24 @@
 		</div>
 		<div class="card-body border-top">
 			<h5 class="mb-2"><strong>Actions</strong></h5>
-			Filter <br>
-			<div class="float-right">
+			Filter By: </br>
+			<div>
+				Tags </br>
+				<form method="post">
+					{% csrf_token %}
+					<button onclick="setGetParameter()" type="submit" class="btn btn-secondary btn-sm m-1"
+							id="filter_tag" name="filter_tag" value="All"> All </button> </br>
+					{% for tags in all_tags %}
+						{% for tag in tags %}
+							<button onclick="setGetParameter()" type="submit" class="btn btn-secondary btn-sm mb-1"
+									id="filter_tag" name="filter_tag" value={{ tag.tag.name }}>
+								{{ tag.tag.name }}
+							</button>
+						{% endfor %}
+					{% endfor %}
+				</form>
+			</div>
+			<div class="float-right mt-5">
 				<a href="#" class="btn btn-danger btn-sm">Reset my score</a>
 			</div>
 		</div>
@@ -97,4 +113,7 @@
 	
 	
 </div>
+
+<script src="{% static "js/viewCase.js" %}"></script>
+<script src="{% static "js/viewProfile.js" %}"></script>
 {% endblock %}
