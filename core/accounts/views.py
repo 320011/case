@@ -59,7 +59,11 @@ def view_login(request):
                     login(request, user)
                     return redirect('/')
             elif user is None and dbuser:
-                messages.error(request,'Please confirm your email address to login.')
+                if dbuser.first().is_active == True:
+                    m = 'The email or password entered is incorrect.'
+                else:
+                    m = 'Please confirm your email address to login.'
+                messages.error(request,m)
             else:
                 messages.error(request,'The email or password entered is incorrect.')
     else:
