@@ -39,6 +39,12 @@ function admin_updateEntity(endpoint, entity) {
       updates[sel.name] = sel.value;
     }
   }
+  // get <textarea> tags
+  let txtareas = document.getElementById(`admin-table-${entity}`).getElementsByTagName("textarea");
+  for (let i = 0; i < txtareas.length; i++) {
+    let ta = txtareas[i];
+    updates[ta.name] = ta.value;
+  }
 
   // ajax the updated data to the server
   fetch(endpoint + entity, {
