@@ -67,7 +67,7 @@ def view_profile(request):
         'overall_score' : overall_score,
         'all_tags' : all_tags
     }
-    return render(request, "profile-base.html", c)
+    return render(request, "profile-cases.html", c)
 
 
 @login_required
