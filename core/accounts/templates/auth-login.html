@@ -15,6 +15,7 @@
                 <h2>Log In</h2>
                 <p class="hint-text"></p>
                 {% for field in form %}
+                <p class="text-justify">{{ field.label }}</p>
                     <div class="form-group">
                         {{ field|addbootstrapstyle:field.label}}
                         {% if field.help_text %}

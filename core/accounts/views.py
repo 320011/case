@@ -133,7 +133,22 @@ def change_password(request):
             user = form.save()
             update_session_auth_hash(request, user)  # Important!
             messages.success(request, 'Your password was successfully updated!')
-            
+
+            message = render_to_string("mail/password-change.html", {
+                "user": user,
+            })
+
+            email_subject = "Confirm change of password"
+            to_email = form.cleaned_data.get("email")
+            email = EmailMessage(email_subject, message, to=[to_email])
+            email.send()
+
+            c = {
+                "message": "A confirmation link has been "
+                           "sent to {}.".format(to_email)
+            }
+            return render(request, "change-password.html", c)
+
         else:
             messages.error(request, 'Please correct the error below.')
     else:
