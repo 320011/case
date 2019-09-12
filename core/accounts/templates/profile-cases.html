@@ -66,10 +66,10 @@
 	</div>
 	
 	
-	<div class="col" id="main">
+	<div class="card col" id="main">
 		{% if cases %}
 			{% for case, total_average, user_average, user_attempts, total_attempts, all_tags in cases %}
-			<div class="card-body card mb-4">
+			<div class="card-body card my-3">
 				<div>
 					<a class="action-link" href="{% url "cases:view-case" case_study_id=case.id %}">
 						<h5 class="text-center"><strong>Case <span id="case_id">{{ case.id }}</span></strong></h5>
