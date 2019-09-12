@@ -1,17 +1,19 @@
 from django.http import HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.contrib.auth import login
+from django.contrib.auth import login,update_session_auth_hash
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 from django.contrib.auth.decorators import login_required
-from .forms import UserSettingsForm, SignUpForm
+from .forms import SignUpForm, UserSettingsForm
 from .models import User
 from .tokens import account_activation_token
 from .decorators import anon_required
 from django.contrib import messages
+from django.contrib.auth.forms import PasswordChangeForm
+
 
 @login_required
 def view_profile(request):
@@ -118,3 +120,33 @@ def view_settings(request):
     else:
         form = UserSettingsForm(instance=request.user)
     return render(request, "profile-settings.html", {'form': form})
+
+
+@login_required
+def view_change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            messages.success(request, 'Your password has been changed.')
+            message = render_to_string("mail/password-change.html", {
+                "user": user,
+                "domain": get_current_site(request).domain,
+                "protocol": request.is_secure() and "https" or "http"
+            })
+            email_subject = "Password Changed"
+            print("this is hte email we will send the msg to:", request.user.email)
+            email = EmailMessage(email_subject, message, to=[request.user.email])
+            email.send()
+            c = {
+                "message": "A comfirmation message has been sent to your email."
+            }
+            return render(request, "change-password.html", c)
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'profile-password.html', {
+        'form': form
+    })

@@ -6,10 +6,9 @@
 
 {% block body %}
     <div class='container'>
-            <p> {{ message }} </p>
+        <p> {{ message }} </p>
     </div>
     <div class='container'>
-    	    <div class='container'>
         <div class='signup-form'>
             <form method="post">
                 {% csrf_token %}
@@ -17,6 +16,7 @@
                 <p class="hint-text">Modify your account details.</p>
                 {% for field in form %}
                     <div class="form-group">
+                        <label for="{{ field.id_for_label }}" class="text-justify">{{ field.label }}</label>
                         {{ field }}
                         {% if field.help_text %}
                             <small class="help_text">{{ field.help_text }}</small>
@@ -26,8 +26,13 @@
                         {% endfor %}
                     </div>
                 {% endfor %}
-                                <div class="form-group">
-                    <button type="submit" class="btn btn-info btn-lg btn-block">Update settings</button>
+                <a class="text" href='{% url "accounts:change_password" %}'>Change Password</a>
+                <br>
+                <br>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-info btn-lg btn-block">Update Settings</button>
                 </div>
+            </form>
+        </div>
     </div>
 {% endblock %}
