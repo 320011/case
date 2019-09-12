@@ -120,45 +120,80 @@
             </div>
           </div>
         </div>
-        Comments:
-        <div class="card mt-2 mb-3">
-          <div class="card-body">
-            <form>
-              <div class="form-group">
-                <label for="comment-box">Your Comment</label>
-                <textarea class="form-control" id="comment-box" rows="3" placeholder="Enter comment here"></textarea>
-              </div>
-              <div class="form-group form-check">
-                  <input type="checkbox" class="form-check-input" id="is_anonymous_checkbox">
-                  <label class="form-check-label" for="is_anonymous_checkbox"><small>Comment as anonymous</small></label>
-                  <a class="btn btn-primary float-right" style="color: #FFF" id="submit_comment">Submit Comment</a>
-              </div>
-              
-            </form>
-          </div>
-          
-          <div class="card-body">
-            All Comments
-            <div class="list-group mb-3" id="comment-list" role="tablist">
-                {% for comment in comments %}
-                  <a class="list-group-item">
-                      <div class="d-flex w-100 justify-content-between">
-                          <small class="text-muted">
-                            {% if comment.is_anon == True %}
-                              Anonymous 
-                            {% else %}
-                              {{ comment.user }}
-                            {% endif %}
-                          </small>
-                          <small class="text-muted">{{ comment.comment_date }}</small>
-                        </div>
-                        <p class="mb-1">{{ comment.comment }}</p>
-                  </a>
-                {% endfor %}
+        <!-- Show comments if attempt is >= 1 -->
+        {% if attempts.user_attempts >= 1 %}
+          <!-- Comments: -->
+          <div class="card mt-2 mb-3">
+            <div class="card-body">
+              <form>
+                <div class="form-group">
+                  <label for="comment-box">Add Comment</label> 
+                  <textarea class="form-control" id="comment-box" rows="3" placeholder="Enter comment here"></textarea>
+                </div>
+                <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" id="is_anonymous_checkbox">
+                    <label class="form-check-label" for="is_anonymous_checkbox"><small>Comment as anonymous</small></label>
+                    <a class="btn btn-primary float-right" style="color: #FFF" id="submit_comment">Submit Comment</a>
+                </div>
+                
+              </form>
             </div>
-          </div>
+              <div class="card-body">
+                All Comments
+                  {% for comment in comments %}
+                    {% if comment.user == request.user %} 
+                      <div class = "row justify-content-end">
+                        <div class = "col-8">
+                          <div class="alert alert-primary" role="alert">
+                              <div class="d-flex w-100 justify-content-between">
+                                <small class="text-muted">
+                                  {{ comment.user }}
+                                </small>
+                                <small class="text-muted">{{ comment.comment_date }}</small>
+                              </div>
+                              <p class="mb-1">{{ comment.comment }}</p>
+                          </div> 
+                        </div> 
+                      </div> 
+                    {% elif comment.user.is_staff == True %}
+                    <div class = "row justify-content-start">
+                      <div class = "col-8">
+                        <div class="alert alert-info " role="alert">
+                            <div class="d-flex w-100 justify-content-between">
+                              <small class="text-muted">
+                                {{ comment.user }}
+                              </small>
+                              <small class="text-muted">{{ comment.comment_date }}</small>
+                            </div>
+                            <p class="mb-1">{{ comment.comment }}</p>
+                        </div> 
+                      </div>
+                    </div>
+                    {% else %}
+                      <div class = "row justify-content-start">
+                        <div class = "col-8">
+                          <div class="alert alert-secondary justify-content-start" role="alert">
+                            <div class="d-flex w-100 justify-content-between">
+                                <small class="text-muted">
+                                  {% if comment.is_anon == True %}
+                                    Anonymous 
+                                  {% else %}
+                                    {{ comment.user }}
+                                  {% endif %}
+                              </small>
+                              <small class="text-muted">{{ comment.comment_date }}</small>
+                            </div>
+                            <p class="mb-1">{{ comment.comment }}</p>
+                          </div>
+                        </div>
+                      </div>
+                    {% endif %}
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
         </div>
-      </div>
+      {% endif %}
     </div>
   </div>
 
@@ -268,7 +303,7 @@
           },
           success: function (comment_list) {
             comment_list = comment_list[0];
-            document.getElementById('comment-list').insertBefore(comment_list.fields.comment)
+            // document.getElementById('comment-list').insertBefore(comment_list.fields.comment)
             console.log(comment_list.fields.comment);
           }
         });
