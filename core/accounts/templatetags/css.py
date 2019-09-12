@@ -1,6 +1,7 @@
 from django import template
 register = template.Library()
 
+
 @register.filter(name='addbootstrapstyle')
 def addbootstrapstyle(field, placeholder=None):
     if placeholder is not None:

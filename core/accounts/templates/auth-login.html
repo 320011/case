@@ -9,15 +9,15 @@
 
 
     <div class="container">
-        <div class='login-form'>
+        <div class='signup-form'>
             <form method="POST">
                 {% csrf_token %}
                 <h2>Log In</h2>
                 <p class="hint-text"></p>
                 {% for field in form %}
-                <p class="text-justify">{{ field.label }}</p>
+                    <label for="{{ field.id_for_label }}" class="text-justify">{{ field.label }}</label>
                     <div class="form-group">
-                        {{ field|addbootstrapstyle:field.label}}
+                        {{ field|addbootstrapstyle:field.label }}
                         {% if field.help_text %}
                             <small class="help_text">{{ field.help_text }}</small>
                         {% endif %}
@@ -31,7 +31,10 @@
                 </div>
                 <p><a href="{% url "password_reset" %}">Forgot password?</a></p>
             </form>
-            <div class="text-center">Don't have an account? <a href="{% url "accounts:signup" %}">Create One</a></div>
+            <div class="text-center">Don't have an account? <a href="{% url "accounts:signup" %}">Sign up.</a></div>
         </div>
     </div>
+    <script>
+    $("#id_username").attr("type", "email"); // Fix for mobile keyboard. Could we do this better at the django form level?
+    </script>
 {% endblock %}

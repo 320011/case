@@ -7,16 +7,13 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 from django.contrib.auth.decorators import login_required
-<<<<<<< HEAD
-from .forms import UserSettingsForm, SignUpForm
-=======
 from .forms import SignUpForm, UserSettingsForm
->>>>>>> add change password functionality and add the names of placeholder for login and change password page
 from .models import User
 from .tokens import account_activation_token
 from .decorators import anon_required
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
+
 
 @login_required
 def view_profile(request):
@@ -126,29 +123,26 @@ def view_settings(request):
 
 
 @login_required
-def change_password(request):
+def view_change_password(request):
     if request.method == 'POST':
         form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
             user = form.save()
             update_session_auth_hash(request, user)  # Important!
-            messages.success(request, 'Your password was successfully updated!')
-
+            messages.success(request, 'Your password has been changed.')
             message = render_to_string("mail/password-change.html", {
                 "user": user,
+                "domain": get_current_site(request).domain,
+                "protocol": request.is_secure() and "https" or "http"
             })
-
-            email_subject = "Confirm change of password"
-            to_email = form.cleaned_data.get("email")
-            email = EmailMessage(email_subject, message, to=[to_email])
+            email_subject = "Password Changed"
+            print("this is hte email we will send the msg to:", request.user.email)
+            email = EmailMessage(email_subject, message, to=[request.user.email])
             email.send()
-
             c = {
-                "message": "A confirmation link has been "
-                           "sent to {}.".format(to_email)
+                "message": "A comfirmation message has been sent to your email."
             }
             return render(request, "change-password.html", c)
-
         else:
             messages.error(request, 'Please correct the error below.')
     else:
