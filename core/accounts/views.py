@@ -4,7 +4,6 @@ from django.contrib.auth import login, authenticate
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 from django.contrib.auth.decorators import login_required
@@ -15,20 +14,28 @@ from case_study.models import CaseStudy, Attempt, TagRelationship
 from .tokens import account_activation_token
 from .decorators import anon_required
 from django.contrib import messages
+from datetime import datetime
 
 @login_required
 def view_profile(request):
     user = request.user
-    attempts = Attempt.objects.filter(user=request.user).distinct().values('case_study').annotate(case_count=Count('case_study')).filter(case_count__gt=0).order_by('case_study')
+    attempts = Attempt.objects.filter(user=request.user).distinct().values('case_study').annotate(
+            case_count=Count('case_study')).filter(case_count__gt=0).order_by('case_study')
     cases = CaseStudy.objects.filter(id__in=[item['case_study'] for item in attempts])
 
     # extract all the tags related to user's submitted cases and also the user averages and user
     # attempts to calculate the overall score of the user
-    all_tags, user_average, user_attempts = [], [], []
+    all_tags, all_tags_names, user_average, user_attempts = [], [], [], []
     for case in cases:
         all_tags.append(TagRelationship.objects.filter(case_study=case))
         user_average.append(case.get_average_score(user=request.user))
         user_attempts.append(len(Attempt.objects.filter(case_study=case, user=request.user)))
+    
+    # extracts all the tags names and only keeps the unique ones
+    for tags in all_tags:
+        for tag in tags:
+            all_tags_names.append(tag.tag.name)
+    distinct_tags = set(all_tags_names)
 
     total_score = sum([a*b for a,b in zip(user_average, user_attempts)])
     total_tries = sum(user_attempts)
@@ -41,11 +48,13 @@ def view_profile(request):
     if request.POST.get("filter_tag") and request.POST['filter_tag'] == 'All':
         pass
     elif request.POST.get("filter_tag"):
+        tag_filter = (request.POST['filter_tag']).replace('_', ' ').strip()
+        print('\n\n\n\n', tag_filter, '\n\n\n\n')
         filter_ids = []
         for case in cases:
             case_tags = TagRelationship.objects.filter(case_study=case)
             for tag in case_tags:
-                if tag.tag.name == request.POST['filter_tag']:
+                if tag.tag.name == tag_filter:
                     filter_ids.append(case.id)
         cases = CaseStudy.objects.filter(id__in=[item for item in filter_ids])
 
@@ -64,7 +73,7 @@ def view_profile(request):
         'cases' : cases,
         'user' : user,
         'overall_score' : overall_score,
-        'all_tags' : all_tags
+        'all_tags' : distinct_tags
     }
     return render(request, "profile-cases.html", c)
 

@@ -48,40 +48,35 @@
 		<div class="card-body border-top">
 			<h5 class="mb-2"><strong>Actions</strong></h5>
 			Filter By: </br>
-			<div>
-				Tags </br>
-				<form method="post">
-					{% csrf_token %}
+			<form method="post">
+				{% csrf_token %}
+				<div>
+					Tags </br>
 					<button onclick="setGetParameter()" type="submit" class="btn btn-secondary btn-sm m-1"
 							id="filter_tag" name="filter_tag" value="All"> All </button> </br>
-					{% for tags in all_tags %}
-						{% for tag in tags %}
-							<button onclick="setGetParameter()" type="submit" class="btn btn-secondary btn-sm mb-1"
-									id="filter_tag" name="filter_tag" value={{ tag.tag.name }}>
-								{{ tag.tag.name }}
-							</button>
-						{% endfor %}
+					{% for tag in all_tags %}
+						<button onclick="setGetParameter()" type="submit" class="btn btn-secondary btn-sm mb-1"
+								id="filter_tag" name="filter_tag" value={{ tag.split|join:"_" }}>
+							{{ tag }}
+						</button>
 					{% endfor %}
-				</form>
-			</div>
-			<div class="float-right mt-5">
-				<a href="#" class="btn btn-danger btn-sm">Reset my score</a>
-			</div>
+				</div>
+    		</form>
 		</div>
 	</div>
 	
 	
 	<div class="col" id="main">
 		{% if cases %}
-			{% for case, total_average, user_average, user_attempts, total_attempts, tags in cases %}
+			{% for case, total_average, user_average, user_attempts, total_attempts, all_tags in cases %}
 			<div class="card-body card mb-4">
 				<div>
 					<a class="action-link" href="{% url "cases:view-case" case_study_id=case.id %}">
 						<h5 class="text-center"><strong>Case <span id="case_id">{{ case.id }}</span></strong></h5>
 					</a>
 					<div class="float-right">
-						{% for tag in tags %}
-							<span class="badge badge-secondary">{{ tag.tag }}</span>
+						{% for tag in all_tags %}
+							<span class="badge badge-secondary">{{ tag.tag.name }}</span>
 						{% endfor %}
 					</div>
 					</br>
