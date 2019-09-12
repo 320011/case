@@ -6,8 +6,6 @@
 {% endblock %}
 
 {% block body %}
-
-
     <div class="container">
         <div class='signup-form'>
             <form method="POST">
@@ -35,6 +33,6 @@
         </div>
     </div>
     <script>
-    $("#id_username").attr("type", "email"); // Fix for mobile keyboard. Could we do this better at the django form level?
+        $("#id_username").attr("type", "email"); // Fix for mobile keyboard. Could we do this better at the django form level?
     </script>
 {% endblock %}

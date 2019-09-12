@@ -9,8 +9,6 @@
         <p> {{ message }} </p>
     </div>
     <div class='container'>
-
-    <div class='container'>
         <div class='signup-form'>
             <form method="post">
                 {% csrf_token %}
@@ -34,6 +32,7 @@
                 <div class="form-group">
                     <button type="submit" class="btn btn-info btn-lg btn-block">Update Settings</button>
                 </div>
+            </form>
         </div>
     </div>
 {% endblock %}

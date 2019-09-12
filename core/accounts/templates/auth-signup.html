@@ -12,7 +12,7 @@
                 <h2>Register</h2>
                 <p class="hint-text">Create your account.<br>It's free and only takes a few minutes.</p>
                 {% for field in form %}
-                <label for="{{ field.id_for_label }}" class="text-justify">{{ field.label }}</label>
+                    <label for="{{ field.id_for_label }}" class="text-justify">{{ field.label }}</label>
                     <div class="form-group">
                         {{ field }}
                         {% if field.help_text %}
