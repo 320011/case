@@ -247,13 +247,13 @@ def validate_answer(request, case_study_id):
 def submit_comment(request, case_study_id):
     case = get_object_or_404(CaseStudy, pk=case_study_id)
     comment_body = request.GET.get('comment_body', None)
-    comment_is_anon = request.GET.get('comment_is_anon', None)
+    comment_is_anon = request.GET.get('comment_is_anon', None).capitalize() 
     # Create comment 
     comment = Comment.objects.create(comment=comment_body, case_study=case, user=request.user, is_anon=comment_is_anon, comment_date=timezone.now())
     comment_list = serializers.serialize('json', [comment])
-    data = {
-        'comments': comment_list
-    }
+    # data = {
+    #     'comments': comment_list
+    # }
     return HttpResponse(comment_list, content_type="text/json-comment-filtered" )
 
 def test_view(request, case_study_id):

@@ -195,16 +195,12 @@ class Comment(models.Model):
         return self.comment
 
 class CommentVote(models.Model):
-    voteType = models.BooleanField()
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     
     def get_vote_score(self, comment):
-        vote_object = CommentVotes.objects.filter(comment=comment)
+        vote_object = CommentVote.objects.filter(comment=comment)
         count = 0
         for obj in vote_object:
-            if obj.voteType == True:
-                count = count + 1
-            else:
-                count = count - 1
+            count = count + 1
         return count
