@@ -50,9 +50,9 @@
 			Filter By: </br>
 			<form method="post">
 				{% csrf_token %}
-				<div>
-					Tags </br>
-					<button onclick="setGetParameter()" type="submit" class="btn btn-secondary btn-sm m-1"
+				<div class="mt-2">
+					<strong> Tags </strong> </br>
+					<button onclick="setGetParameter()" type="submit" class="btn btn-secondary btn-sm my-1"
 							id="filter_tag" name="filter_tag" value="All"> All </button> </br>
 					{% for tag in all_tags %}
 						<button onclick="setGetParameter()" type="submit" class="btn btn-secondary btn-sm mb-1"
@@ -61,12 +61,21 @@
 						</button>
 					{% endfor %}
 				</div>
+				<div class="mt-3">
+					<p id="demo"></p>
+					<strong> Time </strong> </br>
+					<label for="start"> Start date: </label>
+					<input onclick="maxTime()" type="date" id="start_time" name="start_time"></input> </br>
+					<label class="mt-2" for="end"> End date: </label>
+					<input onclick="maxTime(); endMinTime();" type="date" id="end_time" name="end_time"></input> </br>
+					<button type="submit" class="btn btn-success btn-sm my-2" id="submit_date" name="submit_date"> Submit </button>
+				</div>
     		</form>
 		</div>
 	</div>
 	
 	
-	<div class="card col" id="main">
+	<div class="card d-inline-block h-25 col" id="main">
 		{% if cases %}
 			{% for case, total_average, user_average, user_attempts, total_attempts, all_tags in cases %}
 			<div class="card-body card my-3">

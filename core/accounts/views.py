@@ -14,7 +14,7 @@ from case_study.models import CaseStudy, Attempt, TagRelationship
 from .tokens import account_activation_token
 from .decorators import anon_required
 from django.contrib import messages
-from datetime import datetime
+from datetime import datetime, timedelta
 
 @login_required
 def view_profile(request):
@@ -37,6 +37,7 @@ def view_profile(request):
             all_tags_names.append(tag.tag.name)
     distinct_tags = set(all_tags_names)
 
+    # user's overall performance
     total_score = sum([a*b for a,b in zip(user_average, user_attempts)])
     total_tries = sum(user_attempts)
     if total_tries == 0:
@@ -44,9 +45,16 @@ def view_profile(request):
     else:
         overall_score = float("{0:.2f}".format(total_score/total_tries))
 
-    # if the user filter the cases by tags, then the view needs to be updated
+    # if the user filters the cases by tags or time, then the view needs to be updated
     if request.POST.get("filter_tag") and request.POST['filter_tag'] == 'All':
         pass
+    elif request.POST.get("start_time") and request.POST.get("end_time"):
+        start = request.POST['start_time']
+        end = request.POST['end_time']
+        # A day is added to the end date as the dates are not inclusive in __range
+        end_date = datetime.strptime(end, "%Y-%m-%d")
+        end_inclusive = end_date + timedelta(days=1) - timedelta(seconds=1)
+        cases = CaseStudy.objects.filter(date_submitted__range=(start, end_inclusive))
     elif request.POST.get("filter_tag"):
         tag_filter = (request.POST['filter_tag']).replace('_', ' ').strip()
         print('\n\n\n\n', tag_filter, '\n\n\n\n')
