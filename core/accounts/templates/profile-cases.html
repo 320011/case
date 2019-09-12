@@ -81,7 +81,7 @@
 			{% for case, total_average, user_average, user_attempts, total_attempts, all_tags in cases %}
 			<div class="card-body card my-3">
 				<div>
-					<a class="action-link" href="{% url "cases:view-case" case_study_id=case.id %}">
+					<a class="action-link text-decoration-none" href="{% url "cases:view-case" case_study_id=case.id %}">
 						<h5 class="text-center"><strong>Case <span id="case_id">{{ case.id }}</span></strong></h5>
 					</a>
 					<div class="float-right">
