@@ -53,10 +53,10 @@
 				{% csrf_token %}
 				<div class="mt-2">
 					<strong> Tags </strong> </br>
-					<button onclick="setGetParameter()" type="submit" class="btn btn-secondary btn-sm my-1"
-							id="filter_tag" name="filter_tag" value="All"> All </button> </br>
+					<button onclick="setGetParameter()" type="submit" class="badge badge-secondary btn-sm my-1"
+							id="filter_tag" name="filter_tag" value="All"> All </button>
 					{% for tag in all_tags %}
-						<button onclick="setGetParameter()" type="submit" class="btn btn-secondary btn-sm mb-1"
+						<button onclick="setGetParameter()" type="submit" class="badge badge-secondary mb-1"
 								id="filter_tag" name="filter_tag" value={{ tag.split|join:"_" }}>
 							{{ tag }}
 						</button>
