@@ -19,6 +19,7 @@
                 <p class="hint-text">Modify your account details.</p>
                 {% for field in form %}
                     <div class="form-group">
+                        <p class="text-justify">{{ field.label }}</p>
                         {{ field }}
                         {% if field.help_text %}
                             <small class="help_text">{{ field.help_text }}</small>
@@ -34,9 +35,7 @@
                     <button type="submit" class="btn btn-info btn-lg btn-block" onclick="return confirm('Are you sure to update your settings?')" >Update Settings</button>
                 </div>                                
 
-                <div class="form-group">
-                    <button type="submit" class="btn btn-danger btn-lg btn-block" onclick="return confirm('Are you sure to reset your Scorecard?')">Reset Scorecard</button>
-                </div>
+
     </div>
 <a class="text" href='{% url "accounts:change_password" %}'>Change Password?</a>
 

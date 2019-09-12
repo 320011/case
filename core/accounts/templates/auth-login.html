@@ -6,16 +6,11 @@
 {% endblock %}
 
 {% block body %}
-    <div class='container'>
-           {% for message in messages %}
 
-            <p> {{ message }} </p>
-                        {% endfor %}
 
-    </div>
     <div class="container">
         <div class='login-form'>
-            <form method="post">
+            <form method="POST">
                 {% csrf_token %}
                 <h2>Log In</h2>
                 <p class="hint-text"></p>
