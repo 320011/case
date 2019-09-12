@@ -59,7 +59,6 @@ def view_profile(request):
         cases = CaseStudy.objects.filter(date_submitted__range=(start, end_inclusive))
     elif request.POST.get("filter_tag"):
         tag_filter = (request.POST['filter_tag']).replace('_', ' ').strip()
-        print('\n\n\n\n', tag_filter, '\n\n\n\n')
         filter_ids = []
         for case in cases:
             case_tags = TagRelationship.objects.filter(case_study=case)
