@@ -40,7 +40,8 @@
 			<div class="mb-0">
 				<div><strong>{{ user.get_full_name }}</strong></div>
 			</div>
-			<div><span id="user_uni">{{ user.university }} (Started {{ user.degree_commencement_year }})</span></div>
+			<div><span id="user_uni">{{ user.university }}
+				{% if user.degree_commencement_year %} (Started {{ user.degree_commencement_year }}) {% endif %} </span></div>
 			<div><span id="user_email">{{ user.email }}</span></div>
 			</br>
 			<div>Overall score: <span id="overall_score">{{ overall_score }}</span></div>
@@ -109,7 +110,7 @@
 			</div>
 			{% endfor %}
 		{% else %}
-		<div class="card-body card mb-4">
+		<div class="card-body card my-3">
 			<h5 class="text-center"><strong>No results to show. Please try some case studies.</strong></h5>
 		</div>
 		{% endif %}
