@@ -40,19 +40,20 @@
     <div class="card col-3 mb-3" id="details">
       <div class="card-body">
         <h5 class="mb-2"><strong>Search</strong></h5>
+        <form action="{% url 'cases:search'%}" method="GET">
         <div>Key Words</div>
-        <div class="mb-3"><input type="text" name="key_words" id="kw_choice" ></div>
+        <div class="mb-3"><input type="text" name="key_words" id="kw_choice"  value="{{ key_words }}"> </div>
       
         <div>MHx</div>
-        <div class="mb-3"><input type="text" name="mhx" id="mhx_choice"></div>
+        <div class="mb-3"><input type="text" name="mhx" id="mhx_choice" value="{{ mhx }}"></div>
 
         <div>Medication</div>
-        <div class="mb-3"><input type="text" name="medication" id="medication_choice"></div>
+        <div class="mb-3"><input type="text" name="medication" id="medication_choice" value="{{ medication }}"></div>
 
         <div>Patient Sex</div>
         <div class="mb-3">
             {% for a,b in sex_choices %}
-            <input type="checkbox" name="sex_choice" id="sex_choice{{ forloop.counter }}" value="{{ sex_choice.id }}">
+            <input type="checkbox" name="sex_choice" id="sex_choice{{ forloop.counter }}" value="{{ b }}">
             <label for="sex_choice{{ forloop.counter }}">{{ b }}</label>
             <br>
             {% endfor %}
@@ -61,21 +62,30 @@
         <div>Tags</div>
         <div class="mb-3">
           {% for tag in tags %}
-          <input type="checkbox" name="tag_choice" id="tag_choice{{ forloop.counter }}" value="{{ tag_choice.id }}">
-            <label for="tag_choice{{ forloop.counter }}">{{ tag.name }}</label>  
-            <br>
+          <input type="checkbox" name="tag_choice" id="tag_choice{{ forloop.counter }}" value="{{tag}}" 
+          {% if tag.name in tag_choices %}
+          checked
+          {% endif %}
+          >
+          {{tag_choice}}
+          <label for="tag_choice{{ forloop.counter }}">{{ tag.name }}</label>  
+          <br>
           {% endfor %}
         </div>
         
       </div>
       <div class="card-body border-top">
         <div class="float-right">
-          <a href="#" class="btn btn-primary btn-sm">Search</a>
+          <!-- <a href="#" class="btn btn-primary btn-sm">Search</a> -->
+            <input type="submit" value="Search">
         </div>
       </div>
+    </form>
     </div>
 
     <div class="card col" id="main">
+        {{get}}
+        {{tag_choices}}
       <!-- <div class="card-body">
         <div>
           <h5 class="text-center"><strong>Case <span id="case_id">{{ case.id }}</span></strong></h5>

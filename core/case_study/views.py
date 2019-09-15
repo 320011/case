@@ -236,14 +236,33 @@ def validate_answer(request, case_study_id):
     }
     return JsonResponse(data)
 
+
+def get_or_none(req,get):
+    out = ""
+    if get.get(req) is not None:
+        out = get.get(req)
+    
+    return out
+
 @login_required
 def search(request):
     tags = Tag.objects.filter()
     sex_choices =CaseStudy.SEX_CHOICES
 
+    get=request.GET
+
+    tag_choice=get.getlist('tag_choice')
+
+
     c={
         "tags": tags,
         "sex_choices": sex_choices,
+        "get":get,
+
+        "key_words": get_or_none("key_words",get),
+        "mhx":  get_or_none('mhx',get),
+        "medication": get_or_none('medication',get),
+        "tag_choices": tag_choice#get_or_none('tag_choice',get),
     }
     
     # c={
