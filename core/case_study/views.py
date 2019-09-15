@@ -8,6 +8,8 @@ from django.utils import timezone
 from .forms import CaseStudyForm, CaseStudyTagForm, MedicalHistoryForm, MedicationForm  # , CaseTagForm
 from .models import Tag, TagRelationship, CaseStudy, MedicalHistory, Medication, Attempt
 
+from django.db.models import Count
+
 
 @login_required
 def start_new_case(request):
@@ -246,23 +248,32 @@ def get_or_none(req,get):
 
 @login_required
 def search(request):
+    
+#-------------------------------------------------------------------------------------------
+#  Just copied from view_profile
+#-------------------------------------------------------------------------------------------
+   
+#-------------------------------------------------------------------------------------------
+
+    cases = CaseStudy.objects.values
+
     tags = Tag.objects.filter()
-    sex_choices =CaseStudy.SEX_CHOICES
+    sexes =CaseStudy.SEX_CHOICES
 
     get=request.GET
 
-    tag_choice=get.getlist('tag_choice')
-
-
     c={
         "tags": tags,
-        "sex_choices": sex_choices,
+        "sexes": sexes,
         "get":get,
 
+        'cases': cases,
+        
         "key_words": get_or_none("key_words",get),
         "mhx":  get_or_none('mhx',get),
         "medication": get_or_none('medication',get),
-        "tag_choices": tag_choice#get_or_none('tag_choice',get),
+        "sex_choices": get.getlist('sex_choice'),
+        "tag_choices": get.getlist('tag_choice'),
     }
     
     # c={
