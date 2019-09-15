@@ -179,6 +179,8 @@ def create_new_case(request, case_study_id):
                   })
 
 
+
+
 @login_required
 def view_case(request, case_study_id):
     case_study = CaseStudy.objects.get(pk=case_study_id)
@@ -233,3 +235,25 @@ def validate_answer(request, case_study_id):
         'feedback': case.feedback
     }
     return JsonResponse(data)
+
+@login_required
+def search(request):
+    tags = Tag.objects.filter()
+    sex_choices =CaseStudy.SEX_CHOICES
+
+    c={
+        "tags": tags,
+        "sex_choices": sex_choices,
+    }
+    
+    # c={
+    #     "case_study_form": case_study_form,
+    #     "tags": relevant_tags,
+    #     "medical_histories": medical_histories,
+    #     "medications": medications,
+    #     "case_study_tag_form": case_study_tag_form,
+    #     "medical_history_form": medical_history_form,
+    #     "medication_form": medication_form,
+    # }
+
+    return render(request,"search.html",c)
