@@ -96,7 +96,7 @@
                     <h5 class="text-center"><strong>Case <span id="case_id">{{ case.id }}</span></strong></h5>
                 </a>
                 <div class="float-right">
-                    {% for tag in tags %}
+                    {% for tag in case.tags %}
                     <span class="badge badge-secondary">{{ tag.tag.name }}</span>
                     {% endfor %}
                 </div>

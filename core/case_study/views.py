@@ -239,6 +239,7 @@ def validate_answer(request, case_study_id):
     return JsonResponse(data)
 
 
+#small helper function
 def get_or_none(req,get):
     out = ""
     if get.get(req) is not None:
@@ -248,19 +249,32 @@ def get_or_none(req,get):
 
 @login_required
 def search(request):
-    
-#-------------------------------------------------------------------------------------------
-#  Just copied from view_profile
-#-------------------------------------------------------------------------------------------
-   
-#-------------------------------------------------------------------------------------------
 
-    cases = CaseStudy.objects.values
+
+    get=request.GET
+
+    cases = CaseStudy.objects
+
+    keywords=get.get("key_words")
+    if keywords is not None and len(keywords) !=0:
+        kw_list=keywords.split()
+        for k in kw_list:
+            cases=cases.filter(description__icontains=k)
+
+    if len(get.getlist('sex_choices'))!=0:
+        for s in get.getlist('sex_choices'):
+            cases = cases.filter(description__icontains=k)
+
+    cases=cases.filter()
+    
+    for case in cases:
+        case_tags = TagRelationship.objects.filter(case_study=case)
+        case.tags=case_tags
+
 
     tags = Tag.objects.filter()
     sexes =CaseStudy.SEX_CHOICES
 
-    get=request.GET
 
     c={
         "tags": tags,
