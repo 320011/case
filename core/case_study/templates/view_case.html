@@ -136,15 +136,15 @@
                 </div>
               </form>
               <br>
-              <hr class="mt-0">
-              All Comments
+              <hr>
+              <div class="mb-3">All Comments</div>
               <div id="comment-container">
                 {% for comment in comments %}
                   {% if comment.user == request.user %}
                     <div class="row justify-content-end">
-                      <div class="col-8">
+                      <div class="col-8 comment-container">
                         <div class="alert alert-primary" role="alert">
-                          <div class="d-flex w-100 justify-content-between">
+                          <div class="d-flex w-100 justify-content-between comment-content">
                             <small class="text-muted">
                               {% if comment.is_anon == True %}
                                 {{ comment.user }} (Anonymous)
@@ -152,6 +152,7 @@
                                 {{ comment.user }}
                               {% endif %}
                             </small>
+                            <br class="comment-break d-none">
                             <small class="text-muted">{{ comment.comment_date }}</small>
                           </div>
                           <p class="mb-1">{{ comment.comment }}</p>
@@ -160,12 +161,13 @@
                     </div>
                   {% elif comment.user.is_staff == True %}
                     <div class="row justify-content-start">
-                      <div class="col-8">
+                      <div class="col-8 comment-container">
                         <div class="alert alert-info " role="alert">
-                          <div class="d-flex w-100 justify-content-between">
+                          <div class="d-flex w-100 justify-content-between comment-content">
                             <small class="text-muted">
                               {{ comment.user }}
                             </small>
+                            <br class="comment-break d-none">
                             <small class="text-muted">{{ comment.comment_date }}</small>
                           </div>
                           <p class="mb-1">{{ comment.comment }}</p>
@@ -174,9 +176,9 @@
                     </div>
                   {% else %}
                     <div class="row justify-content-start">
-                      <div class="col-8">
+                      <div class="col-8 comment-container">
                         <div class="alert alert-secondary justify-content-start" role="alert">
-                          <div class="d-flex w-100 justify-content-between">
+                          <div class="d-flex w-100 justify-content-between comment-content">
                             <small class="text-muted">
                               {% if comment.is_anon == True %}
                                 Anonymous
@@ -184,6 +186,7 @@
                                 {{ comment.user }}
                               {% endif %}
                             </small>
+                            <br class="comment-break d-none">
                             <small class="text-muted">{{ comment.comment_date }}</small>
                           </div>
                           <p class="mb-1">{{ comment.comment }}</p>
