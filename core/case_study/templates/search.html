@@ -53,8 +53,8 @@
         <div>Patient Sex</div>
         <div class="mb-3">
             {% for a,b in sexes %}
-            <input type="checkbox" name="sex_choice" id="sex_choice{{ forloop.counter }}" value="{{ b }}"
-            {% if b in sex_choices %}
+            <input type="checkbox" name="sex_choice" id="sex_choice{{ forloop.counter }}" value="{{ a }}"
+            {% if a in sex_choices %}
             checked
             {% endif %}
             >
@@ -88,7 +88,10 @@
     </div>
 
     <div class="card d-inline-block h-25 col" id="main">
-        {% if cases %}
+
+      
+
+      {% if cases %}
         {% for case in cases %}
         <div class="card-body card my-3">
             <div>

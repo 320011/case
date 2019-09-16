@@ -252,8 +252,9 @@ def search(request):
 
 
     get=request.GET
-
     cases = CaseStudy.objects
+    cases=cases.filter()
+
 
     keywords=get.get("key_words")
     if keywords is not None and len(keywords) !=0:
@@ -261,17 +262,47 @@ def search(request):
         for k in kw_list:
             cases=cases.filter(description__icontains=k)
 
-    if len(get.getlist('sex_choices'))!=0:
-        for s in get.getlist('sex_choices'):
-            cases = cases.filter(description__icontains=k)
 
-    cases=cases.filter()
     
+    
+    sex_choices = get.getlist('sex_choice')
+    if len(sex_choices) != 0:
+        sex_choices=sex_choices
+        cases = cases.filter(sex__in=[s for s in sex_choices])
+
+    mhxs = get.get("mhx")
+    if mhxs is not None and len(mhxs) != 0:
+        mhx_list = mhxs.split()
+        for k in mhx_list:
+            cases = cases.filter(medicalhistory__body__icontains=k)
+
+
+    medicines = get.get("medication")
+    if medicines is not None and len(medicines) != 0:
+        medication_list = medicines.split()
+        for k in medication_list:
+            cases = cases.filter(medication__name__icontains=k)
+
+    
+    debug=[]
+    tag_list=get.getlist('tag_choice')
+    if len(tag_list) != 0:
+        filter_ids = []
+        for case in cases:
+            case_tags = TagRelationship.objects.filter(case_study=case)
+            for tag in case_tags:
+                if tag.tag.name in tag_list:
+                    filter_ids.append(case.id)   
+        cases = cases.filter(id__in=[item for item in filter_ids])
+
+    
+
     for case in cases:
         case_tags = TagRelationship.objects.filter(case_study=case)
         case.tags=case_tags
 
 
+    #all tags
     tags = Tag.objects.filter()
     sexes =CaseStudy.SEX_CHOICES
 
@@ -283,6 +314,7 @@ def search(request):
 
         'cases': cases,
         
+
         "key_words": get_or_none("key_words",get),
         "mhx":  get_or_none('mhx',get),
         "medication": get_or_none('medication',get),
