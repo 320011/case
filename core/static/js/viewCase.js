@@ -48,7 +48,7 @@ $("#submit_response").click(function () {
 
   if (element) {
     $.ajax({
-      url: '/cases/ajax/validate_answer/' + id,
+      url: '/cases/api/v1/validate_answer/' + id,
       dataType: 'json',
       data: {
         'choice': element.id
@@ -91,13 +91,14 @@ $('#submit_comment').click(function () {
   let id = document.getElementById('case_id').innerText;
   if (comment_body) {
     $.ajax({
-      url: '/cases/ajax/submit_comment/' + id,
+      url: '/cases/api/v1/submit_comment/' + id,
       dataType: 'json',
       data: {
-        'comment_body': comment_body,
-        'comment_is_anon': comment_is_anon
+        'body': comment_body,
+        'is_anon': comment_is_anon
       },
       success: function (data) {
+        $('#comment-box').val('');
         let date = moment(data.comment.date).format("MMM D YYYY, hh:mm a.");
         let name = data.comment.is_anon ? data.user.name + " (Anonymous)" : data.user.name;
         htmlstring =
