@@ -1,12 +1,13 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core import serializers
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
 
 from .forms import CaseStudyForm, CaseStudyTagForm, MedicalHistoryForm, MedicationForm  # , CaseTagForm
-from .models import Tag, TagRelationship, CaseStudy, MedicalHistory, Medication, Attempt
+from .models import Tag, TagRelationship, CaseStudy, MedicalHistory, Medication, Attempt, Comment
 
 
 @login_required
@@ -181,14 +182,15 @@ def create_new_case(request, case_study_id):
 
 @login_required
 def view_case(request, case_study_id):
-    case_study = CaseStudy.objects.get(pk=case_study_id)
+    case_study = get_object_or_404(CaseStudy, pk=case_study_id)
     mhx = MedicalHistory.objects.filter(case_study=case_study)
     medications = Medication.objects.filter(case_study=case_study)
     tags = TagRelationship.objects.filter(case_study=case_study)
     total_average = case_study.get_average_score()
     user_average = case_study.get_average_score(user=request.user)
-    user_attempts = len(Attempt.objects.filter(case_study=case_study, user=request.user))
-    total_attempts = len(Attempt.objects.filter(case_study=case_study))
+    user_attempts = Attempt.objects.filter(case_study=case_study, user=request.user).count()
+    total_attempts = Attempt.objects.filter(case_study=case_study).count()
+    comments = Comment.objects.filter(case_study=case_study_id).order_by("-comment_date")
     c = {
         "attempts": {
             "total_average": total_average,
@@ -199,7 +201,8 @@ def view_case(request, case_study_id):
         "case": case_study,
         "mhx": mhx,
         "medications": medications,
-        "tags": tags
+        "tags": tags,
+        "comments": comments
     }
     return render(request, "view_case.html", c)
 
@@ -208,6 +211,7 @@ def validate_answer(request, case_study_id):
     case = get_object_or_404(CaseStudy, pk=case_study_id)
     choice = request.GET.get('choice', None)
     success = False
+    # Get message
     if choice == case.answer:
         success = True
     message = "<strong>Correct Answer: " + case.answer + "</strong><br><em>" + case.get_answer_from_character(
@@ -216,11 +220,15 @@ def validate_answer(request, case_study_id):
     if success:
         message = "<strong>Correct Answer: " + case.answer + "</strong><br><em>" + case.get_answer_from_character(
             case.answer) + "</em><br>You answered correctly."
+    # Get attempts information
     Attempt.objects.create(user_answer=choice, case_study=case, user=request.user, attempt_date=timezone.now())
     total_average = case.get_average_score()
     user_average = case.get_average_score(user=request.user)
-    user_attempts = len(Attempt.objects.filter(case_study=case, user=request.user))
-    total_attempts = len(Attempt.objects.filter(case_study=case))
+    user_attempts = Attempt.objects.filter(case_study=case, user=request.user).count()
+    total_attempts = Attempt.objects.filter(case_study=case).count()
+    # Get comments
+    comments = Comment.objects.filter(case_study=case_study_id)
+    comments_json = serializers.serialize('json', comments)
     data = {
         'attempts': {
             'total_average': total_average,
@@ -230,6 +238,28 @@ def validate_answer(request, case_study_id):
         },
         'success': success,
         'answer_message': message,
-        'feedback': case.feedback
+        'feedback': case.feedback,
+        'comments': comments_json
+    }
+    return JsonResponse(data)
+
+
+def submit_comment(request, case_study_id):
+    case = get_object_or_404(CaseStudy, pk=case_study_id)
+    body = request.GET.get('body', None)
+    is_anon = request.GET.get('is_anon', None).capitalize()
+    # Create comment 
+    comment = Comment.objects.create(comment=body, case_study=case, user=request.user, is_anon=is_anon,
+                                     comment_date=timezone.now())
+    data = {
+        'comment': {
+            'body': body,
+            'date': timezone.now(),
+            'is_anon': comment.is_anon == 'True'
+        },
+        'user': {
+            'name': request.user.get_full_name(),
+            'is_staff': request.user.is_staff
+        }
     }
     return JsonResponse(data)

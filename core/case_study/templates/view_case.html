@@ -53,7 +53,7 @@
         <div>Average Score: <span id="total_average">{{ attempts.total_average }}</span></div>
         <div>My Score: <span id="user_average">{{ attempts.user_average }}</span></div>
         <div>Total Attempts: <span id="total_attempts">{{ attempts.total_attempts }}</span></div>
-        <div class="mb-3">My Attempts: <span id="user_attempts">{{ attempts.user_attempts }}</span></div>
+        <div>My Attempts: <span id="user_attempts">{{ attempts.user_attempts }}</span></div>
         <div>
           {% for tag in tags %}
             <span class="badge badge-secondary">{{ tag.tag }}</span>
@@ -62,12 +62,8 @@
       </div>
       <div class="card-body border-top">
         <h5 class="mb-2"><strong>Actions</strong></h5>
-        Export <br>
-        Report Case Study <br>
-        <div class="float-right">
           <a href="#" class="btn btn-primary btn-sm">Edit</a>
           <a href="#" class="btn btn-danger btn-sm">Delete</a>
-        </div>
       </div>
     </div>
     <div class="card col" id="main">
@@ -107,7 +103,7 @@
               <a class="list-group-item" onclick="handleClick(this);" id="C">C. {{ case.answer_c }}</a>
               <a class="list-group-item" onclick="handleClick(this);" id="D">D. {{ case.answer_d }}</a>
             </div>
-            <a class="btn btn-primary float-right" style="color: #FFF" id="submit_response">Submit Response</a>
+            <a class="btn btn-primary float-right" style="color: #FFF; cursor: pointer" id="submit_response">{% if attempts.user_attempts == 0 %}Submit Response{% else %}Attempt Again{% endif %}</a>
           </div>
           <div class="card-body pt-0" id="feedback">
             <div class="alert mb-3" id="feedback_alert"></div>
@@ -117,14 +113,96 @@
             </div>
             <div class="float-right">
               <a class="btn btn-primary" id="attempt_again" style="color: #FFF">Attempt Again</a>
-              <a href="#" class="btn btn-primary">Join Conversation</a>
             </div>
           </div>
         </div>
+        <div class="{% if attempts.user_attempts == 0 %}d-none{% endif %}" id="discussion_container">
+          <div class="alert alert-info text-center" id="show_discussion" style="cursor: pointer">
+            <strong id="show_hide">Show Discussion</strong>
+          </div>
+          <div class="card mt-2 mb-3" id="discussion">
+            <div class="card-body">
+              <form>
+                <div class="form-group">
+                  <label for="comment-box">Add Comment</label>
+                  <textarea class="form-control" id="comment-box" rows="3" placeholder="Enter comment here"></textarea>
+                </div>
+                <div class="form-group form-check">
+                  <input type="checkbox" class="form-check-input" id="is_anonymous_checkbox">
+                  <label class="form-check-label" for="is_anonymous_checkbox">
+                    <small>Comment as anonymous</small>
+                  </label>
+                  <a class="btn btn-primary float-right" style="color: #FFF; cursor: pointer" id="submit_comment">Submit Comment</a>
+                </div>
+              </form>
+              <br>
+              <hr>
+              <div class="mb-3">All Comments</div>
+              <div id="comment-container">
+                {% for comment in comments %}
+                  {% if comment.user == request.user %}
+                    <div class="row justify-content-end">
+                      <div class="col-8 comment-container">
+                        <div class="alert alert-primary" role="alert">
+                          <div class="d-flex w-100 justify-content-between comment-content">
+                            <small class="text-muted">
+                              {% if comment.is_anon == True %}
+                                {{ comment.user }} (Anonymous)
+                              {% else %}
+                                {{ comment.user }}
+                              {% endif %}
+                            </small>
+                            <br class="comment-break d-none">
+                            <small class="text-muted">{{ comment.comment_date }}</small>
+                          </div>
+                          <p class="mb-1">{{ comment.comment }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  {% elif comment.user.is_staff == True %}
+                    <div class="row justify-content-start">
+                      <div class="col-8 comment-container">
+                        <div class="alert alert-info " role="alert">
+                          <div class="d-flex w-100 justify-content-between comment-content">
+                            <small class="text-muted">
+                              {{ comment.user }}
+                            </small>
+                            <br class="comment-break d-none">
+                            <small class="text-muted">{{ comment.comment_date }}</small>
+                          </div>
+                          <p class="mb-1">{{ comment.comment }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  {% else %}
+                    <div class="row justify-content-start">
+                      <div class="col-8 comment-container">
+                        <div class="alert alert-secondary justify-content-start" role="alert">
+                          <div class="d-flex w-100 justify-content-between comment-content">
+                            <small class="text-muted">
+                              {% if comment.is_anon == True %}
+                                Anonymous
+                              {% else %}
+                                {{ comment.user }}
+                              {% endif %}
+                            </small>
+                            <br class="comment-break d-none">
+                            <small class="text-muted">{{ comment.comment_date }}</small>
+                          </div>
+                          <p class="mb-1">{{ comment.comment }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Show comments if attempt is >= 1 -->
       </div>
     </div>
   </div>
-
   <br>
   <script src="{% static "js/viewCase.js" %}"></script>
 {% endblock %}
