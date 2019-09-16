@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load tags %}
+
+{% block title %}
+Search
+{% endblock %}
+
+{% block header %}
+Search
+{% endblock %}
+
+{% block description %}
+{% endblock %}
+
+{% block body %}
+<style>
+    @media only screen and (max-width: 1026px) {
+        #details {
+            width: 100%
+        }
+
+        #main {
+            margin-left: 0 !important;
+        }
+    }
+
+    #details {
+        flex: 1;
+        align-self: flex-start;
+    }
+
+    #main {
+        flex: 2;
+        margin-left: 10px;
+    }
+</style>
+
+<div class="row" id="row-container">
+    <div class="card col-3 mb-3" id="details">
+        <div class="card-body">
+            <h5 class="mb-2"><strong>Search</strong></h5>
+            <form action="{% url 'cases:advsearch'%}" method="GET">
+                <div>Key Words</div>
+                <div class="mb-3"><input type="text" name="key_words" id="kw_choice" value="{{ key_words }}"> </div>
+
+                <div>MHx</div>
+                <div class="mb-3"><input type="text" name="mhx" id="mhx_choice" value="{{ mhx }}"></div>
+
+                <div>Medication</div>
+                <div class="mb-3"><input type="text" name="medication" id="medication_choice" value="{{ medication }}">
+                </div>
+
+                <div>Patient Sex</div>
+                <div class="mb-3">
+                    {% for a,b in sexes %}
+                    <input type="checkbox" name="sex_choice" id="sex_choice{{ forloop.counter }}" value="{{ a }}"
+                        {% if a in sex_choices %} checked {% endif %}>
+                    <label for="sex_choice{{ forloop.counter }}">{{ b }}</label>
+                    <br>
+                    {% endfor %}
+                </div>
+
+                <div>Tags</div>
+                <div class="mb-3">
+                    {% for tag in tags %}
+                    <input type="checkbox" name="tag_choice" id="tag_choice{{ forloop.counter }}" value="{{tag}}"
+                        {% if tag.name in tag_choices %} checked {% endif %}>
+                    {{tag_choice}}
+                    <label for="tag_choice{{ forloop.counter }}">{{ tag.name }}</label>
+                    <br>
+                    {% endfor %}
+                </div>
+
+
+                <!-- Date Created:
+                Age Range:
+                Height Range:
+                Scr:  -->
+
+
+                <br>
+                <div class="mb-3">
+
+                    <input type="checkbox" name="staff_choice" id="staff_choice1" value="staff_choice"
+                        {% if staff_choice %} checked {% endif %}>
+
+                    <label for="staff_choice1">Only Public Staff Cases?</label>
+                    <br>
+
+                </div>
+
+        </div>
+        <div class="card-body border-top">
+            <a href="{% url "cases:search" %}">Basic Search</a>
+            <div class="float-right">
+                <input type="submit" value="Search">
+            </div>
+        </div>
+        </form>
+    </div>
+
+    <div class="card d-inline-block h-25 col" id="main">
+        {% if cases %}
+        {% for case in cases %}
+        <div class="card-body card my-3">
+            <div>
+                <a class="action-link text-decoration-none" href="{% url "cases:view-case" case_study_id=case.id %}">
+                    <h5 class="text-center"><strong>Case <span id="case_id">{{ case.id }}</span></strong></h5>
+                </a>
+                <div class="float-right">
+                    {% for tag in case.tags %}
+                    <span class="badge badge-secondary">{{ tag.tag.name }}</span>
+                    {% endfor %}
+                </div>
+                </br>
+                <div class="card mt-2 mb-3 bg-light">
+                    <div class="card-body">
+                        {{ case.get_age_in_words|an|title }} {{ case.get_age_string }} {{ case.get_sex }}
+                        {{ case.get_optionals }}
+                        presents to your
+                        pharmacy {{ case.description }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="card-body card my-3">
+            <h5 class="text-center"><strong>No results found.</strong></h5>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<br>
+
+{% endblock %}

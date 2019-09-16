@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block body %}
-  <!-- <style>
+  <style>
     @media only screen and (max-width: 1026px) {
       #details {
         width: 100%
@@ -34,7 +34,7 @@
       flex: 2;
       margin-left: 10px;
     }
-  </style> -->
+  </style> 
 
   <div class="row" id="row-container">
     <div class="card col-3 mb-3" id="details">
@@ -44,24 +44,6 @@
         <div>Key Words</div>
         <div class="mb-3"><input type="text" name="key_words" id="kw_choice"  value="{{ key_words }}"> </div>
       
-        <div>MHx</div>
-        <div class="mb-3"><input type="text" name="mhx" id="mhx_choice" value="{{ mhx }}"></div>
-
-        <div>Medication</div>
-        <div class="mb-3"><input type="text" name="medication" id="medication_choice" value="{{ medication }}"></div>
-
-        <div>Patient Sex</div>
-        <div class="mb-3">
-            {% for a,b in sexes %}
-            <input type="checkbox" name="sex_choice" id="sex_choice{{ forloop.counter }}" value="{{ a }}"
-            {% if a in sex_choices %}
-            checked
-            {% endif %}
-            >
-            <label for="sex_choice{{ forloop.counter }}">{{ b }}</label>
-            <br>
-            {% endfor %}
-        </div>
         
         <div>Tags</div>
         <div class="mb-3">
@@ -90,7 +72,7 @@
         
       </div>
       <div class="card-body border-top">
-        <a href="#">Advanced Search</a>
+        <a href="{% url "cases:advsearch" %}">Advanced Search</a>
         <div class="float-right">
             <input type="submit" value="Search">
         </div>

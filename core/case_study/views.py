@@ -8,7 +8,7 @@ from django.utils import timezone
 from .forms import CaseStudyForm, CaseStudyTagForm, MedicalHistoryForm, MedicationForm  # , CaseTagForm
 from .models import Tag, TagRelationship, CaseStudy, MedicalHistory, Medication, Attempt
 
-from django.db.models import Count
+from django.db.models import Q
 
 
 @login_required
@@ -250,12 +250,9 @@ def get_or_none(req,get):
 
 @login_required
 def search(request):
-
-
     get=request.GET
     cases = CaseStudy.objects
     cases=cases.filter()
-
 
     keywords=get.get("key_words")
     if keywords is not None and len(keywords) !=0:
@@ -265,25 +262,6 @@ def search(request):
 
 
     
-    
-    sex_choices = get.getlist('sex_choice')
-    if len(sex_choices) != 0:
-        sex_choices=sex_choices
-        cases = cases.filter(sex__in=[s for s in sex_choices])
-
-    mhxs = get.get("mhx")
-    if mhxs is not None and len(mhxs) != 0:
-        mhx_list = mhxs.split()
-        for k in mhx_list:
-            cases = cases.filter(medicalhistory__body__icontains=k)
-
-
-    medicines = get.get("medication")
-    if medicines is not None and len(medicines) != 0:
-        medication_list = medicines.split()
-        for k in medication_list:
-            cases = cases.filter(medication__name__icontains=k)
-
     
     
     tag_list=get.getlist('tag_choice')
@@ -318,9 +296,6 @@ def search(request):
         "cases": cases,
 
         "key_words": get_or_none("key_words",get),
-        "mhx":  get_or_none('mhx',get),
-        "medication": get_or_none('medication',get),
-        "sex_choices": get.getlist('sex_choice'),
         "tag_choices": get.getlist('tag_choice'),
         "staff_choice":get.get("staff_choice")
     }
@@ -328,5 +303,73 @@ def search(request):
     return render(request,"search.html",c)
 
 
+
+
 @login_required
 def advsearch(request):
+    get = request.GET
+    cases = CaseStudy.objects
+    cases = cases.filter()
+
+    keywords = get.get("key_words")
+    if keywords is not None and len(keywords) != 0:
+        kw_list = keywords.split()
+        for k in kw_list:
+            cases = cases.filter(description__icontains=k)
+
+    sex_choices = get.getlist('sex_choice')
+    if len(sex_choices) != 0:
+        sex_choices = sex_choices
+        cases = cases.filter(sex__in=[s for s in sex_choices])
+
+    mhxs = get.get("mhx")
+    if mhxs is not None and len(mhxs) != 0:
+        mhx_list = mhxs.split()
+        for k in mhx_list:
+            cases = cases.filter(medicalhistory__body__icontains=k)
+
+    medicines = get.get("medication")
+    if medicines is not None and len(medicines) != 0:
+        medication_list = medicines.split()
+        for k in medication_list:
+            cases = cases.filter(medication__name__icontains=k)
+
+    tag_list = get.getlist('tag_choice')
+    if len(tag_list) != 0:
+        filter_ids = []
+        for case in cases:
+            case_tags = TagRelationship.objects.filter(case_study=case)
+            for tag in case_tags:
+                if tag.tag.name in tag_list:
+                    filter_ids.append(case.id)
+        cases = cases.filter(id__in=[item for item in filter_ids])
+
+    
+
+    if get.get("staff_choice") is not None:
+        cases = cases.filter(is_anonymous=False)
+
+    for case in cases:
+        case_tags = TagRelationship.objects.filter(case_study=case)
+        case.tags = case_tags
+
+    #all tags
+    tags = Tag.objects.filter()
+    sexes = CaseStudy.SEX_CHOICES
+
+    c = {
+        "tags": tags,
+        "sexes": sexes,
+        "get": get,
+
+        "cases": cases,
+
+        "key_words": get_or_none("key_words", get),
+        "mhx":  get_or_none('mhx', get),
+        "medication": get_or_none('medication', get),
+        "sex_choices": get.getlist('sex_choice'),
+        "tag_choices": get.getlist('tag_choice'),
+        "staff_choice": get.get("staff_choice")
+    }
+
+    return render(request, "advsearch.html", c)
