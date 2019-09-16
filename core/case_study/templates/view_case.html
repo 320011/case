@@ -103,7 +103,7 @@
               <a class="list-group-item" onclick="handleClick(this);" id="C">C. {{ case.answer_c }}</a>
               <a class="list-group-item" onclick="handleClick(this);" id="D">D. {{ case.answer_d }}</a>
             </div>
-            <a class="btn btn-primary float-right" style="color: #FFF" id="submit_response">{% if attempts.user_attempts == 0 %}Submit Response{% else %}Attempt Again{% endif %}</a>
+            <a class="btn btn-primary float-right" style="color: #FFF; cursor: pointer" id="submit_response">{% if attempts.user_attempts == 0 %}Submit Response{% else %}Attempt Again{% endif %}</a>
           </div>
           <div class="card-body pt-0" id="feedback">
             <div class="alert mb-3" id="feedback_alert"></div>
@@ -132,18 +132,13 @@
                   <label class="form-check-label" for="is_anonymous_checkbox">
                     <small>Comment as anonymous</small>
                   </label>
-                  <a class="btn btn-primary float-right" style="color: #FFF" id="submit_comment">Submit Comment</a>
+                  <a class="btn btn-primary float-right" style="color: #FFF; cursor: pointer" id="submit_comment">Submit Comment</a>
                 </div>
               </form>
               <br>
               <hr class="mt-0">
               All Comments
               <div id="comment-container">
-                {% if attempts.user_attempts == 0 %}
-                  <div class="alert alert-info text-center mt-3" onclick="window.location.reload(false);" >
-                    <strong>Load Previous Comments</strong>
-                  </div>
-                {% endif %}
                 {% for comment in comments %}
                   {% if comment.user == request.user %}
                     <div class="row justify-content-end">
