@@ -199,8 +199,5 @@ class CommentVote(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     
     def get_vote_score(self, comment):
-        vote_object = CommentVote.objects.filter(comment=comment)
-        count = 0
-        for obj in vote_object:
-            count = count + 1
-        return count
+        vote_object_count = CommentVote.objects.filter(comment=comment).count()
+        return vote_object_count

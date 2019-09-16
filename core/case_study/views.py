@@ -1,14 +1,13 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
+from django.core import serializers
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
-from django.core import serializers
-from accounts.models import User
 
 from .forms import CaseStudyForm, CaseStudyTagForm, MedicalHistoryForm, MedicationForm  # , CaseTagForm
-from .models import Tag, TagRelationship, CaseStudy, MedicalHistory, Medication, Attempt, Comment, CommentVote
+from .models import Tag, TagRelationship, CaseStudy, MedicalHistory, Medication, Attempt, Comment
 
 
 @login_required
@@ -203,7 +202,7 @@ def view_case(request, case_study_id):
         "mhx": mhx,
         "medications": medications,
         "tags": tags,
-        "comments":comments
+        "comments": comments
     }
     return render(request, "view_case.html", c)
 
@@ -225,8 +224,8 @@ def validate_answer(request, case_study_id):
     Attempt.objects.create(user_answer=choice, case_study=case, user=request.user, attempt_date=timezone.now())
     total_average = case.get_average_score()
     user_average = case.get_average_score(user=request.user)
-    user_attempts = len(Attempt.objects.filter(case_study=case, user=request.user))
-    total_attempts = len(Attempt.objects.filter(case_study=case))
+    user_attempts = Attempt.objects.filter(case_study=case, user=request.user).count()
+    total_attempts = Attempt.objects.filter(case_study=case).count()
     # Get comments
     comments = Comment.objects.filter(case_study=case_study_id)
     comments_json = serializers.serialize('json', comments)
@@ -244,16 +243,17 @@ def validate_answer(request, case_study_id):
     }
     return JsonResponse(data)
 
+
 def submit_comment(request, case_study_id):
     case = get_object_or_404(CaseStudy, pk=case_study_id)
-    comment_body = request.GET.get('comment_body', None)
-    comment_is_anon = request.GET.get('comment_is_anon', None).capitalize()
-    print(request.user.first_name)
+    body = request.GET.get('body', None)
+    is_anon = request.GET.get('is_anon', None).capitalize()
     # Create comment 
-    comment = Comment.objects.create(comment=comment_body, case_study=case, user=request.user, is_anon=comment_is_anon, comment_date=timezone.now())
+    comment = Comment.objects.create(comment=body, case_study=case, user=request.user, is_anon=is_anon,
+                                     comment_date=timezone.now())
     data = {
         'comment': {
-            'body': comment_body,
+            'body': body,
             'date': timezone.now(),
             'is_anon': comment.is_anon == 'True'
         },
@@ -263,16 +263,3 @@ def submit_comment(request, case_study_id):
         }
     }
     return JsonResponse(data)
-
-
-def show_comments(request, case_study_id):
-    case = get_object_or_404(CaseStudy, pk=case_study_id)
-    user_attempts = len(Attempt.objects.filter(case_study=case, user=request.user))
-    comments_json = ""
-    if user_attempts >= 1:
-        comments = Comment.objects.filter(case_study=case_study_id)
-        comments_json = serializers.serialize('json', comments)
-    data = {
-        'comments':comments_json
-    }
-    return JsonResponse(comments_json)
