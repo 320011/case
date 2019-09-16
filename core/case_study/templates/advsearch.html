@@ -3,11 +3,11 @@
 {% load tags %}
 
 {% block title %}
-Search
+Advanced Search
 {% endblock %}
 
 {% block header %}
-Search
+Advanced Search
 {% endblock %}
 
 {% block description %}
@@ -73,21 +73,42 @@ Search
                 </div>
 
 
-                <!-- Date Created:
-                Age Range:
-                Height Range:
-                Scr:  -->
+                <div>Date Created</div>
+                <div class="mb-3">
+                    <input type="date" name="before_date" id="before_date_inp" value="{{ before_date }}">
+                    <br>
+                    <label for="before_date_inp">Before:</label>
+                    <br>
+                </div>
+                <div class="mb-3">
+                    <input type="date" name="after_date" id="after_date_inp" value="{{ after_date }}">
+                    <br>
+                    <label for="after_date_inp">After:</label>
+                    <br>
+                </div>
+
+
+                <div>Age</div>
+                <div class="mb-3">
+                    <input type="number" name="min_age" id="min_age_inp"  value="{{ min_age }}">
+                    <label for="min_age_inp">Minimum Age:</label>
+                    <br>
+                </div>
+                
+                <div class="mb-3">
+                    <input type="number" name="max_age" id="max_age_inp" value="{{ max_age }}">
+                    <label for="max_age_inp">Maximum Age:</label>
+                    <br>
+                </div>
 
 
                 <br>
                 <div class="mb-3">
-
                     <input type="checkbox" name="staff_choice" id="staff_choice1" value="staff_choice"
                         {% if staff_choice %} checked {% endif %}>
 
                     <label for="staff_choice1">Only Public Staff Cases?</label>
                     <br>
-
                 </div>
 
         </div>

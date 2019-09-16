@@ -240,13 +240,7 @@ def validate_answer(request, case_study_id):
 
 
 
-#small helper function
-def get_or_none(req,get):
-    out = ""
-    if get.get(req) is not None:
-        out = get.get(req)
-    
-    return out
+
 
 @login_required
 def search(request):
@@ -259,6 +253,8 @@ def search(request):
         kw_list=keywords.split()
         for k in kw_list:
             cases=cases.filter(description__icontains=k)
+    else:
+        keywords=''
 
 
     
@@ -295,7 +291,7 @@ def search(request):
 
         "cases": cases,
 
-        "key_words": get_or_none("key_words",get),
+        "key_words": keywords,
         "tag_choices": get.getlist('tag_choice'),
         "staff_choice":get.get("staff_choice")
     }
@@ -316,6 +312,8 @@ def advsearch(request):
         kw_list = keywords.split()
         for k in kw_list:
             cases = cases.filter(description__icontains=k)
+    else:
+        keywords=''
 
     sex_choices = get.getlist('sex_choice')
     if len(sex_choices) != 0:
@@ -327,12 +325,17 @@ def advsearch(request):
         mhx_list = mhxs.split()
         for k in mhx_list:
             cases = cases.filter(medicalhistory__body__icontains=k)
+    else:
+        mhxs=''
 
     medicines = get.get("medication")
     if medicines is not None and len(medicines) != 0:
         medication_list = medicines.split()
         for k in medication_list:
             cases = cases.filter(medication__name__icontains=k)
+    else:
+        medicines=''
+
 
     tag_list = get.getlist('tag_choice')
     if len(tag_list) != 0:
@@ -344,7 +347,35 @@ def advsearch(request):
                     filter_ids.append(case.id)
         cases = cases.filter(id__in=[item for item in filter_ids])
 
+
+    before_date=get.get("before_date")
+    if before_date is not None and before_date is not '':
+        cases = cases.filter(date_created__lte=get.get("before_date"))
+    else:
+        before_date = ''
+
+    after_date = get.get("after_date")
+    if after_date is not None and after_date is not '':
+        cases = cases.filter(date_created__gte=get.get("after_date"))
+    else:
+        after_date = ''
+
+
+    min_age = get.get("min_age")
+    if min_age is not None and min_age is not '':
+        cases = cases.filter(age__gte=12*int(get.get("min_age")))
+    else:
+        min_age=0
+
+
+    max_age = get.get("max_age")
+    if max_age is not None and max_age is not '':
+        cases = cases.filter(age__lte=12*int(get.get("max_age")))
+    else:
+        max_age=''
     
+
+
 
     if get.get("staff_choice") is not None:
         cases = cases.filter(is_anonymous=False)
@@ -364,12 +395,16 @@ def advsearch(request):
 
         "cases": cases,
 
-        "key_words": get_or_none("key_words", get),
-        "mhx":  get_or_none('mhx', get),
-        "medication": get_or_none('medication', get),
+        "key_words": keywords,
+        "mhx": mhxs,
+        "medication": medicines,
         "sex_choices": get.getlist('sex_choice'),
         "tag_choices": get.getlist('tag_choice'),
-        "staff_choice": get.get("staff_choice")
+        "after_date": after_date,
+        "before_date": before_date,
+        "min_age": min_age,
+        "max_age": max_age,
+        "staff_choice": get.get("staff_choice"),
     }
 
     return render(request, "advsearch.html", c)
