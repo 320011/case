@@ -239,6 +239,7 @@ def validate_answer(request, case_study_id):
     return JsonResponse(data)
 
 
+
 #small helper function
 def get_or_none(req,get):
     out = ""
@@ -284,7 +285,7 @@ def search(request):
             cases = cases.filter(medication__name__icontains=k)
 
     
-    debug=[]
+    
     tag_list=get.getlist('tag_choice')
     if len(tag_list) != 0:
         filter_ids = []
@@ -295,7 +296,9 @@ def search(request):
                     filter_ids.append(case.id)   
         cases = cases.filter(id__in=[item for item in filter_ids])
 
-    
+
+    if get.get("staff_choice") is not None:    
+        cases = cases.filter(is_anonymous=False)
 
     for case in cases:
         case_tags = TagRelationship.objects.filter(case_study=case)
@@ -312,24 +315,18 @@ def search(request):
         "sexes": sexes,
         "get":get,
 
-        'cases': cases,
-        
+        "cases": cases,
 
         "key_words": get_or_none("key_words",get),
         "mhx":  get_or_none('mhx',get),
         "medication": get_or_none('medication',get),
         "sex_choices": get.getlist('sex_choice'),
         "tag_choices": get.getlist('tag_choice'),
+        "staff_choice":get.get("staff_choice")
     }
-    
-    # c={
-    #     "case_study_form": case_study_form,
-    #     "tags": relevant_tags,
-    #     "medical_histories": medical_histories,
-    #     "medications": medications,
-    #     "case_study_tag_form": case_study_tag_form,
-    #     "medical_history_form": medical_history_form,
-    #     "medication_form": medication_form,
-    # }
 
     return render(request,"search.html",c)
+
+
+@login_required
+def advsearch(request):

@@ -76,11 +76,22 @@
           <br>
           {% endfor %}
         </div>
+
+        <br>        
+        <div class="mb-3">
+          
+          <input type="checkbox" name="staff_choice" id="staff_choice1" value="staff_choice"
+            {% if staff_choice %} checked {% endif %}>
+          
+          <label for="staff_choice1">Only Public Staff Cases?</label>
+          <br>
+          
+        </div>
         
       </div>
       <div class="card-body border-top">
+        <a href="#">Advanced Search</a>
         <div class="float-right">
-          <!-- <a href="#" class="btn btn-primary btn-sm">Search</a> -->
             <input type="submit" value="Search">
         </div>
       </div>
@@ -88,9 +99,6 @@
     </div>
 
     <div class="card d-inline-block h-25 col" id="main">
-
-      
-
       {% if cases %}
         {% for case in cases %}
         <div class="card-body card my-3">
@@ -112,15 +120,6 @@
                         pharmacy {{ case.description }}
                     </div>
                 </div>
-                <!-- <div class="float-left">
-                    <div>Avg Score: <span id="total_average">{{ total_average }}</span></div>
-                    <div>My Score: <span id="user_average">{{ user_average }}</span></div>
-                </div>
-                <div class="float-right">
-                    <div>Total Attempts: <span id="total_attempts">{{ total_attempts }}</span></div>
-                    <div>My Attempts: <span id="user_attempts">{{ user_attempts }}</span></div>
-                </div> -->
-    
             </div>
         </div>
         {% endfor %}
