@@ -53,7 +53,7 @@
         <div>Average Score: <span id="total_average">{{ attempts.total_average }}</span></div>
         <div>My Score: <span id="user_average">{{ attempts.user_average }}</span></div>
         <div>Total Attempts: <span id="total_attempts">{{ attempts.total_attempts }}</span></div>
-        <div class="mb-3">My Attempts: <span id="user_attempts">{{ attempts.user_attempts }}</span></div>
+        <div>My Attempts: <span id="user_attempts">{{ attempts.user_attempts }}</span></div>
         <div>
           {% for tag in tags %}
             <span class="badge badge-secondary">{{ tag.tag }}</span>
@@ -62,12 +62,8 @@
       </div>
       <div class="card-body border-top">
         <h5 class="mb-2"><strong>Actions</strong></h5>
-        Export <br>
-        Report Case Study <br>
-        <div class="float-right">
           <a href="#" class="btn btn-primary btn-sm">Edit</a>
           <a href="#" class="btn btn-danger btn-sm">Delete</a>
-        </div>
       </div>
     </div>
     <div class="card col" id="main">
@@ -209,53 +205,6 @@
       </div>
     </div>
   </div>
-
   <br>
-
-  <script>
-    $('#discussion').toggle();
-    $('#show_discussion').click(function () {
-      $('#discussion').slideToggle();
-      $('#show_discussion').slideToggle();
-    })
-  </script>
   <script src="{% static "js/viewCase.js" %}"></script>
-  <script>
-    $('#submit_comment').click(function () {
-      var comment_body = document.getElementById('comment-box').value;
-      var comment_is_anon = document.getElementById('is_anonymous_checkbox').checked;
-      if (comment_body) {
-        $.ajax({
-          url: '/cases/ajax/submit_comment/' + '{{ case.id }}',
-          dataType: 'json',
-          data: {
-            'comment_body': comment_body,
-            'comment_is_anon': comment_is_anon
-          },
-          success: function (data) {
-            let date = moment(data.comment.date).format("MMM D YYYY, hh:mm a.");
-            let name = data.comment.is_anon ? data.user.name + " (Anonymous)" : data.user.name;
-            htmlstring =
-              `<div class="row justify-content-end">\
-                  <div class="col-8">\
-                    <div class="alert alert-primary" role="alert">\
-                      <div class="d-flex w-100 justify-content-between">\
-                        <small class="text-muted">\
-                          ${name}\
-                        </small>\
-                        <small class="text-muted">${date}</small>\
-                      </div>\
-                      <p class="mb-1">${data.comment.body}</p>\
-                    </div>\
-                  </div>\
-                </div>`;
-            console.log(data);
-            $("#comment-container").prepend($(htmlstring).hide().delay(500).show('slow'));
-            console.log(htmlstring);
-          }
-        });
-      }
-    });
-
-  </script>
 {% endblock %}

@@ -78,3 +78,46 @@ $('#attempt_again').click(function () {
   $('#questions').slideDown('slow');
   $('#feedback').slideUp('slow')
 });
+
+$('#discussion').toggle();
+$('#show_discussion').click(function () {
+  $('#discussion').slideToggle();
+  $('#show_discussion').slideToggle();
+})
+
+$('#submit_comment').click(function () {
+  let comment_body = document.getElementById('comment-box').value;
+  let comment_is_anon = document.getElementById('is_anonymous_checkbox').checked;
+  let id = document.getElementById('case_id').innerText;
+  if (comment_body) {
+    $.ajax({
+      url: '/cases/ajax/submit_comment/' + id,
+      dataType: 'json',
+      data: {
+        'comment_body': comment_body,
+        'comment_is_anon': comment_is_anon
+      },
+      success: function (data) {
+        let date = moment(data.comment.date).format("MMM D YYYY, hh:mm a.");
+        let name = data.comment.is_anon ? data.user.name + " (Anonymous)" : data.user.name;
+        htmlstring =
+          `<div class="row justify-content-end">\
+                  <div class="col-8">\
+                    <div class="alert alert-primary" role="alert">\
+                      <div class="d-flex w-100 justify-content-between">\
+                        <small class="text-muted">\
+                          ${name}\
+                        </small>\
+                        <small class="text-muted">${date}</small>\
+                      </div>\
+                      <p class="mb-1">${data.comment.body}</p>\
+                    </div>\
+                  </div>\
+                </div>`;
+        console.log(data);
+        $("#comment-container").prepend($(htmlstring).hide().delay(500).show('slow'));
+        console.log(htmlstring);
+      }
+    });
+  }
+});
