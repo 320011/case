@@ -5,6 +5,7 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
 from django.core import serializers
+from accounts.models import User
 
 from .forms import CaseStudyForm, CaseStudyTagForm, MedicalHistoryForm, MedicationForm  # , CaseTagForm
 from .models import Tag, TagRelationship, CaseStudy, MedicalHistory, Medication, Attempt, Comment, CommentVote
@@ -248,24 +249,28 @@ def validate_answer(request, case_study_id):
 def submit_comment(request, case_study_id):
     case = get_object_or_404(CaseStudy, pk=case_study_id)
     comment_body = request.GET.get('comment_body', None)
-    comment_is_anon = request.GET.get('comment_is_anon', None).capitalize() 
+    comment_is_anon = request.GET.get('comment_is_anon', None).capitalize()
+    print(request.user.first_name)
     # Create comment 
     comment = Comment.objects.create(comment=comment_body, case_study=case, user=request.user, is_anon=comment_is_anon, comment_date=timezone.now())
-    comment_list = serializers.serialize('json', [comment])
-    # data = {
-    #     'comments': comment_list
-    # }
-    return HttpResponse(comment_list, content_type="text/json-comment-filtered" )
-
-def test_view(request, case_study_id):
-    case_study = CaseStudy.objects.get(pk=case_study_id)
-    return render(request, "test_view.html")
+    data = {
+        'comment': {
+            'body': comment_body,
+            'date': timezone.now(),
+            'is_anon': comment.is_anon == 'True'
+        },
+        'user': {
+            'name': request.user.get_full_name(),
+            'is_staff': request.user.is_staff
+        }
+    }
+    return JsonResponse(data)
 
 
 def show_comments(request, case_study_id):
     case = get_object_or_404(CaseStudy, pk=case_study_id)
     user_attempts = len(Attempt.objects.filter(case_study=case, user=request.user))
-    comments_json = "" 
+    comments_json = ""
     if user_attempts >= 1:
         comments = Comment.objects.filter(case_study=case_study_id)
         comments_json = serializers.serialize('json', comments)
