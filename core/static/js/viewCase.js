@@ -108,25 +108,29 @@ $('#submit_comment').click(function () {
       },
       success: function (data) {
         $('#comment-box').val('');
+        let container = window.innerWidth < 1026 ? "col comment-container" : "col-8 comment-container";
+        let content = window.innerWidth < 1026 ? "w-100 justify-content-between comment-content" : "d-flex w-100 justify-content-between comment-content";
+        let br = window.innerWidth < 1026 ? "comment-break" : "comment-break d-none";
+
         let date = moment(data.comment.date).format("MMM D YYYY, hh:mm a.");
         let name = data.comment.is_anon ? data.user.name + " (Anonymous)" : data.user.name;
+
         htmlstring =
           `<div class="row justify-content-end">\
-                  <div class="col-8">\
+                  <div class="${container}">\
                     <div class="alert alert-primary" role="alert">\
-                      <div class="d-flex w-100 justify-content-between">\
+                      <div class="${content}">\
                         <small class="text-muted">\
                           ${name}\
                         </small>\
+                        <br class="${br}">\
                         <small class="text-muted">${date}</small>\
                       </div>\
                       <p class="mb-1">${data.comment.body}</p>\
                     </div>\
                   </div>\
                 </div>`;
-        console.log(data);
         $("#comment-container").prepend($(htmlstring).hide().delay(500).show('slow'));
-        console.log(htmlstring);
       }
     });
   }
