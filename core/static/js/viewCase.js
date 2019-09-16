@@ -54,6 +54,8 @@ $("#submit_response").click(function () {
         'choice': element.id
       },
       success: function (data) {
+        $('#discussion_container').removeClass('d-none');
+        $('#show_discussion').trigger('click');
         $('#questions').slideUp('slow');
         $('#feedback').slideDown('slow');
         if (data.success) {

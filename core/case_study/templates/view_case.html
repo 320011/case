@@ -107,7 +107,7 @@
               <a class="list-group-item" onclick="handleClick(this);" id="C">C. {{ case.answer_c }}</a>
               <a class="list-group-item" onclick="handleClick(this);" id="D">D. {{ case.answer_d }}</a>
             </div>
-            <a class="btn btn-primary float-right" style="color: #FFF" id="submit_response">Submit Response</a>
+            <a class="btn btn-primary float-right" style="color: #FFF" id="submit_response">{% if attempts.user_attempts == 0 %}Submit Response{% else %}Attempt Again{% endif %}</a>
           </div>
           <div class="card-body pt-0" id="feedback">
             <div class="alert mb-3" id="feedback_alert"></div>
@@ -120,177 +120,108 @@
             </div>
           </div>
         </div>
-        <!-- Show comments if attempt is >= 1 -->
-        {% if attempts.user_attempts >= 1 %}
-          <!-- Comments: -->
-          <div class="card mt-2 mb-3">
+        <div class="{% if attempts.user_attempts == 0 %}d-none{% endif %}" id="discussion_container">
+          <div class="alert alert-info text-center" id="show_discussion" style="cursor: pointer">
+            <strong id="show_hide">Show Discussion</strong>
+          </div>
+          <div class="card mt-2 mb-3" id="discussion">
             <div class="card-body">
               <form>
                 <div class="form-group">
-                  <label for="comment-box">Add Comment</label> 
+                  <label for="comment-box">Add Comment</label>
                   <textarea class="form-control" id="comment-box" rows="3" placeholder="Enter comment here"></textarea>
                 </div>
                 <div class="form-group form-check">
-                    <input type="checkbox" class="form-check-input" id="is_anonymous_checkbox">
-                    <label class="form-check-label" for="is_anonymous_checkbox"><small>Comment as anonymous</small></label>
-                    <a class="btn btn-primary float-right" style="color: #FFF" id="submit_comment">Submit Comment</a>
+                  <input type="checkbox" class="form-check-input" id="is_anonymous_checkbox">
+                  <label class="form-check-label" for="is_anonymous_checkbox">
+                    <small>Comment as anonymous</small>
+                  </label>
+                  <a class="btn btn-primary float-right" style="color: #FFF" id="submit_comment">Submit Comment</a>
                 </div>
-                
               </form>
-            </div>
-              <div class="card-body">
-                All Comments
-                  {% for comment in comments %}
-                    {% if comment.user == request.user %} 
-                      <div class = "row justify-content-end">
-                        <div class = "col-8">
-                          <div class="alert alert-primary" role="alert">
-                              <div class="d-flex w-100 justify-content-between">
-                                <small class="text-muted">
-                                  {{ comment.user }}
-                                </small>
-                                <small class="text-muted">{{ comment.comment_date }}</small>
-                              </div>
-                              <p class="mb-1">{{ comment.comment }}</p>
-                          </div> 
-                        </div> 
-                      </div> 
-                    {% elif comment.user.is_staff == True %}
-                    <div class = "row justify-content-start">
-                      <div class = "col-8">
-                        <div class="alert alert-info " role="alert">
-                            <div class="d-flex w-100 justify-content-between">
-                              <small class="text-muted">
+              <br>
+              <hr class="mt-0">
+              All Comments
+              <div id="comment-container">
+                {% if attempts.user_attempts == 0 %}
+                  <div class="alert alert-info text-center mt-3" onclick="window.location.reload(false);" >
+                    <strong>Load Previous Comments</strong>
+                  </div>
+                {% endif %}
+                {% for comment in comments %}
+                  {% if comment.user == request.user %}
+                    <div class="row justify-content-end">
+                      <div class="col-8">
+                        <div class="alert alert-primary" role="alert">
+                          <div class="d-flex w-100 justify-content-between">
+                            <small class="text-muted">
+                              {% if comment.is_anon == True %}
+                                {{ comment.user }} (Anonymous)
+                              {% else %}
                                 {{ comment.user }}
-                              </small>
-                              <small class="text-muted">{{ comment.comment_date }}</small>
-                            </div>
-                            <p class="mb-1">{{ comment.comment }}</p>
-                        </div> 
-                      </div>
-                    </div>
-                    {% else %}
-                      <div class = "row justify-content-start">
-                        <div class = "col-8">
-                          <div class="alert alert-secondary justify-content-start" role="alert">
-                            <div class="d-flex w-100 justify-content-between">
-                                <small class="text-muted">
-                                  {% if comment.is_anon == True %}
-                                    Anonymous 
-                                  {% else %}
-                                    {{ comment.user }}
-                                  {% endif %}
-                              </small>
-                              <small class="text-muted">{{ comment.comment_date }}</small>
-                            </div>
-                            <p class="mb-1">{{ comment.comment }}</p>
+                              {% endif %}
+                            </small>
+                            <small class="text-muted">{{ comment.comment_date }}</small>
                           </div>
+                          <p class="mb-1">{{ comment.comment }}</p>
                         </div>
                       </div>
-                    {% endif %}
-                  {% endfor %}
-                </div>
+                    </div>
+                  {% elif comment.user.is_staff == True %}
+                    <div class="row justify-content-start">
+                      <div class="col-8">
+                        <div class="alert alert-info " role="alert">
+                          <div class="d-flex w-100 justify-content-between">
+                            <small class="text-muted">
+                              {{ comment.user }}
+                            </small>
+                            <small class="text-muted">{{ comment.comment_date }}</small>
+                          </div>
+                          <p class="mb-1">{{ comment.comment }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  {% else %}
+                    <div class="row justify-content-start">
+                      <div class="col-8">
+                        <div class="alert alert-secondary justify-content-start" role="alert">
+                          <div class="d-flex w-100 justify-content-between">
+                            <small class="text-muted">
+                              {% if comment.is_anon == True %}
+                                Anonymous
+                              {% else %}
+                                {{ comment.user }}
+                              {% endif %}
+                            </small>
+                            <small class="text-muted">{{ comment.comment_date }}</small>
+                          </div>
+                          <p class="mb-1">{{ comment.comment }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  {% endif %}
+                {% endfor %}
               </div>
             </div>
+          </div>
         </div>
-      {% endif %}
+        <!-- Show comments if attempt is >= 1 -->
+      </div>
     </div>
   </div>
 
   <br>
 
   <script>
-    $(document).ready(function () {
-      if (window.innerWidth < 1026) {
-        $('#row-container').removeClass('row');
-        $('#details').removeClass('col-3');
-      }
-    });
-
-    $(window).resize(function () {
-      if (window.innerWidth < 1026) {
-        $('#row-container').removeClass('row');
-        $('#details').removeClass('col-3');
-      } else {
-        $('#row-container').addClass('row');
-        $('#details').addClass('col-3');
-      }
-    });
-
-    function handleClick(e) {
-      let a = document.getElementById('A');
-      let b = document.getElementById('B');
-      let c = document.getElementById('C');
-      let d = document.getElementById('D');
-      if (a.classList.contains('list-group-item-warning')) {
-        a.classList.remove('list-group-item-warning');
-        a.classList.remove('clicked');
-      }
-      if (b.classList.contains('list-group-item-warning')) {
-        b.classList.remove('list-group-item-warning');
-        b.classList.remove('clicked');
-      }
-      if (c.classList.contains('list-group-item-warning')) {
-        c.classList.remove('list-group-item-warning');
-        c.classList.remove('clicked');
-      }
-      if (d.classList.contains('list-group-item-warning')) {
-        d.classList.remove('list-group-item-warning');
-        d.classList.remove('clicked');
-      }
-      e.classList.add('list-group-item-warning');
-      e.classList.add('clicked');
-
-    }
-    function printComments(comments){
-      var comment_string = "";
-      for(comment in comments){
-        
-      }
-    }
-  </script>
-  <script>
-    $("#feedback").toggle();
-    $("#submit_response").click(function () {
-      let element = document.getElementsByClassName('clicked')[0];
-      let case_id = document.getElementById('case_id').innerHTML; 
-      console.log(case_id)
-
-      if (element) {
-        $.ajax({
-          url: '/cases/ajax/validate_answer/' + '{{ case.id }}',
-          dataType: 'json',
-          data: {
-            'choice': element.id,
-            'case_id': case_id
-          },
-          success: function (data) {
-            // {#$('#questions').slideUp('slow', function(){ $(this).remove(); });#}
-            $('#questions').slideUp('slow');
-            $('#feedback').slideDown('slow');
-            if (data.success) {
-              $('#feedback_alert').removeClass('alert-danger').addClass('alert-success').html(data.answer_message)
-            } else {
-              $('#feedback_alert').removeClass('alert-success').addClass('alert-danger').html(data.answer_message)
-            }
-            $('#feedback_text').html(data.feedback);
-            $('#total_average').html(data.attempts.total_average);
-            $('#user_average').html(data.attempts.user_average);
-            $('#total_attempts').html(data.attempts.total_attempts);
-            $('#user_attempts').html(data.attempts.user_attempts);
-            console.log(data.comments);
-          }
-        });
-      }
-
-    });
-
-    $('#attempt_again').click(function() {
-      $('#questions').slideDown('slow');
-      $('#feedback').slideUp('slow')
+    $('#discussion').toggle();
+    $('#show_discussion').click(function () {
+      $('#discussion').slideToggle();
+      $('#show_discussion').slideToggle();
     })
-
-    $('#submit_comment').click(function() {
+  </script>
+  <script src="{% static "js/viewCase.js" %}"></script>
+  <script>
+    $('#submit_comment').click(function () {
       var comment_body = document.getElementById('comment-box').value;
       var comment_is_anon = document.getElementById('is_anonymous_checkbox').checked;
       if (comment_body) {
@@ -301,10 +232,26 @@
             'comment_body': comment_body,
             'comment_is_anon': comment_is_anon
           },
-          success: function (comment_list) {
-            comment_list = comment_list[0];
-            // document.getElementById('comment-list').insertBefore(comment_list.fields.comment)
-            console.log(comment_list.fields.comment);
+          success: function (data) {
+            let date = moment(data.comment.date).format("MMM D YYYY, hh:mm a.");
+            let name = data.comment.is_anon ? data.user.name + " (Anonymous)" : data.user.name;
+            htmlstring =
+              `<div class="row justify-content-end">\
+                  <div class="col-8">\
+                    <div class="alert alert-primary" role="alert">\
+                      <div class="d-flex w-100 justify-content-between">\
+                        <small class="text-muted">\
+                          ${name}\
+                        </small>\
+                        <small class="text-muted">${date}</small>\
+                      </div>\
+                      <p class="mb-1">${data.comment.body}</p>\
+                    </div>\
+                  </div>\
+                </div>`;
+            console.log(data);
+            $("#comment-container").prepend($(htmlstring).hide().delay(500).show('slow'));
+            console.log(htmlstring);
           }
         });
       }
