@@ -89,16 +89,25 @@ class CaseStudy(models.Model):
     feedback = models.TextField(null=True, blank=True)
 
     def get_age_string(self):
+        if self.age is None:
+            return ''
+        
         if self.age_type == 'Y':
             return str(self.age // 12) + '-yo'
         return str(self.age) + '-mo'
 
     def get_age_in_words(self):
+        if self.age is None:
+            return ''
+        
         if self.age_type == 'Y':
             return num2words(self.age // 12)
         return num2words(self.age)
 
     def get_sex(self):
+        if self.age is None:
+            return ''
+            
         if self.sex == 'F':
             return 'female'
         return 'male'
