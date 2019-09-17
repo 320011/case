@@ -27,6 +27,11 @@
             </button>
         {% endif %}
     </div>
+    {% if admin_message %}
+    <div class="alert {{ admin_message_type }} mt-3 mb-3">
+        <p style="margin: 0">{{ admin_message }}</p>
+    </div>
+    {% endif %}
     <table
             data-toggle="table"
             data-search="true"

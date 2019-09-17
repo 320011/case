@@ -62,9 +62,26 @@
     }
   }
 }
+
 .admin-input {
   width: 100%;
+  max-width: 350px;
+  min-height: 36px;
   margin: 0.1rem;
+}
+
+input.admin-input {
+  border-radius: 3px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 5px 10px 5px 10px;
+  border: 1px solid rgba(0,0,0,0.3);
+}
+
+.admin-input-btn {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 // when the screen is wide
@@ -78,10 +95,35 @@
     width: 100%;
     display: inline-block;
   }
+
+  .admin-table-cell-content {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    $max-lines: 1;
+    $line-height: 1.5;
+    -webkit-line-clamp: $max-lines;
+    line-height: $line-height;
+    max-height: $line-height * $max-lines;
+  }
+
+  .select2-container, .select2-selection__rendered, .select2-selection.select2-selection--multiple {
+    width: 350px;
+  }
 }
 
 // when the screen is narrow
 @media only screen and (max-width: 600px) {
+
+  .admin-input, .select2-container, .select2-selection__rendered, .select2-selection.select2-selection--multiple {
+    width: 180px;
+  }
+
+  .admin-table-cell-content {
+    max-height: 100px;
+    overflow: hidden;
+  }
 
   table, thead, tbody, th, td, tr {
     display: block;
@@ -125,14 +167,38 @@
   .admin-entity-cell {
     border-bottom: 1px solid rgba(0,0,0,0.1) !important;
   }
-}
 
-.select2.select2-container.select2-container--default.select2-container--below {
-  min-width: 200px;
-}
+  .modal-mobile-margin {
+    margin-bottom: 50vh;
+  }
 
-.select2-selection__rendered {
-  min-width: 200px;
+  body.modal-open {
+    overflow: hidden;
+    position: fixed;
+  }
+
+
+  tr {
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 0.3125rem;
+    margin-bottom: 10px !important;
+
+    &:nth-child(odd) {
+      background-color: rgba(0,0,0,0.05) !important;
+    }
+
+    &:nth-child(even) {
+      background-color: rgba(0,0,0,0.15) !important;
+    }
+  }
+
+  table {
+    border: none !important;
+  }
+
+  body > div > div.bootstrap-table.bootstrap4 > div.fixed-table-toolbar > div.float-right.search.btn-group {
+    width: 100% !important;
+  }
 }
 
 .select2-dropdown {
