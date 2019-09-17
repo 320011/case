@@ -25,6 +25,24 @@ schema_question = {
 }
 
 
+def render_question_view(request, message=None, message_type=None):
+    data = populate_data(schema_question, Question)
+    c = {
+        "title": "Question Admin",
+        "model_name": "Question",
+        "toolbar_new": True,
+        "toolbar_import": True,
+        "data": data,
+        "import_form": QuestionImportForm(),
+        "import_endpoint": "/caseadmin/questions/import",
+        "schema": schema_question,
+        "admin_message": message,
+        "admin_message_type": message_type,
+
+    }
+    return render(request, "case-admin.html", c)
+
+
 @staff_required
 def api_admin_question(request, question_id):
     if request.method == "PATCH":
@@ -40,37 +58,31 @@ def api_admin_question(request, question_id):
 
 def question_import_txt(request, file, file_format):
     if file.content_type != "text/plain":
-        return JsonResponse({
-            "success": False,
-            "message": "Failed to import questions as text/plain\n\n"
-                       "Please ensure your text file contains one question per line",
-        })
+        return render_question_view(request,
+                                    "Failed to import questions as text/plain. "
+                                    "Please ensure your text file contains one question per line. ",
+                                    "alert-danger")
     questions = []
     for question in file.file.readlines():
         q = question.decode("utf-8").strip()
         questions.append(Question(body=q))
     try:
         Question.objects.bulk_create(questions, ignore_conflicts=True)
-        return JsonResponse({
-            "success": True,
-            "message": "Imported {} questions".format(len(questions)),
-        })
+        return render_question_view(request, "Successfully imported {} questions.".format(len(questions)), "alert-success")
     except IntegrityError as e:
-        return JsonResponse({
-            "success": False,
-            "message": "Failed to import questions as text/plain\n\n"
-                       "Please ensure your text file contains one question per line\n\n"
-                       "Error: " + str(e.args[0]),
-        })
+        return render_question_view(request,
+                                    "Failed to import questions as text/plain. "
+                                    "Please ensure your text file contains one question per line. "
+                                    "Error: " + str(e.args[0]),
+                                    "alert-danger")
 
 
 def question_import_csv(request, file, file_format):
     if file.content_type != "text/csv":
-        return JsonResponse({
-            "success": False,
-            "message": "Failed to import questions as text/csv\n\n"
-                       "Please ensure your csv file contains one question per line",
-        })
+        return render_question_view(request,
+                                    "Failed to import questions as text/csv. "
+                                    "Please ensure your csv file contains one question per line. ",
+                                    "alert-danger")
     questions = []
     lines = file.read().decode("utf-8").split("\n")
     for line in lines:
@@ -78,26 +90,21 @@ def question_import_csv(request, file, file_format):
         questions.append(Question(body=q))
     try:
         Question.objects.bulk_create(questions, ignore_conflicts=True)
-        return JsonResponse({
-            "success": True,
-            "message": "Imported {} questions".format(len(questions)),
-        })
+        return render_question_view(request, "Successfully imported {} questions.".format(len(questions)), "alert-success")
     except IntegrityError as e:
-        return JsonResponse({
-            "success": False,
-            "message": "Failed to import questions as text/csv"
-                       "Please ensure your csv file contains one question per line"
-                       "Error: " + str(e.args[0]),
-        })
+        return render_question_view(request,
+                                    "Failed to import questions as text/csv. "
+                                    "Please ensure your csv file contains one question per line. "
+                                    "Error: " + str(e.args[0]),
+                                    "alert-danger")
 
 
 def question_import_json(request, file, file_format):
     if file.content_type != "application/json":
-        return JsonResponse({
-            "success": False,
-            "message": "Failed to import questions as application/json\n\n"
-                       "Please ensure your json file contains a list of strings",
-        })
+        return render_question_view(request,
+                                    "Failed to import questions as application/json. "
+                                    "Please ensure your json file contains a list of strings. ",
+                                    "alert-danger")
     questions = []
     file_text = file.read().decode("utf-8")
     file_json = json.loads(file_text)
@@ -106,26 +113,21 @@ def question_import_json(request, file, file_format):
         questions.append(Question(body=q))
     try:
         Question.objects.bulk_create(questions, ignore_conflicts=True)
-        return JsonResponse({
-            "success": True,
-            "message": "Imported {} questions".format(len(questions)),
-        })
+        return render_question_view(request, "Successfully imported {} questions.".format(len(questions)), "alert-success")
     except IntegrityError as e:
-        return JsonResponse({
-            "success": False,
-            "message": "Failed to import questions as application/json\n\n"
-                       "Please ensure your json file contains a list of strings\n\n"
-                       "Error: " + str(e.args[0]),
-        })
+        return render_question_view(request,
+                                    "Failed to import questions as application/json. "
+                                    "Please ensure your json file contains a list of strings. "
+                                    "Error: " + str(e.args[0]),
+                                    "alert-danger")
 
 
 def question_import_xlsx(request, file, file_format):
     if not (str(file.content_type) == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" or file.name.endswith('.xlsx')):
-        return JsonResponse({
-            "success": False,
-            "message": "Failed to import questions as xlsx\n\n"
-                       "Please ensure column A has a single question per cell\n\n",
-        })
+        return render_question_view(request,
+                                    "Failed to import questions as xlsx. "
+                                    "Please ensure column A has a single question per cell. ",
+                                    "alert-danger")
     questions = []
     wb = openpyxl.load_workbook(file)
     sheet = wb.worksheets[0]
@@ -136,17 +138,13 @@ def question_import_xlsx(request, file, file_format):
 
     try:
         Question.objects.bulk_create(questions, ignore_conflicts=True)
-        return JsonResponse({
-            "success": True,
-            "message": "Imported {} questions".format(len(questions)),
-        })
+        return render_question_view(request, "Successfully imported {} questions.".format(len(questions)), "alert-success")
     except IntegrityError as e:
-        return JsonResponse({
-            "success": False,
-            "message": "Failed to import questions as xlsx\n\n"
-                       "Please ensure column A has a single question per cell\n\n"
-                       "Error: " + str(e.args[0]),
-        })
+        return render_question_view(request,
+                                    "Failed to import questions as xlsx. "
+                                    "Please ensure column A has a single question per cell. "
+                                    "Error: " + str(e.args[0]),
+                                    "alert-danger")
 
 
 @staff_required
@@ -178,10 +176,9 @@ def api_admin_question_import(request):
         elif file_format == "txt":
             return question_import_txt(request, file, file_format)
         else:
-            return JsonResponse({
-                "success": False,
-                "message": "Unknown file format: " + str(file_format),
-            })
+            return render_question_view(request,
+                                        "Unknown file format: {}".format(str(file_format)),
+                                        "alert-danger")
     else:
         return JsonResponse({
             "success": False,
@@ -192,18 +189,7 @@ def api_admin_question_import(request):
 @staff_required
 def view_admin_question(request):
     if request.method == "GET":
-        data = populate_data(schema_question, Question)
-        c = {
-            "title": "Question Admin",
-            "model_name": "Question",
-            "toolbar_new": True,
-            "toolbar_import": True,
-            "data": data,
-            "import_form": QuestionImportForm(),
-            "import_endpoint": "/caseadmin/questions/import",
-            "schema": schema_question,
-        }
-        return render(request, "case-admin.html", c)
+        return render_question_view(request)
     elif request.method == "POST":
         try:
             body = json.loads(request.body)
