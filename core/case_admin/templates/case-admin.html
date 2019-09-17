@@ -28,9 +28,9 @@
         {% endif %}
     </div>
     {% if admin_message %}
-    <div class="alert {{ admin_message_type }} mt-3 mb-3">
-        <p style="margin: 0">{{ admin_message }}</p>
-    </div>
+        <div class="alert {{ admin_message_type }} mt-3 mb-3">
+            <p style="margin: 0">{{ admin_message }}</p>
+        </div>
     {% endif %}
     <table
             data-toggle="table"
@@ -67,8 +67,14 @@
                                 {% elif field.widget.template == "w-checkbox.html" %}
                                     <input type="checkbox" disabled {% if field.value %}checked{% endif %}>
                                     {{ field.value }}
-                                {% elif field.widget.template == "w-select.html" %}
+                                {% elif field.type == "foreignkey" %}
                                     {{ field.value }}
+                                {% elif field.type == "foreignkey-multiple" %}
+                                    {% for opt in field.options %}{% if opt.selected %}{{ opt.name }}, {% endif %}{% endfor %}
+                                {% elif field.type == "foreignkey-multiple-custom" %}
+                                    {% for opt in field.options %}{% if opt.selected %}{{ opt.name }}, {% endif %}{% endfor %}
+                                {% elif field.type == "foreignkey-multiple-relation" %}
+                                    {% for opt in field.options %}{% if opt.selected %}{{ opt.name }}, {% endif %}{% endfor %}
                                 {% else %}
                                     {{ field.value }}
                                 {% endif %}
