@@ -246,7 +246,7 @@ def validate_answer(request, case_study_id):
 def search(request):
     get=request.GET
     cases = CaseStudy.objects
-    cases=cases.filter()
+    cases = cases.filter(is_submitted=True)
 
     keywords=get.get("key_words")
     if keywords is not None and len(keywords) !=0:
@@ -305,7 +305,7 @@ def search(request):
 def advsearch(request):
     get = request.GET
     cases = CaseStudy.objects
-    cases = cases.filter()
+    cases = cases.filter(is_submitted=True)
 
     keywords = get.get("key_words")
     if keywords is not None and len(keywords) != 0:
