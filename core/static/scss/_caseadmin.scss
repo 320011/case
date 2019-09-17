@@ -3,10 +3,60 @@
   margin-bottom: 0;
 }
 
-//.admin-table-header {
-//  border: 1px solid rgba(0,0,0, 0.1);
-//  padding: 0 1rem 0 1rem;
-//}
+#action-admin-users {
+  $c: #47bfa3;
+  background-image: url("/static/img/admin_users.png");
+  background-color: $c;
+
+  &:hover {
+    background-size: auto 70%;
+    background-color: darken($c, 10%);
+  }
+}
+
+#action-admin-cases {
+  $c: #7264de;
+  background-image: url("/static/img/admin_cases.png");
+  background-color: $c;
+
+  &:hover {
+    background-size: auto 70%;
+    background-color: darken($c, 10%);
+  }
+}
+
+#action-admin-questions {
+  $c: #82d145;
+  background-image: url("/static/img/admin_questions.png");
+  background-color: $c;
+
+  &:hover {
+    background-size: auto 70%;
+    background-color: darken($c, 10%);
+  }
+}
+
+#action-admin-comments {
+  $c: #c47c41;
+  background-image: url("/static/img/admin_comments.png");
+  background-color: $c;
+
+  &:hover {
+    background-size: auto 70%;
+    background-color: darken($c, 10%);
+  }
+}
+
+#action-admin-tags {
+  $c: #9e7893;
+  background-image: url("/static/img/admin_tags.png");
+  background-color: $c;
+
+  &:hover {
+    background-size: auto 70%;
+    background-color: darken($c, 10%);
+  }
+}
 
 #admin-table-toolbar {
   display: flex;

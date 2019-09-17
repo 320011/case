@@ -5,29 +5,27 @@
 {% endblock %}
 
 {% block body %}
-    <div class='container'>
-        <div class='signup-form'>
-            <form method="post">
-                {% csrf_token %}
-                <h2>Register</h2>
-                <p class="hint-text">Create your account.<br>It's free and only takes a few minutes.</p>
-                {% for field in form %}
-                    <label for="{{ field.id_for_label }}" class="text-justify">{{ field.label }}</label>
-                    <div class="form-group">
-                        {{ field }}
-                        {% if field.help_text %}
-                            <small class="help_text">{{ field.help_text }}</small>
-                        {% endif %}
-                        {% for error in field.errors %}
-                            <p style="color: red">{{ error }}</p>
-                        {% endfor %}
-                    </div>
-                {% endfor %}
+    <div class='theme-container theme-container-sm'>
+        <form method="POST" class="theme-form">
+            {% csrf_token %}
+            <h2 class="theme-header">Register</h2>
+            <p class="hint-text">Create your account.<br>It's free and only takes a few minutes.</p>
+            {% for field in form %}
+                <label for="{{ field.id_for_label }}" class="theme-label">{{ field.label }}</label>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-success btn-lg btn-block">Sign Up</button>
+                    {{ field }}
+                    {% if field.help_text %}
+                        <small class="help_text">{{ field.help_text }}</small>
+                    {% endif %}
+                    {% for error in field.errors %}
+                        <p style="color: red">{{ error }}</p>
+                    {% endfor %}
                 </div>
-            </form>
-            <div class="text-center">Already have an account? <a href="{% url "accounts:login" %}">Log in.</a></div>
-        </div>
+            {% endfor %}
+            <div class="form-group">
+                <button type="submit" style="width:100%" class="theme-btn">Sign Up</button>
+            </div>
+        </form>
+        <div class="text-center">Already have an account? <a class="theme-link" href="{% url "accounts:login" %}">Log in.</a></div>
     </div>
 {% endblock %}

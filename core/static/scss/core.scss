@@ -42,10 +42,17 @@ body {
   line-height: 1.5;
   color: $col-text-pri;
   font-size: 1rem;
+  margin-bottom: 10rem;
+}
+
+.navbar {
+  padding: 8px 20vw 8px 20vw;
+  background-color: white;
 }
 
 @import "_index";
 @import "_profile";
-@import "_casecard";
+@import "_casestudy";
 @import "_accounts";
 @import "_caseadmin";
+@import "_theme";

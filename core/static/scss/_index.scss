@@ -4,6 +4,8 @@ $block-box-shadow: 5px 5px 12px 1px rgba(0, 0, 0, 0.3);
 
 .action-list-container {
 
+  max-width: 800px;
+
   .action-list {
     display: flex;
     flex-wrap: wrap;
@@ -11,15 +13,20 @@ $block-box-shadow: 5px 5px 12px 1px rgba(0, 0, 0, 0.3);
     flex-shrink: 1;
     flex-grow: 1;
     flex-basis: 2rem;
-    width: 80vw;
     margin: auto;
+    width: 100%;
 
     .action-container {
       margin: 1rem;
       height: 10rem;
       width: 20rem;
+      cursor: pointer;
+
 
       .action-link {
+        text-decoration: none;
+        cursor: pointer;
+
         .action-card {
           border-radius: $block-border-radius;
           background-color: $block-bg-col;
@@ -27,9 +34,65 @@ $block-box-shadow: 5px 5px 12px 1px rgba(0, 0, 0, 0.3);
           width: 100%;
           height: 100%;
           padding: 0;
-          text-align: center;
+          background-repeat: no-repeat;
+          background-size: auto 80%;
+          background-position: right bottom;
+          transition: background-size 0.05s;
+          transition: background-color 0.3s;
+          cursor: pointer;
+
+          .action-title {
+            color: white;
+            height: 100%;
+            padding: 35% 0 0 10%;
+            text-shadow: 1px 1px 5px black !important;
+          }
         }
       }
     }
+  }
+}
+
+#action-discover {
+  $c: #4994ba;
+  background-image: url("/static/img/discover.png");
+  background-color: $c;
+
+  &:hover {
+    background-size: auto 70%;
+    background-color: darken($c, 10%);
+  }
+}
+
+#action-create {
+  $c: #5cb85c;
+  background-image: url("/static/img/create.png");
+  background-color: $c;
+
+  &:hover {
+    background-size: auto 70%;
+    background-color: darken($c, 10%);
+  }
+}
+
+#action-admin {
+  $c: #b33e3e;
+  background-image: url("/static/img/admin.png");
+  background-color: $c;
+
+  &:hover {
+    background-size: auto 70%;
+    background-color: darken($c, 10%);
+  }
+}
+
+#action-analytics {
+  $c: #ae20b0;
+  background-image: url("/static/img/analytics.png");
+  background-color: $c;
+
+  &:hover {
+    background-size: auto 70%;
+    background-color: darken($c, 10%);
   }
 }
