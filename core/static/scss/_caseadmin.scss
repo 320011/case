@@ -129,6 +129,34 @@
   .modal-mobile-margin {
     margin-bottom: 50vh;
   }
+
+  body.modal-open {
+    overflow: hidden;
+    position: fixed;
+  }
+
+
+  tr {
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 0.3125rem;
+    margin-bottom: 10px !important;
+
+    &:nth-child(odd) {
+      background-color: rgba(0,0,0,0.05) !important;
+    }
+
+    &:nth-child(even) {
+      background-color: rgba(0,0,0,0.15) !important;
+    }
+  }
+
+  table {
+    border: none !important;
+  }
+
+  body > div > div.bootstrap-table.bootstrap4 > div.fixed-table-toolbar > div.float-right.search.btn-group > input {
+    width: 94vw !important;
+  }
 }
 
 .select2.select2-container.select2-container--default.select2-container--below {
