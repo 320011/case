@@ -78,10 +78,27 @@
     width: 100%;
     display: inline-block;
   }
+
+  .admin-table-cell-content {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    $max-lines: 1;
+    $line-height: 1.5;
+    -webkit-line-clamp: $max-lines;
+    line-height: $line-height;
+    max-height: $line-height * $max-lines;
+  }
 }
 
 // when the screen is narrow
 @media only screen and (max-width: 600px) {
+
+  .admin-table-cell-content {
+    max-height: 100px;
+    overflow: hidden;
+  }
 
   table, thead, tbody, th, td, tr {
     display: block;
@@ -169,16 +186,4 @@
 
 .select2-dropdown {
   z-index: 999999999;
-}
-
-.admin-table-cell-content {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  $max-lines: 1;
-  $line-height: 1.5;
-  -webkit-line-clamp: $max-lines;
-  line-height: $line-height;
-  max-height: $line-height * $max-lines;
 }
