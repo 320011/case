@@ -15,6 +15,7 @@
 
 {% block body %}
     <style>
+        /* narrow */
         @media only screen and (max-width: 1026px) {
             #details {
                 width: 100%;
@@ -29,6 +30,7 @@
 
             }
         }
+        /* wide */
         @media only screen and (min-width: 1026px) {
             #details {
                 flex: 1;
@@ -77,141 +79,140 @@
             </div>
         </div>
         <div class="theme-container-border theme-container-bg theme-container-padding" id="main">
-            <div class="card-body">
-                <div>
-                    <h1 class="theme-header">Case <span id="case_id">{{ case.id }}</span></h1>
-                    Description:
-                    <div class="card mt-2 mb-3 bg-light">
-                        <div class="card-body">
-                            {{ case.get_age_in_words|an|title }} {{ case.get_age_string }} {{ case.get_sex }} {{ case.get_optionals }}
-                            presents to your
-                            pharmacy {{ case.description }}
-                        </div>
-                    </div>
-                </div>
-                MHx:
-                <ul style="display: inherit; list-style-type: inherit">
-                    {% for history in mhx %}
-                        <li>{{ history }}</li>
-                    {% endfor %}
-                </ul>
-                Medication:
-                <ul style="display: inherit; list-style-type: inherit">
-                    {% for medication in medications %}
-                        <li>{{ medication }}</li>
-                    {% endfor %}
-                </ul>
-                Question:
-                <div class="card mt-2 mb-3">
+            <div>
+                <h1 class="theme-header">Case <span id="case_id">{{ case.id }}</span></h1>
+                Description:
+                <div class="card mt-2 mb-3 bg-light">
                     <div class="card-body">
-                        <div><strong>{{ case.question }}</strong></div>
-                    </div>
-                    <div class="card-body pt-0" id="questions">
-                        <div class="list-group mb-3" id="list-tab" role="tablist">
-                            <a class="list-group-item" onclick="handleClick(this);" id="A" disabled>A. {{ case.answer_a }}</a>
-                            <a class="list-group-item" onclick="handleClick(this);" id="B">B. {{ case.answer_b }}</a>
-                            <a class="list-group-item" onclick="handleClick(this);" id="C">C. {{ case.answer_c }}</a>
-                            <a class="list-group-item" onclick="handleClick(this);" id="D">D. {{ case.answer_d }}</a>
-                        </div>
-                        <a class="theme-btn float-right" style="color: #FFF; cursor: pointer" id="submit_response">{% if attempts.user_attempts == 0 %}Submit Response{% else %}Attempt Again{% endif %}</a>
-                    </div>
-                    <div class="card-body pt-0" id="feedback">
-                        <div class="alert mb-3" id="feedback_alert"></div>
-                        Feedback:
-                        <div class="card mt-2 mb-3 bg-light">
-                            <div class="card-body" id="feedback_text"></div>
-                        </div>
-                        <div class="float-right">
-                            <a class="theme-btn float-right" id="attempt_again" style="color: #FFF">Attempt Again</a>
-                        </div>
+                        {{ case.get_age_in_words|an|title }} {{ case.get_age_string }} {{ case.get_sex }} {{ case.get_optionals }}
+                        presents to your
+                        pharmacy {{ case.description }}
                     </div>
                 </div>
-                <div class="{% if attempts.user_attempts == 0 %}d-none{% endif %}" id="discussion_container">
-                    <div class="alert alert-info text-center" id="show_discussion" style="cursor: pointer">
-                        <strong id="show_hide">Show Discussion</strong>
-                    </div>
-                    <div class="card mt-2 mb-3" id="discussion">
-                        <div class="card-body">
-                            <form>
-                                <div class="form-group">
-                                    <label for="comment-box">Add Comment</label>
-                                    <textarea class="form-control" id="comment-box" rows="3" placeholder="Enter comment here"></textarea>
-                                </div>
-                                <div class="form-group form-check">
-                                    <input type="checkbox" class="form-check-input" id="is_anonymous_checkbox">
-                                    <label class="form-check-label" for="is_anonymous_checkbox">
-                                        <small>Comment as anonymous</small>
-                                    </label>
-                                    <a class="theme-btn float-right" style="color: #FFF; cursor: pointer" id="submit_comment">Submit Comment</a>
-                                </div>
-                            </form>
-                            <br>
-                            <hr>
-                            <div class="mb-3">All Comments</div>
-                            <div id="comment-container">
-                                {% for comment in comments %}
-                                    {% if comment.user == request.user %}
-                                        <div class="row justify-content-end">
-                                            <div class="col-8 comment-container">
-                                                <div class="alert alert-primary" role="alert">
-                                                    <div class="d-flex w-100 justify-content-between comment-content">
-                                                        <small class="text-muted">
-                                                            {% if comment.is_anon == True %}
-                                                                {{ comment.user }} (Anonymous)
-                                                            {% else %}
-                                                                {{ comment.user }}
-                                                            {% endif %}
-                                                        </small>
-                                                        <br class="comment-break d-none">
-                                                        <small class="text-muted">{{ comment.comment_date }}</small>
-                                                    </div>
-                                                    <p class="mb-1">{{ comment.comment }}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    {% elif comment.user.is_staff == True %}
-                                        <div class="row justify-content-start">
-                                            <div class="col-8 comment-container">
-                                                <div class="alert alert-info " role="alert">
-                                                    <div class="d-flex w-100 justify-content-between comment-content">
-                                                        <small class="text-muted">
-                                                            {{ comment.user }}
-                                                        </small>
-                                                        <br class="comment-break d-none">
-                                                        <small class="text-muted">{{ comment.comment_date }}</small>
-                                                    </div>
-                                                    <p class="mb-1">{{ comment.comment }}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    {% else %}
-                                        <div class="row justify-content-start">
-                                            <div class="col-8 comment-container">
-                                                <div class="alert alert-secondary justify-content-start" role="alert">
-                                                    <div class="d-flex w-100 justify-content-between comment-content">
-                                                        <small class="text-muted">
-                                                            {% if comment.is_anon == True %}
-                                                                Anonymous
-                                                            {% else %}
-                                                                {{ comment.user }}
-                                                            {% endif %}
-                                                        </small>
-                                                        <br class="comment-break d-none">
-                                                        <small class="text-muted">{{ comment.comment_date }}</small>
-                                                    </div>
-                                                    <p class="mb-1">{{ comment.comment }}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Show comments if attempt is >= 1 -->
             </div>
+            MHx:
+            <ul style="display: inherit; list-style-type: inherit">
+                {% for history in mhx %}
+                    <li>{{ history }}</li>
+                {% endfor %}
+            </ul>
+            Medication:
+            <ul style="display: inherit; list-style-type: inherit">
+                {% for medication in medications %}
+                    <li>{{ medication }}</li>
+                {% endfor %}
+            </ul>
+            Question:
+            <div class="card mt-2 mb-3">
+                <div class="card-body">
+                    <div><strong>{{ case.question }}</strong></div>
+                </div>
+                <div class="card-body pt-0" id="questions">
+                    <div class="list-group mb-3" id="list-tab" role="tablist">
+                        <a class="list-group-item" onclick="handleClick(this);" id="A" disabled>A. {{ case.answer_a }}</a>
+                        <a class="list-group-item" onclick="handleClick(this);" id="B">B. {{ case.answer_b }}</a>
+                        <a class="list-group-item" onclick="handleClick(this);" id="C">C. {{ case.answer_c }}</a>
+                        <a class="list-group-item" onclick="handleClick(this);" id="D">D. {{ case.answer_d }}</a>
+                    </div>
+                    <a class="theme-btn float-right" style="color: #FFF; cursor: pointer" id="submit_response">{% if attempts.user_attempts == 0 %}Submit Response{% else %}Attempt Again{% endif %}</a>
+                </div>
+                <div class="card-body pt-0" id="feedback">
+                    <div class="alert mb-3" id="feedback_alert"></div>
+                    Feedback:
+                    <div class="card mt-2 mb-3 bg-light">
+                        <div class="card-body" id="feedback_text"></div>
+                    </div>
+                    <div class="float-right">
+                        <a class="theme-btn float-right" id="attempt_again" style="color: #FFF">Attempt Again</a>
+                    </div>
+                </div>
+            </div>
+            <div class="{% if attempts.user_attempts == 0 %}d-none{% endif %}" id="discussion_container">
+                <div class="alert alert-info text-center" id="show_discussion" style="cursor: pointer">
+                    <strong id="show_hide">Show Discussion</strong>
+                </div>
+                <div class="card mt-2 mb-3" id="discussion">
+                    <div class="card-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="comment-box">Add Comment</label>
+                                <textarea class="form-control" id="comment-box" rows="3" placeholder="Enter comment here"></textarea>
+                            </div>
+                            <div class="form-group form-check">
+                                <input type="checkbox" class="form-check-input" id="is_anonymous_checkbox">
+                                <label class="form-check-label" for="is_anonymous_checkbox">
+                                    <small>Comment as anonymous</small>
+                                </label>
+                                <a class="theme-btn float-right" style="color: #FFF; cursor: pointer" id="submit_comment">Submit Comment</a>
+                            </div>
+                        </form>
+                        <br>
+                        <hr>
+                        <div class="mb-3">All Comments</div>
+                        <div id="comment-container">
+                            {% for comment in comments %}
+                                {% if comment.user == request.user %}
+                                    <div class="row justify-content-end">
+                                        <div class="col-8 comment-container">
+                                            <div class="alert alert-primary" role="alert">
+                                                <div class="d-flex w-100 justify-content-between comment-content">
+                                                    <small class="text-muted">
+                                                        {% if comment.is_anon == True %}
+                                                            {{ comment.user }} (Anonymous)
+                                                        {% else %}
+                                                            {{ comment.user }}
+                                                        {% endif %}
+                                                    </small>
+                                                    <br class="comment-break d-none">
+                                                    <small class="text-muted">{{ comment.comment_date }}</small>
+                                                </div>
+                                                <p class="mb-1">{{ comment.comment }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% elif comment.user.is_staff == True %}
+                                    <div class="row justify-content-start">
+                                        <div class="col-8 comment-container">
+                                            <div class="alert alert-info " role="alert">
+                                                <div class="d-flex w-100 justify-content-between comment-content">
+                                                    <small class="text-muted">
+                                                        {{ comment.user }}
+                                                    </small>
+                                                    <br class="comment-break d-none">
+                                                    <small class="text-muted">{{ comment.comment_date }}</small>
+                                                </div>
+                                                <p class="mb-1">{{ comment.comment }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="row justify-content-start">
+                                        <div class="col-8 comment-container">
+                                            <div class="alert alert-secondary justify-content-start" role="alert">
+                                                <div class="d-flex w-100 justify-content-between comment-content">
+                                                    <small class="text-muted">
+                                                        {% if comment.is_anon == True %}
+                                                            Anonymous
+                                                        {% else %}
+                                                            {{ comment.user }}
+                                                        {% endif %}
+                                                    </small>
+                                                    <br class="comment-break d-none">
+                                                    <small class="text-muted">{{ comment.comment_date }}</small>
+                                                </div>
+                                                <p class="mb-1">{{ comment.comment }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Show comments if attempt is >= 1 -->
         </div>
+    </div>
     </div>
     <br>
     <script src="{% static "js/viewCase.js" %}"></script>
