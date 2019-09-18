@@ -80,13 +80,13 @@
 
 .theme-btn {
   background-color: $theme-color;
-  border-color: #28a745;
   color: white;
   padding: 0.5rem 1rem;
   cursor: pointer;
   min-width: 150px;
   text-align: center;
   border-radius: 3px;
+  border: none;
 
   &:hover {
     background-color: darken($theme-color, 10%);
