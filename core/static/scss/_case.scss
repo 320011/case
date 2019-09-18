@@ -1,0 +1,33 @@
+/* narrow */
+@media only screen and (max-width: 1026px) {
+  .case-side {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .case-content {
+    margin-left: 0 !important;
+    margin-left: 0;
+    margin-right: 0;
+    padding-top: 7px;
+  }
+}
+
+/* wide */
+@media only screen and (min-width: 1026px) {
+  .case-side {
+    flex: 1;
+    align-self: flex-start;
+    max-width: 285px;
+    margin-left: 0;
+    margin-right: 20px;
+    padding-top: 7px;
+  }
+
+  .case-content {
+    flex: 2;
+    margin-left: 0;
+    margin-right: 0;
+  }
+}

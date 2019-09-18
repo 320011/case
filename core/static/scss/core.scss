@@ -1,5 +1,5 @@
 $theme-color: #007BFF;
-$theme-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.2);
+$theme-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.15);
 
 body {
   background-color: white;
@@ -22,5 +22,6 @@ div.activation {
 
 @import "_theme";
 @import "_index";
+@import "_case";
 @import "_nav";
 @import "_caseadmin";

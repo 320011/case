@@ -79,7 +79,7 @@ def view_profile(request):
     cases = list(zip(cases, total_average, user_average, user_attempts, total_attempts, tags))
 
     c = {
-        'cases' : cases,
+        'cases' : cases * 10,
         'user' : user,
         'overall_score' : overall_score,
         'all_tags' : distinct_tags

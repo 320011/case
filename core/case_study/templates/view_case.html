@@ -14,42 +14,8 @@
 {% endblock %}
 
 {% block body %}
-    <style>
-        /* narrow */
-        @media only screen and (max-width: 1026px) {
-            #details {
-                width: 100%;
-                margin-left: 0;
-                margin-right: 0;
-            }
-
-            #main {
-                margin-left: 0 !important;
-                margin-left: 0;
-                margin-right: 0;
-
-            }
-        }
-        /* wide */
-        @media only screen and (min-width: 1026px) {
-            #details {
-                flex: 1;
-                align-self: flex-start;
-                max-width: 300px;
-                margin-left: 0;
-                margin-right: 30px;
-            }
-
-            #main {
-                flex: 2;
-                margin-left: 0;
-                margin-right: 0;
-            }
-        }
-    </style>
-
     <div class="row" id="row-container">
-        <div class="theme-container-border theme-container-bg theme-container-padding" id="details">
+        <div class="theme-container-border theme-container-bg theme-container-padding case-side" id="details">
             <div class="card-body">
                 <h5 class="mb-2"><strong>Details</strong></h5>
                 <div class="mb-3">
@@ -78,7 +44,7 @@
                 <a href="#" class="btn btn-danger btn-sm">Delete</a>
             </div>
         </div>
-        <div class="theme-container-border theme-container-bg theme-container-padding" id="main">
+        <div class="theme-container-border theme-container-bg theme-container-padding case-content" id="main">
             <div>
                 <h1 class="theme-header">Case <span id="case_id">{{ case.id }}</span></h1>
                 Description:
