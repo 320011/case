@@ -73,9 +73,14 @@ body {
   box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.3);
   border: none;
 
-  .dropdown-item {
+  a.dropdown-item {
     &:hover {
       background-color: darken(#f2f3f7, 5%);
+    }
+
+    &:active {
+      background-color: darken(#f2f3f7, 10%);
+      color: black;
     }
   }
 }
