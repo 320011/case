@@ -8,16 +8,30 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         {% if user.is_authenticated %}
-            <div class="nav-item dropdown ml-auto">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-                   aria-haspopup="true" aria-expanded="false" style="color: inherit">
-                    {{ user.first_name }}
-                </a>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="{% url "accounts:profile" %}">Profile</a>
-                    <a class="dropdown-item" href="{% url "accounts:profile_settings" %}">Settings</a>
-                    <a class="dropdown-item" href="{% url "accounts:logout" %}">Log Out</a>
-                </div>
+            <div class="nav-narrow">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url "accounts:profile" %}">
+                            <div class="nav-link" style="float:right">
+                                Profile
+                            </div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url "accounts:profile_settings" %}">
+                            <div class="nav-link" style="float:right">
+                                Settings
+                            </div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url "accounts:logout" %}">
+                            <div class="nav-link" style="float:right">
+                                Log Out
+                            </div>
+                        </a>
+                    </li>
+                </ul>
             </div>
         {% else %}
             <ul class="navbar-nav ml-auto">
@@ -38,4 +52,19 @@
             </ul>
         {% endif %}
     </div>
+    {% if user.is_authenticated %}
+        <div class="nav-wide">
+            <div class="nav-item dropdown ml-auto">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false" style="color: inherit">
+                    {{ user.first_name }}
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="{% url "accounts:profile" %}">Profile</a>
+                    <a class="dropdown-item" href="{% url "accounts:profile_settings" %}">Settings</a>
+                    <a class="dropdown-item" href="{% url "accounts:logout" %}">Log Out</a>
+                </div>
+            </div>
+        </div>
+    {% endif %}
 </nav>

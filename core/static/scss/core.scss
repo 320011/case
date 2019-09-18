@@ -1,4 +1,4 @@
-$col-pri: #0084b4;
+$theme-color: #007BFF;
 $col-body-background: #f5f8fa;
 $col-background: #ffffff;
 $col-border: #e1e8ed;
@@ -50,9 +50,39 @@ body {
   background-color: white;
 }
 
+.nav-narrow {
+  display: none;
+}
+
+.nav-wide {
+  display: block;
+}
+
+@media only screen and (max-width: 990px) {
+  .nav-narrow {
+    display: block;
+  }
+
+  .nav-wide {
+    display: none;
+  }
+}
+
+.dropdown-menu {
+  background-color: #f2f3f7;
+  box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.3);
+  border: none;
+
+  .dropdown-item {
+    &:hover {
+      background-color: darken(#f2f3f7, 5%);
+    }
+  }
+}
+
+@import "_theme";
 @import "_index";
 @import "_profile";
 @import "_casestudy";
 @import "_accounts";
 @import "_caseadmin";
-@import "_theme";
