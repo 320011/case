@@ -34,7 +34,7 @@
     </style>
 
     <div class="row" id="row-container">
-        <div class="card col-3 mb-3 cs-border cs-background" id="details">
+        <div class="card col-3 mb-3 theme-container-border theme-container-bg" id="details">
             <div class="card-body">
                 <h5 class="mb-2"><strong>Personal Info</strong></h5>
                 <div class="mb-0">
@@ -79,7 +79,7 @@
         <div class="" id="main">
             {% if cases %}
                 {% for case, total_average, user_average, user_attempts, total_attempts, all_tags in cases %}
-                    <div class="cs-border cs-background cs-padding" id="main">
+                    <div class="theme-container-border theme-container-bg theme-container-padding" id="main">
                         <div>
                             <a class="action-link text-decoration-none" href="{% url "cases:view-case" case_study_id=case.id %}">
                                 <h3 class="text-center"><strong>Case <span id="case_id">{{ case.id }}</span></strong></h3>
@@ -111,7 +111,7 @@
                     </div>
                 {% endfor %}
             {% else %}
-                <div class="cs-border cs-background cs-padding">
+                <div class="theme-container-border theme-container-bg theme-container-padding">
                     <h5 class="theme-header">No results to show. Please attempt some case studies.</h5>
                 </div>
             {% endif %}

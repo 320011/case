@@ -1,0 +1,40 @@
+
+.navbar {
+  padding: 8px 20vw 8px 20vw;
+  background-color: white;
+}
+
+.nav-narrow {
+  display: none;
+}
+
+.nav-wide {
+  display: block;
+}
+
+@media only screen and (max-width: 990px) {
+  .nav-narrow {
+    display: block;
+  }
+
+  .nav-wide {
+    display: none;
+  }
+}
+
+.dropdown-menu {
+  background-color: #f2f3f7;
+  box-shadow: $theme-shadow;
+  border: none;
+
+  a.dropdown-item {
+    &:hover {
+      background-color: darken(#f2f3f7, 5%);
+    }
+
+    &:active {
+      background-color: darken(#f2f3f7, 10%);
+      color: black;
+    }
+  }
+}

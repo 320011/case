@@ -1,93 +1,26 @@
 $theme-color: #007BFF;
-$col-body-background: #f5f8fa;
-$col-background: #ffffff;
-$col-border: #e1e8ed;
-$col-text-pri: #373a3c;
-$col-text-sec: #8899a6;
-$col-text-error: #7c2527;
-
-$font-light: 100;
-$font-regular: 400;
-$font-bold: 600;
-
-$border-radius: 0.3125rem;
-$border-avatar-radius: 0.625rem;
-$border-avatar-size: 0.3125rem;
-$border-size: 0.0625rem;
-$border-style: solid;
-$padding: 0.625rem;
-$margin: 0.25rem;
-
-@keyframes fadein {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideup {
-  from {
-    transform: translateY(30px);
-  }
-  from {
-    transform: translateY(0px);
-  }
-}
+$theme-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.2);
 
 body {
-  background-color: $col-body-background;
+  background-color: white;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   line-height: 1.5;
-  color: $col-text-pri;
+  color: black;
   font-size: 1rem;
   margin-bottom: 10rem;
 }
 
-.navbar {
-  padding: 8px 20vw 8px 20vw;
-  background-color: white;
-}
-
-.nav-narrow {
+.help_text.ul {
+  list-style-type: none;
   display: none;
 }
 
-.nav-wide {
-  display: block;
-}
-
-@media only screen and (max-width: 990px) {
-  .nav-narrow {
-    display: block;
-  }
-
-  .nav-wide {
-    display: none;
-  }
-}
-
-.dropdown-menu {
-  background-color: #f2f3f7;
-  box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.3);
-  border: none;
-
-  a.dropdown-item {
-    &:hover {
-      background-color: darken(#f2f3f7, 5%);
-    }
-
-    &:active {
-      background-color: darken(#f2f3f7, 10%);
-      color: black;
-    }
-  }
+div.activation {
+  font-size: 16px;
+  margin: 15px auto;
 }
 
 @import "_theme";
 @import "_index";
-@import "_profile";
-@import "_casestudy";
-@import "_accounts";
+@import "_nav";
 @import "_caseadmin";

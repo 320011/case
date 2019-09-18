@@ -3,9 +3,17 @@
   border-radius: 3px;
   margin-bottom: 15px;
   background: #f2f3f7;
-  box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.3);
+  box-shadow: $theme-shadow;
   padding: 30px;
   margin: auto;
+}
+
+.theme-shadow {
+  box-shadow: $theme-shadow;
+}
+
+.theme-shadow-light {
+  box-shadow: $theme-shadow;
 }
 
 .theme-container-sm {
@@ -22,6 +30,10 @@
 
 .theme-container-lg {
   max-width: 1200px;
+}
+
+.theme-container-xl {
+  max-width: initial;
 }
 
 .theme-form {
@@ -86,6 +98,30 @@
 }
 
 .theme-nav {
-  box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.3);
+  box-shadow: $theme-shadow;
   margin-bottom: 50px;
+}
+
+.form-control {
+  height: 40px;
+  box-shadow: none;
+  color: #444444;
+  &:focus {
+    border-color: $theme-color;
+  }
+}
+
+.theme-container-border {
+    box-shadow: $theme-shadow;
+    border: none;
+    border-radius: 3px;
+}
+
+.theme-container-bg {
+    background-color: #f2f3f7;
+}
+
+.theme-container-padding {
+    padding: 20px;
+    margin: 0 5px 20px 5px;
 }

@@ -17,27 +17,37 @@
     <style>
         @media only screen and (max-width: 1026px) {
             #details {
-                width: 100%
+                width: 100%;
+                margin-left: 0;
+                margin-right: 0;
             }
 
             #main {
                 margin-left: 0 !important;
+                margin-left: 0;
+                margin-right: 0;
+
             }
         }
+        @media only screen and (min-width: 1026px) {
+            #details {
+                flex: 1;
+                align-self: flex-start;
+                max-width: 300px;
+                margin-left: 0;
+                margin-right: 30px;
+            }
 
-        #details {
-            flex: 1;
-            align-self: flex-start;
-        }
-
-        #main {
-            flex: 2;
-            margin-left: 10px;
+            #main {
+                flex: 2;
+                margin-left: 0;
+                margin-right: 0;
+            }
         }
     </style>
 
     <div class="row" id="row-container">
-        <div class="cs-border cs-background cs-padding" id="details">
+        <div class="theme-container-border theme-container-bg theme-container-padding" id="details">
             <div class="card-body">
                 <h5 class="mb-2"><strong>Details</strong></h5>
                 <div class="mb-3">
@@ -66,10 +76,10 @@
                 <a href="#" class="btn btn-danger btn-sm">Delete</a>
             </div>
         </div>
-        <div class="cs-border cs-background cs-padding" id="main">
+        <div class="theme-container-border theme-container-bg theme-container-padding" id="main">
             <div class="card-body">
                 <div>
-                    <h5 class="text-center"><strong>Case <span id="case_id">{{ case.id }}</span></strong></h5>
+                    <h1 class="theme-header">Case <span id="case_id">{{ case.id }}</span></h1>
                     Description:
                     <div class="card mt-2 mb-3 bg-light">
                         <div class="card-body">
