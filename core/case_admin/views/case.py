@@ -10,6 +10,14 @@ schema_case = {
     "endpoint": "/caseadmin/cases/",
     "fields": [
         {
+            "title": "ID",
+            "key": "id",
+            "widget": {
+                "template": "w-number.html",
+            },
+            "write": False,
+        },
+        {
             "title": "Date Created",
             "key": "date_created",
             "hide_in_table": True,
