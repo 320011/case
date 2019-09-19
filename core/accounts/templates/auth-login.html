@@ -6,32 +6,30 @@
 {% endblock %}
 
 {% block body %}
-    <div class="container">
-        <div class='signup-form'>
-            <form method="POST">
-                {% csrf_token %}
-                <h2>Log In</h2>
-                <p class="hint-text"></p>
-                {% for field in form %}
-                    <label for="{{ field.id_for_label }}" class="text-justify">{{ field.label }}</label>
-                    <div class="form-group">
-                        {{ field|addbootstrapstyle:field.label }}
-                        {% if field.help_text %}
-                            <small class="help_text">{{ field.help_text }}</small>
-                        {% endif %}
-                        {% for error in field.errors %}
-                            <p style="color: red">{{ error }}</p>
-                        {% endfor %}
-                    </div>
-                {% endfor %}
+    <div class='theme-container theme-container-sm'>
+        <form method="POST" class="theme-form">
+            {% csrf_token %}
+            <h2 class="theme-header">Log In</h2>
+            {% for field in form %}
+                <label for="{{ field.id_for_label }}" class="theme-label">{{ field.label }}</label>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-success btn-lg btn-block">Log In</button>
+                    {{ field }}
+                    {% if field.help_text %}
+                        <small class="help_text">{{ field.help_text }}</small>
+                    {% endif %}
+                    {% for error in field.errors %}
+                        <p style="color: red">{{ error }}</p>
+                    {% endfor %}
                 </div>
-                <p><a href="{% url "password_reset" %}">Forgot password?</a></p>
-            </form>
-            <div class="text-center">Don't have an account? <a href="{% url "accounts:signup" %}">Sign up.</a></div>
-        </div>
+            {% endfor %}
+            <div class="form-group">
+                <button type="submit" style="width:100%" class="theme-btn">Log In</button>
+            </div>
+            <a class="theme-link" href="{% url "password_reset" %}">Forgot password?</a>
+        </form>
     </div>
+    <br>
+    <div class="text-center">Don't have an account? <a class="theme-link" href="{% url "accounts:signup" %}">Sign up.</a></div>
     <script>
         $("#id_username").attr("type", "email"); // Fix for mobile keyboard. Could we do this better at the django form level?
     </script>

@@ -145,6 +145,7 @@ def view_signup(request):
             email = EmailMessage(email_subject, message, to=[to_email])
             email.send()
             c = {
+                "header": "Check Your Email",
                 "message": "An activation link has been "
                            "sent to {}. Please confirm your "
                            "email address to complete "
@@ -175,14 +176,20 @@ def view_activate(request):
         user = None
 
     c = {
-        "message": "Activation link is invalid."
+        "header": "Error",
+        "message": "Activation link is invalid.",
+        "error": "True"
     }
 
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
         user.save()
         login(request, user)
-        c["message"] = "Your account has been successfully activated."
+        c = {
+            "header": "Activation Successful",
+            "message": "Your account is now activated.",
+            "activated": True,
+        }
 
     return render(request, "activate-message.html", c)
 

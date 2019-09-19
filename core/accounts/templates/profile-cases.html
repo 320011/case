@@ -7,118 +7,95 @@
 {% endblock %}
 
 {% block header %}
-  Case {{ case.id }}
+    Case {{ case.id }}
 {% endblock %}
 
 {% block body %}
-<style>
-    @media only screen and (max-width: 1026px) {
-      #details {
-        width: 100%
-      }
+    <div class="row" id="row-container">
+        <div class="card col-3 mb-3 theme-container-border theme-container-bg case-side" id="details">
+            <div class="card-body">
+                <h5 class="mb-2"><strong>Personal Info</strong></h5>
+                <div class="mb-0">
+                    <div><strong>{{ user.get_full_name }}</strong></div>
+                </div>
+                <div><span id="user_uni">{{ user.university }}
+                    {% if user.degree_commencement_year %} (Started {{ user.degree_commencement_year }}) {% endif %} </span></div>
+                <div><span id="user_email">{{ user.email }}</span></div>
+                </br>
+                <div>Overall score: <span id="overall_score">{{ overall_score }}</span></div>
+            </div>
+            <div class="card-body border-top">
+                <h5 class="mb-2"><strong>Actions</strong></h5>
+                Filter By: </br>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mt-2">
+                        <strong> Tags </strong> </br>
+                        <button onclick="setGetParameter()" type="submit" class="badge badge-secondary btn-sm my-1"
+                                id="filter_tag" name="filter_tag" value="All"> All </button>
+                        {% for tag in all_tags %}
+                            <button onclick="setGetParameter()" type="submit" class="badge badge-secondary mb-1"
+                                    id="filter_tag" name="filter_tag" value={{ tag.split|join:"_" }}>
+                                {{ tag }}
+                            </button>
+                        {% endfor %}
+                    </div>
+                    <div class="mt-3">
+                        <p id="demo"></p>
+                        <strong> Time </strong> </br>
+                        <label for="start"> Start date: </label>
+                        <input onclick="maxTime()" class="form-control" type="date" id="start_time" name="start_time"></input>
+                        <label class="mt-2" for="end"> End date: </label>
+                        <input onclick="maxTime(); endMinTime();" class="form-control" type="date" id="end_time" name="end_time"></input> </br>
+                        <button type="submit" class="btn btn-primary btn-sm brand-green-bg brand-green-bg-hover" id="submit_date" name="submit_date"> Submit </button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
-      #main {
-        margin-left: 0 !important;
-      }
-    }
 
-    #details {
-      flex: 1;
-      align-self: flex-start;
-    }
+        <div class="case-content" id="main">
+            {% if cases %}
+                {% for case, total_average, user_average, user_attempts, total_attempts, all_tags in cases %}
+                    <div class="theme-container-border theme-container-bg theme-container-padding" id="main" style="margin:0 0 20px 0;">
+                        <div>
+                            <a class="action-link text-decoration-none" href="{% url "cases:view-case" case_study_id=case.id %}">
+                                <h3 class="text-center"><strong>Case <span id="case_id">{{ case.id }}</span></strong></h3>
+                            </a>
+                            <div class="float-right">
+                                {% for tag in all_tags %}
+                                    <span class="badge badge-secondary">{{ tag.tag.name }}</span>
+                                {% endfor %}
+                            </div>
+                            </br>
+                            <div class="card mt-2 mb-3 bg-light">
+                                <div class="card-body">
+                                    {{ case.get_age_in_words|an|title }} {{ case.get_age_string }} {{ case.get_sex }} {{ case.get_optionals }}
+                                    presents to your
+                                    pharmacy {{ case.description }}
+                                </div>
+                            </div>
+                            <div class="float-left">
+                                <div>Avg Score: <span id="total_average">{{ total_average }}</span></div>
+                                <div>My Score: <span id="user_average">{{ user_average }}</span></div>
+                            </div>
+                            <div class="float-right" style="text-align: right">
+                                <div>Total Attempts: <span id="total_attempts">{{ total_attempts }}</span></div>
+                                <div>My Attempts: <span id="user_attempts">{{ user_attempts }}</span></div>
+                            </div>
+                            <br>
+                            <br>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="theme-container-border theme-container-bg theme-container-padding">
+                    <h5 class="theme-header">No results to show. Please attempt some case studies.</h5>
+                </div>
+            {% endif %}
+        </div>
+    </div>
 
-    #main {
-      flex: 2;
-      margin-left: 10px;
-    }
-</style>
-
-<div class="row" id="row-container">
-    <div class="card col-3 mb-3" id="details">
-		<div class="card-body">
-			<h5 class="mb-2"><strong>Personal Info</strong></h5>
-			<div class="mb-0">
-				<div><strong>{{ user.get_full_name }}</strong></div>
-			</div>
-			<div><span id="user_uni">{{ user.university }}
-				{% if user.degree_commencement_year %} (Started {{ user.degree_commencement_year }}) {% endif %} </span></div>
-			<div><span id="user_email">{{ user.email }}</span></div>
-			</br>
-			<div>Overall score: <span id="overall_score">{{ overall_score }}</span></div>
-		</div>
-		<div class="card-body border-top">
-			<h5 class="mb-2"><strong>Actions</strong></h5>
-			Filter By: </br>
-			<form method="post">
-				{% csrf_token %}
-				<div class="mt-2">
-					<strong> Tags </strong> </br>
-					<button onclick="setGetParameter()" type="submit" class="badge badge-secondary btn-sm my-1"
-							id="filter_tag" name="filter_tag" value="All"> All </button>
-					{% for tag in all_tags %}
-						<button onclick="setGetParameter()" type="submit" class="badge badge-secondary mb-1"
-								id="filter_tag" name="filter_tag" value={{ tag.split|join:"_" }}>
-							{{ tag }}
-						</button>
-					{% endfor %}
-				</div>
-				<div class="mt-3">
-					<p id="demo"></p>
-					<strong> Time </strong> </br>
-					<label for="start"> Start date: </label>
-					<input onclick="maxTime()" class="form-control" type="date" id="start_time" name="start_time"></input>
-					<label class="mt-2" for="end"> End date: </label>
-					<input onclick="maxTime(); endMinTime();" class="form-control" type="date" id="end_time" name="end_time"></input> </br>
-					<button type="submit" class="btn btn-primary btn-sm" id="submit_date" name="submit_date"> Submit </button>
-				</div>
-    		</form>
-		</div>
-	</div>
-	
-	
-	<div class="card d-inline-block h-25 col" id="main">
-		{% if cases %}
-			{% for case, total_average, user_average, user_attempts, total_attempts, all_tags in cases %}
-			<div class="card-body card my-3">
-				<div>
-					<a class="action-link text-decoration-none" href="{% url "cases:view-case" case_study_id=case.id %}">
-						<h5 class="text-center"><strong>Case <span id="case_id">{{ case.id }}</span></strong></h5>
-					</a>
-					<div class="float-right">
-						{% for tag in all_tags %}
-							<span class="badge badge-secondary">{{ tag.tag.name }}</span>
-						{% endfor %}
-					</div>
-					</br>
-					<div class="card mt-2 mb-3 bg-light">
-						<div class="card-body">
-							{{ case.get_age_in_words|an|title }} {{ case.get_age_string }} {{ case.get_sex }} {{ case.get_optionals }}
-							presents to your
-							pharmacy {{ case.description }}
-						</div>
-					</div>
-					<div class="float-left">
-						<div>Avg Score: <span id="total_average">{{ total_average }}</span></div>
-						<div>My Score: <span id="user_average">{{ user_average }}</span></div>
-					</div>
-					<div class="float-right">
-						<div>Total Attempts: <span id="total_attempts">{{ total_attempts }}</span></div>
-						<div>My Attempts: <span id="user_attempts">{{ user_attempts }}</span></div>
-					</div>
-					
-				</div>
-			</div>
-			{% endfor %}
-		{% else %}
-		<div class="card-body card my-3">
-			<h5 class="text-center"><strong>No results to show. Please try some case studies.</strong></h5>
-		</div>
-		{% endif %}
-	</div>
-	
-	
-</div>
-
-<script src="{% static "js/viewCase.js" %}"></script>
-<script src="{% static "js/viewProfile.js" %}"></script>
+    <script src="{% static "js/viewCase.js" %}"></script>
+    <script src="{% static "js/viewProfile.js" %}"></script>
 {% endblock %}
