@@ -88,6 +88,9 @@ class CaseStudy(models.Model):
     )
     feedback = models.TextField(null=True, blank=True)
 
+    def __str__(self):
+        return "Case #{}".format(self.id)
+
     def get_age_string(self):
         if self.age_type == 'Y':
             return str(self.age // 12) + '-yo'

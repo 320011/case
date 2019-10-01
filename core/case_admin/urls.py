@@ -16,5 +16,7 @@ urlpatterns = [
     path("tags/", tag.view_admin_tag, name='tags'),
     path("tags/import", tag.api_admin_tag_import, name='tag_import'),
     path("tags/<int:tag_id>", tag.api_admin_tag, name='tags'),
+    path("comments/", comment.view_admin_comment, name='comments'),
+    path("comments/<int:comment_id>", comment.api_admin_comment, name='api_comments'),
     path("", common.view_landing, name='default'),
 ]
