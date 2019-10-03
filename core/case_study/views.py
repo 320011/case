@@ -6,10 +6,10 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
 
-from .forms import CaseStudyForm, CaseStudyTagForm, MedicalHistoryForm, MedicationForm  # , CaseTagForm
+from .forms import CaseStudyForm, CaseStudyTagForm, MedicalHistoryForm, MedicationForm, SearchForm  # , CaseTagForm
 from .models import Tag, TagRelationship, CaseStudy, MedicalHistory, Medication, Attempt, Comment
-
-
+from .filters import CaseStudyFilter
+from django.views.generic import ListView,DetailView
 @login_required
 def start_new_case(request):
     case = CaseStudy.objects.create(created_by=request.user)
@@ -179,32 +179,36 @@ def create_new_case(request, case_study_id):
                       "medication_form": medication_form,
                   })
 
+class CaseStudyListView(ListView):
+  model = CaseStudy
+  template_name = "view_case.html"
+
+  def get_context_data(self, **kwargs):
+    context = super().get_context_data(**kwargs)
+    context['filter'] = CaseStudyFilter(self.request.GET, queryset=self.get_queryset())
+    return context
+
+class CaseStudyDetailView(DetailView):
+  model = CaseStudy
+  template_name = "view_case_details.html"
 
 @login_required
-def view_case(request, case_study_id):
-    case_study = get_object_or_404(CaseStudy, pk=case_study_id)
-    mhx = MedicalHistory.objects.filter(case_study=case_study)
-    medications = Medication.objects.filter(case_study=case_study)
-    tags = TagRelationship.objects.filter(case_study=case_study)
-    total_average = case_study.get_average_score()
-    user_average = case_study.get_average_score(user=request.user)
-    user_attempts = Attempt.objects.filter(case_study=case_study, user=request.user).count()
-    total_attempts = Attempt.objects.filter(case_study=case_study).count()
-    comments = Comment.objects.filter(case_study=case_study_id).order_by("-comment_date")
-    c = {
-        "attempts": {
-            "total_average": total_average,
-            "total_attempts": total_attempts,
-            "user_average": user_average,
-            "user_attempts": user_attempts
-        },
-        "case": case_study,
-        "mhx": mhx,
-        "medications": medications,
-        "tags": tags,
-        "comments": comments
-    }
-    return render(request, "view_case.html", c)
+def view_case(request):
+#   casestudylistview = CaseStudyListView()
+#   casestudydetailview = CaseStudyDetailView()
+
+  return render(request, "view_case.html")
+#                                           'casestudydetailview':casestudydetailview})
+
+# class CaseStudyDetailView(DetailView):
+#   model = CaseStudy
+#   template_name = "view_case_details.html"
+
+# def view_case(request):
+#     form = SearchForm(request.POST)
+
+
+#     
 
 
 def validate_answer(request, case_study_id):
