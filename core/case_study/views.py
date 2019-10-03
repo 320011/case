@@ -6,10 +6,11 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
 
-from .forms import CaseStudyForm, CaseStudyTagForm, MedicalHistoryForm, MedicationForm, SearchForm  # , CaseTagForm
+from .forms import CaseStudyForm, CaseStudyTagForm, MedicalHistoryForm, MedicationForm  # , CaseTagForm
 from .models import Tag, TagRelationship, CaseStudy, MedicalHistory, Medication, Attempt, Comment
 from .filters import CaseStudyFilter
-from django.views.generic import ListView,DetailView
+from django.views.generic import ListView, DetailView
+
 @login_required
 def start_new_case(request):
     case = CaseStudy.objects.create(created_by=request.user)
@@ -178,7 +179,6 @@ def create_new_case(request, case_study_id):
                       "medical_history_form": medical_history_form,
                       "medication_form": medication_form,
                   })
-
 class CaseStudyListView(ListView):
   model = CaseStudy
   template_name = "view_case.html"
@@ -191,24 +191,10 @@ class CaseStudyListView(ListView):
 class CaseStudyDetailView(DetailView):
   model = CaseStudy
   template_name = "view_case_details.html"
-
 @login_required
 def view_case(request):
-#   casestudylistview = CaseStudyListView()
-#   casestudydetailview = CaseStudyDetailView()
-
-  return render(request, "view_case.html")
-#                                           'casestudydetailview':casestudydetailview})
-
-# class CaseStudyDetailView(DetailView):
-#   model = CaseStudy
-#   template_name = "view_case_details.html"
-
-# def view_case(request):
-#     form = SearchForm(request.POST)
-
-
-#     
+  f = CaseStudyFilter(request.GET, queryset=CaseStudy.objects.all())
+  return render(request, 'view_case.html', {'filter': f})
 
 
 def validate_answer(request, case_study_id):

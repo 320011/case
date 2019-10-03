@@ -126,23 +126,3 @@ class MedicationForm(ModelForm):
         for fname, f in self.fields.items():
             f.widget.attrs["class"] = "form-control"
 
-class SearchForm(ModelForm):
-    age = forms.IntegerField(
-        widget=forms.NumberInput(
-            attrs={
-                "class": "form-control",
-                "type": "text",
-                "name": "Age",
-                "placeholder": "Age"
-            }
-        ),
-        label="Age"
-    )
-
-    class Meta:
-        model = CaseStudy
-        fields = ["age"]
-        widgets = {
-            "age": forms.Textarea(attrs={'cols': 10, 'rows': 10}
-                ),
-        }
