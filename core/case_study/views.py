@@ -227,6 +227,7 @@ def view_case(request, case_study_id):
     case_study = get_object_or_404(CaseStudy, pk=case_study_id)
     mhx = MedicalHistory.objects.filter(case_study=case_study)
     medications = Medication.objects.filter(case_study=case_study)
+    others = Other.objects.filter(case_study=case_study)
     tags = TagRelationship.objects.filter(case_study=case_study)
     total_average = case_study.get_average_score()
     user_average = case_study.get_average_score(user=request.user)
@@ -243,6 +244,7 @@ def view_case(request, case_study_id):
         "case": case_study,
         "mhx": mhx,
         "medications": medications,
+        "others" : others, 
         "tags": tags,
         "comments": comments
     }
