@@ -142,7 +142,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                {% elif comment.user.is_staff == True %}
+                                {% elif comment.user.is_staff or comment.user.is_tutor %}
                                     <div class="row justify-content-start">
                                         <div class="col-8 comment-container">
                                             <div class="alert alert-info " role="alert">
