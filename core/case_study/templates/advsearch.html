@@ -41,47 +41,52 @@ Advanced Search
         <div class="card-body">
             <h5 class="mb-2"><strong>Search</strong></h5>
             <form action="{% url 'cases:advsearch'%}" method="GET">
-                <div>Key Words</div>
-                <div class="mb-3"><input type="text" name="key_words" id="kw_choice" value="{{ key_words }}"> </div>
+                <div class="form-group">
+                    <label class="form-check-label" for="kw_choice">Key Words</label>
+                    <input class="form-text-input" type="text" name="key_words" id="kw_choice" value="{{ key_words }}"> 
+                </div>
 
-                <div>MHx</div>
-                <div class="mb-3"><input type="text" name="mhx" id="mhx_choice" value="{{ mhx }}"></div>
+                <div class="form-group">
+                    <div>MHx</div>
+                    <input class="form-text-input" type="text" name="mhx" id="mhx_choice" value="{{ mhx }}">
+                </div>
 
-                <div>Medication</div>
-                <div class="mb-3"><input type="text" name="medication" id="medication_choice" value="{{ medication }}">
+                <div class="form-group">
+                    <div>Medication</div>
+                    <input class="form-text-input" type="text" name="medication" id="medication_choice" value="{{ medication }}">
                 </div>
 
                 <div>Patient Sex</div>
-                <div class="mb-3">
+                <div class="form-group form-check">
                     {% for a,b in sexes %}
-                    <input type="checkbox" name="sex_choice" id="sex_choice{{ forloop.counter }}" value="{{ a }}"
+                    <input class="form-check-input" type="checkbox" name="sex_choice" id="sex_choice{{ forloop.counter }}" value="{{ a }}"
                         {% if a in sex_choices %} checked {% endif %}>
-                    <label for="sex_choice{{ forloop.counter }}">{{ b }}</label>
+                    <label class="form-check-label" for="sex_choice{{ forloop.counter }}">{{ b }}</label>
                     <br>
                     {% endfor %}
                 </div>
 
                 <div>Tags</div>
-                <div class="mb-3">
+                <div class="form-group form-check">
                     {% for tag in tags %}
-                    <input type="checkbox" name="tag_choice" id="tag_choice{{ forloop.counter }}" value="{{tag}}"
+                    <input class="form-check-input" type="checkbox" name="tag_choice" id="tag_choice{{ forloop.counter }}" value="{{tag}}"
                         {% if tag.name in tag_choices %} checked {% endif %}>
                     {{tag_choice}}
-                    <label for="tag_choice{{ forloop.counter }}">{{ tag.name }}</label>
+                    <label class="form-check-label" for="tag_choice{{ forloop.counter }}">{{ tag.name }}</label>
                     <br>
                     {% endfor %}
                 </div>
 
 
                 <div>Date Created</div>
-                <div class="mb-3">
-                    <input type="date" name="before_date" id="before_date_inp" value="{{ before_date }}">
+                <div class="form-group">
+                    <input class="form-date-input" type="date" name="before_date" id="before_date_inp" value="{{ before_date }}">
                     <br>
                     <label for="before_date_inp">Before:</label>
                     <br>
                 </div>
-                <div class="mb-3">
-                    <input type="date" name="after_date" id="after_date_inp" value="{{ after_date }}">
+                <div class="form-group">
+                    <input class="form-date-input" type="date" name="after_date" id="after_date_inp" value="{{ after_date }}">
                     <br>
                     <label for="after_date_inp">After:</label>
                     <br>
@@ -89,25 +94,25 @@ Advanced Search
 
 
                 <div>Age</div>
-                <div class="mb-3">
-                    <input type="number" name="min_age" id="min_age_inp"  value="{{ min_age }}">
+                <div class="form-group">
+                    <input class="form-number-input" type="number" name="min_age" id="min_age_inp"  value="{{ min_age }}">
                     <label for="min_age_inp">Minimum Age:</label>
                     <br>
                 </div>
                 
-                <div class="mb-3">
-                    <input type="number" name="max_age" id="max_age_inp" value="{{ max_age }}">
+                <div class="form-group">
+                    <input class="form-number-input" type="number" name="max_age" id="max_age_inp" value="{{ max_age }}">
                     <label for="max_age_inp">Maximum Age:</label>
                     <br>
                 </div>
 
 
                 <br>
-                <div class="mb-3">
-                    <input type="checkbox" name="staff_choice" id="staff_choice1" value="staff_choice"
+                <div class="form-group">
+                    <input class="form-check-input" type="checkbox" name="staff_choice" id="staff_choice1" value="staff_choice"
                         {% if staff_choice %} checked {% endif %}>
 
-                    <label for="staff_choice1">Only Public Staff Cases?</label>
+                    <label class="form-check-label" for="staff_choice1">Only Public Staff Cases?</label>
                     <br>
                 </div>
 
