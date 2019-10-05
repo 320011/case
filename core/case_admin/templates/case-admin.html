@@ -13,6 +13,10 @@
 
 
 {% block body %}
+    {% if reviewing %}
+        <h1 class="theme-header">{{ review_header }}</h1>
+        <h2 class="theme-header-2">{{ review_description }}</h2>
+    {% endif %}
     <div id="admin-table-toolbar" class="select" style="">
         {% if toolbar_new %}
             {% include "admin-tools-modal.html" with modal_entity_id="new" creating_new=True fields=schema.fields %}
@@ -26,6 +30,16 @@
                 Import
             </button>
         {% endif %}
+        {% if toolbar_review %}
+            <a class="theme-btn" href="{{ review_endpoint }}">
+                {% if review_count > 0 %}
+                    <span class="notification-badge">
+                        {{ review_count }}
+                    </span>
+                {% endif %}
+                Review
+            </a>
+        {% endif %}
     </div>
     {% if admin_message %}
         <div class="alert {{ admin_message_type }} mt-3 mb-3">
@@ -33,60 +47,60 @@
         </div>
     {% endif %}
     <div class="">
-    <table
-            data-toggle="table"
-            data-search="true"
-            data-sortable="true"
-            data-show-export="true"
-            data-toolbar="#admin-table-toolbar"
-            id="admin-tools-table"
-            class="table table-striped table-bordered table-sm">
-        <thead>
-        <tr>
-            {% for field in schema.fields %}
-                {% if not field.hide_in_table %}
-                    <th data-field="{{ field.key }}" data-sortable="true" scope="col" class="admin-table-header th-sm">
-                        {{ field.title }}
-                    </th>
-                {% endif %}
-            {% endfor %}
-        </tr>
-        </thead>
-        <tbody>
-        {% for fields in data.entities %}
-            <tr class="admin-entity-row" data-toggle="modal" data-target="#entity-edit-modal-{{ fields.0.entity }}">
-                {% include "admin-tools-modal.html" with modal_entity_id=fields.0.entity %}
-                {% for field in fields %}
+        <table
+                data-toggle="table"
+                data-search="true"
+                data-sortable="true"
+                data-show-export="true"
+                data-toolbar="#admin-table-toolbar"
+                id="admin-tools-table"
+                class="table table-striped table-bordered table-sm">
+            <thead>
+            <tr>
+                {% for field in schema.fields %}
                     {% if not field.hide_in_table %}
-                        <td class="admin-entity-cell">
-                            <div class="admin-table-narrow-header" class="th-sm">
-                                {{ field.title }}
-                            </div>
-                            <div class="admin-table-cell-content">
-                                {% if field.type == "action" %}
-                                    {% include field.widget.template %}
-                                {% elif field.widget.template == "w-checkbox.html" %}
-                                    <input type="checkbox" disabled {% if field.value %}checked{% endif %}>
-                                    {{ field.value }}
-                                {% elif field.type == "foreignkey" %}
-                                    {{ field.value }}
-                                {% elif field.type == "foreignkey-multiple" %}
-                                    {% for opt in field.options %}{% if opt.selected %}{{ opt.name }}, {% endif %}{% endfor %}
-                                {% elif field.type == "foreignkey-multiple-custom" %}
-                                    {% for opt in field.options %}{% if opt.selected %}{{ opt.name }}, {% endif %}{% endfor %}
-                                {% elif field.type == "foreignkey-multiple-relation" %}
-                                    {% for opt in field.options %}{% if opt.selected %}{{ opt.name }}, {% endif %}{% endfor %}
-                                {% else %}
-                                    {{ field.value }}
-                                {% endif %}
-                            </div>
-                        </td>
+                        <th data-field="{{ field.key }}" data-sortable="true" scope="col" class="admin-table-header th-sm">
+                            {{ field.title }}
+                        </th>
                     {% endif %}
                 {% endfor %}
             </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            {% for fields in data.entities %}
+                <tr class="admin-entity-row" data-toggle="modal" data-target="#entity-edit-modal-{{ fields.0.entity }}">
+                    {% include "admin-tools-modal.html" with modal_entity_id=fields.0.entity %}
+                    {% for field in fields %}
+                        {% if not field.hide_in_table %}
+                            <td class="admin-entity-cell">
+                                <div class="admin-table-narrow-header" class="th-sm">
+                                    {{ field.title }}
+                                </div>
+                                <div class="admin-table-cell-content">
+                                    {% if field.type == "action" %}
+                                        {% include field.widget.template %}
+                                    {% elif field.widget.template == "w-checkbox.html" %}
+                                        <input type="checkbox" disabled {% if field.value %}checked{% endif %}>
+                                        {{ field.value }}
+                                    {% elif field.type == "foreignkey" %}
+                                        {{ field.value }}
+                                    {% elif field.type == "foreignkey-multiple" %}
+                                        {% for opt in field.options %}{% if opt.selected %}{{ opt.name }}, {% endif %}{% endfor %}
+                                    {% elif field.type == "foreignkey-multiple-custom" %}
+                                        {% for opt in field.options %}{% if opt.selected %}{{ opt.name }}, {% endif %}{% endfor %}
+                                    {% elif field.type == "foreignkey-multiple-relation" %}
+                                        {% for opt in field.options %}{% if opt.selected %}{{ opt.name }}, {% endif %}{% endfor %}
+                                    {% else %}
+                                        {{ field.value }}
+                                    {% endif %}
+                                </div>
+                            </td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
     <script src="https://unpkg.com/bootstrap-table@1.15.4/dist/bootstrap-table.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/js/select2.min.js"></script>

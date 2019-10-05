@@ -11,7 +11,7 @@ function getCookie(name) {
   return null;
 }
 
-function admin_updateEntity(endpoint, entity) {
+function admin_updateEntity(endpoint, entity, silent=false) {
   // construct a user model with the updated data
   let inps = document.getElementById(`admin-table-${entity}`).getElementsByTagName("input");
   let updates = {};
@@ -58,7 +58,9 @@ function admin_updateEntity(endpoint, entity) {
     body: JSON.stringify(updates),
   }).then(r => r.json()).then(resp => {
     if (resp && resp.success) {
-      alert("Updated an entity");
+      if (!silent) {
+        alert("Updated an entity");
+      }
       console.log("Updated an entity. \nNew values:", updates);
       location.reload();
     } else {
@@ -71,7 +73,7 @@ function admin_updateEntity(endpoint, entity) {
   });
 }
 
-function admin_deleteEntity(endpoint, entity, hard) {
+function admin_deleteEntity(endpoint, entity, hard, silent=false) {
   let conf = () => { return confirm("Are you sure you want to SOFT DELETE this entity?\n\nThis will HIDE the entity from all areas of the site besides the admin."); };
   if (hard) {
     conf = () => { return confirm("Are you sure you want to HARD DELETE this entity?\n\nThis will PERMANENTLY DELETE the entity from the entire system."); };
@@ -91,7 +93,9 @@ function admin_deleteEntity(endpoint, entity, hard) {
       }),
     }).then(r => r.json()).then(resp => {
       if (resp && resp.success) {
-        alert("Deleted an entity");
+        if (!silent) {
+          alert("Deleted an entity");
+        }
         console.log("Deleted an entity.");
         location.reload();
       } else {
@@ -105,8 +109,8 @@ function admin_deleteEntity(endpoint, entity, hard) {
   }
 }
 
-function admin_entityAction(endpoint, entity, action) {
-  if (confirm("Are you sure you want to perform this action?")) {
+function admin_entityAction(endpoint, entity, action, silent=false, conf_msg=null) {
+  if (confirm(conf_msg || "Are you sure you want to perform this action?")) {
     // ajax the action to the server
     fetch(endpoint + entity, {
       method: "PUT", // use PUT for actions
@@ -121,7 +125,9 @@ function admin_entityAction(endpoint, entity, action) {
       }),
     }).then(r => r.json()).then(resp => {
       if (resp && resp.success) {
-        alert("Success: " + resp.message);
+        if (!silent) {
+          alert("Success: " + resp.message);
+        }
         console.log("Success:", resp.message);
       } else {
         alert("Failed to perform an action. \nError: " + resp.message);
@@ -134,7 +140,7 @@ function admin_entityAction(endpoint, entity, action) {
   }
 }
 
-function admin_newEntity(endpoint) {
+function admin_newEntity(endpoint, silent=false) {
   // construct a user model with the updated data
   let inps = document.getElementById("entity-edit-modal-new").getElementsByTagName("input");
   let updates = {};
@@ -159,7 +165,9 @@ function admin_newEntity(endpoint) {
     body: JSON.stringify(updates),
   }).then(r => r.json()).then(resp => {
     if (resp && resp.success) {
-      alert("Success: " + resp.message);
+      if (!silent) {
+        alert("Success: " + resp.message);
+      }
       console.log("Success:", resp.message);
       location.reload();
     } else {
@@ -170,4 +178,13 @@ function admin_newEntity(endpoint) {
     alert("Failed to create a new entity. \nFatal Error: " + err);
     console.log("Failed to create a new entity. \nFatal Error:", err);
   });
+}
+
+function admin_approveEntity(endpoint, entity) {
+  admin_updateEntity(endpoint, entity, true);
+  admin_entityAction(endpoint, entity, "APPROVE", false, "Are you sure you want to approve this entity?\n\nThis will allow all users of the site to view it.");
+}
+
+function admin_denyEntity(endpoint, entity) {
+  admin_entityAction(endpoint, entity, "DENY", false, "Are you sure you want to deny this entity?\n\nThis will PERMANENTLY DELETE the entity from the entire system.");
 }

@@ -2,12 +2,8 @@ from case_study.models import Comment, CaseStudy
 from accounts.models import User
 from core.decorators import staff_required
 from django.shortcuts import render
-import json
 from .common import populate_data, delete_model, patch_model
 from django.http import JsonResponse
-
-
-from .common import populate_data
 
 schema_comment = {
     "endpoint": "/caseadmin/comments/",
@@ -64,19 +60,6 @@ schema_comment = {
 
 
 @staff_required
-def view_admin_comment(request):
-    if request.method == "GET":
-        data = populate_data(schema_comment, Comment)
-        c = {
-            "title": "Comment Admin",
-            "model_name": "Comment",
-            "data": data,
-            "schema": schema_comment,
-        }
-        return render(request, "case-admin.html", c)
-
-
-@staff_required
 def api_admin_comment(request, comment_id):
     if request.method == "PATCH":
         return patch_model(request, Comment, schema_comment, comment_id)
@@ -87,4 +70,30 @@ def api_admin_comment(request, comment_id):
             "success": False,
             "message": "Unsupported HTTP method: " + request.method
         })
+
+
+@staff_required
+def view_admin_comment(request):
+    if request.method == "GET":
+        data = populate_data(schema_comment, Comment.objects.all())
+        c = {
+            "title": "Comment Admin",
+            "model_name": "Comment",
+            "data": data,
+            "schema": schema_comment,
+        }
+        return render(request, "case-admin.html", c)
+
+
+@staff_required
+def view_admin_comment_review(request):
+    if request.method == "GET":
+        data = populate_data(schema_comment, Comment.objects.all())
+        c = {
+            "title": "Comment Admin",
+            "model_name": "Comment",
+            "data": data,
+            "schema": schema_comment,
+        }
+        return render(request, "case-admin.html", c)
 

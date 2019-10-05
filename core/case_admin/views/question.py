@@ -26,7 +26,7 @@ schema_question = {
 
 
 def render_question_view(request, message=None, message_type=None):
-    data = populate_data(schema_question, Question)
+    data = populate_data(schema_question, Question.objects.all())
     c = {
         "title": "Question Admin",
         "model_name": "Question",
