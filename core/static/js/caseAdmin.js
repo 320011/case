@@ -109,7 +109,7 @@ function admin_deleteEntity(endpoint, entity, hard, silent=false) {
   }
 }
 
-function admin_entityAction(endpoint, entity, action, silent=false, conf_msg=null) {
+function admin_entityAction(endpoint, entity, action, silent=false, conf_msg=null, reload=false) {
   if (confirm(conf_msg || "Are you sure you want to perform this action?")) {
     // ajax the action to the server
     fetch(endpoint + entity, {
@@ -129,6 +129,9 @@ function admin_entityAction(endpoint, entity, action, silent=false, conf_msg=nul
           alert("Success: " + resp.message);
         }
         console.log("Success:", resp.message);
+        if (reload) {
+          location.reload();
+        }
       } else {
         alert("Failed to perform an action. \nError: " + resp.message);
         console.log("Failed to perform an action. \nError:", resp.message);
@@ -186,5 +189,5 @@ function admin_approveEntity(endpoint, entity) {
 }
 
 function admin_denyEntity(endpoint, entity) {
-  admin_entityAction(endpoint, entity, "DENY", false, "Are you sure you want to deny this entity?\n\nThis will PERMANENTLY DELETE the entity from the entire system.");
+  admin_entityAction(endpoint, entity, "DENY", false, "Are you sure you want to deny this entity?\n\nThis will PERMANENTLY DELETE the entity from the entire system.", true);
 }

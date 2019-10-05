@@ -302,10 +302,10 @@ def case_action(request, case_id):
             "message": "Approved case study"
         })
     elif action == "DENY":
-        CaseStudy.objects.filter(pk=case_id).update(is_submitted=True)
+        CaseStudy.objects.filter(id=case_id).delete()
         return JsonResponse({
             "success": True,
-            "message": "Approved case study"
+            "message": "Denied case study"
         })
     else:
         return JsonResponse({
