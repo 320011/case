@@ -19,7 +19,7 @@
         </div>
     {% endif %}
     <div class="theme-container" style="padding: 20px">
-        <a class="theme-btn" href="{% url "case_admin:default" %}">
+        <a class="theme-btn" href="{% if back_url %}{{ back_url }}{% else %}{% url "case_admin:default" %}{% endif %}">
             &lt; Back
         </a>
     <br>

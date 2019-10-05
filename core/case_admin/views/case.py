@@ -358,5 +358,6 @@ def view_admin_case_review(request):
         "review_header": "Case Study Review",
         "review_description": "Inspect, modify, and approve case studies that have been submitted for review by users "
                               "of UWA Pharmacy Case.",
+        "back_url": reverse("case_admin:cases"),
     }
     return render(request, "case-admin.html", c)
