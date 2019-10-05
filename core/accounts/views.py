@@ -89,7 +89,6 @@ def view_profile(request):
         tags.append(TagRelationship.objects.filter(case_study=case))
 
     cases = list(zip(cases, total_average, user_average, user_attempts, total_attempts, tags))
-    print("\n\n\n", tag_filter, "\n\n\n")
 
     c = {
         'cases' : cases,
