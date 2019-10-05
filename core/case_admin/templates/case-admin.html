@@ -13,40 +13,47 @@
 
 
 {% block body %}
-    {% if reviewing %}
-        <h1 class="theme-header">{{ review_header }}</h1>
-        <h2 class="theme-header-2">{{ review_description }}</h2>
-    {% endif %}
-    <div id="admin-table-toolbar" class="select" style="">
-        {% if toolbar_new %}
-            {% include "admin-tools-modal.html" with modal_entity_id="new" creating_new=True fields=schema.fields %}
-            <button class="form-control btn btn-primary" data-toggle="modal" data-target="#entity-edit-modal-new">
-                New
-            </button>
-        {% endif %}
-        {% if toolbar_import %}
-            {% include "admin-tools-import-modal.html" %}
-            <button class="form-control btn btn-primary" data-toggle="modal" data-target="#entity-edit-modal-import">
-                Import
-            </button>
-        {% endif %}
-        {% if toolbar_review %}
-            <a class="theme-btn" href="{{ review_endpoint }}">
-                {% if review_count > 0 %}
-                    <span class="notification-badge">
-                        {{ review_count }}
-                    </span>
-                {% endif %}
-                Review
-            </a>
-        {% endif %}
-    </div>
     {% if admin_message %}
         <div class="alert {{ admin_message_type }} mt-3 mb-3">
             <p style="margin: 0">{{ admin_message }}</p>
         </div>
     {% endif %}
-    <div class="">
+    <div class="theme-container" style="padding: 20px">
+        <a class="theme-btn" href="{% url "case_admin:default" %}">
+            &lt; Back
+        </a>
+    <br>
+    <br>
+        {% if reviewing %}
+            <h1 class="theme-header">{{ review_header }}</h1>
+            <h2 class="theme-header-2">{{ review_description }}</h2>
+        {% else %}
+            <h1 class="theme-header">{{ title }}</h1>
+        {% endif %}
+        <div id="admin-table-toolbar" class="select" style="">
+            {% if toolbar_new %}
+                {% include "admin-tools-modal.html" with modal_entity_id="new" creating_new=True fields=schema.fields %}
+                <button class="form-control btn btn-primary" data-toggle="modal" data-target="#entity-edit-modal-new">
+                    New
+                </button>
+            {% endif %}
+            {% if toolbar_import %}
+                {% include "admin-tools-import-modal.html" %}
+                <button class="form-control btn btn-primary" data-toggle="modal" data-target="#entity-edit-modal-import">
+                    Import
+                </button>
+            {% endif %}
+            {% if toolbar_review %}
+                <a class="theme-btn" href="{{ review_endpoint }}">
+                    {% if review_count > 0 %}
+                        <span class="notification-badge">
+                        {{ review_count }}
+                    </span>
+                    {% endif %}
+                    Review
+                </a>
+            {% endif %}
+        </div>
         <table
                 data-toggle="table"
                 data-search="true"
