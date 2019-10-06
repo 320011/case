@@ -39,7 +39,7 @@ def view_profile(request):
             all_tags_names.append(tag.tag.name)
     distinct_tags = set(all_tags_names)
 
-    # user's overall performance
+    # user's overall performance (average was calculated by each tries)
     total_score = sum([a*b for a,b in zip(user_average, user_attempts)])
     total_tries = sum(user_attempts)
     if total_tries == 0:
@@ -47,6 +47,7 @@ def view_profile(request):
     else:
         overall_score = float("{0:.2f}".format(total_score/total_tries))
 
+    tag_filter, tag_score = "", 0
     # if the user filters the cases by tags or time, then the view needs to be updated
     if request.POST.get("filter_tag") and request.POST['filter_tag'] == 'All':
         pass
@@ -67,6 +68,17 @@ def view_profile(request):
                     filter_ids.append(case.id)
         cases = CaseStudy.objects.filter(id__in=[item for item in filter_ids])
 
+        #calculate the score for this particular tag
+        tag_average, tag_attempts = [], []
+        for case in cases:
+            tag_average.append(case.get_average_score(user=request.user))
+            tag_attempts.append(len(Attempt.objects.filter(case_study=case, user=request.user)))
+        
+        total_tag_score = sum([a*b for a,b in zip(tag_average, tag_attempts)])
+        total_tag_tries = sum(tag_attempts)
+        tag_score = float("{0:.2f}".format(total_tag_score/total_tag_tries))
+
+
     # all of these are calculated per case to be shown
     total_average, user_average, user_attempts, total_attempts, tags = [], [], [], [], []
     for case in cases:
@@ -82,7 +94,9 @@ def view_profile(request):
         'cases' : cases,
         'user' : user,
         'overall_score' : overall_score,
-        'all_tags' : distinct_tags
+        'all_tags' : distinct_tags,
+        'tag_filter' : tag_filter,
+        'tag_score' : tag_score
     }
     return render(request, "profile-cases.html", c)
 
