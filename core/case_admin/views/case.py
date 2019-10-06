@@ -2,7 +2,9 @@ from accounts.models import User
 from case_study.models import CaseStudy, Tag, Question, TagRelationship, MedicalHistory, Medication
 from core.decorators import staff_required
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+from django.urls import reverse
+import json
 
 from .common import populate_data, delete_model, patch_model
 
@@ -263,12 +265,20 @@ schema_case = {
             "write": True,
         },
         {
-            "title": "Answer",
+            "title": "Correct Answer",
             "key": "answer",
+            "type": "choices",
+            "allow_null": False,
             "widget": {
-                "template": "w-text.html",
+                "template": "w-select.html",
             },
             "write": True,
+            "choices": [
+                ("A", "A"),
+                ("B", "B"),
+                ("C", "C"),
+                ("D", "D"),
+            ],
         },
         {
             "title": "Feedback",
@@ -282,12 +292,37 @@ schema_case = {
 }
 
 
+def case_action(request, case_id):
+    body = json.loads(request.body)
+    action = body["action"]
+    if action == "APPROVE":
+        CaseStudy.objects.filter(pk=case_id).update(is_submitted=True)
+        return JsonResponse({
+            "success": True,
+            "message": "Approved case study"
+        })
+    elif action == "DENY":
+        CaseStudy.objects.filter(id=case_id).delete()
+        return JsonResponse({
+            "success": True,
+            "message": "Denied case study"
+        })
+    else:
+        return JsonResponse({
+            "success": False,
+            "message": "Unknown action: {}".format(request.body["action"])
+        })
+
+
+
 @staff_required
 def api_admin_case(request, case_id):
     if request.method == "PATCH":
         return patch_model(request, CaseStudy, schema_case, case_id)
     elif request.method == "DELETE":
         return delete_model(request, CaseStudy, case_id)
+    elif request.method == "PUT":
+        return case_action(request, case_id)
     else:
         return JsonResponse({
             "success": False,
@@ -297,11 +332,32 @@ def api_admin_case(request, case_id):
 
 @staff_required
 def view_admin_case(request):
-    data = populate_data(schema_case, CaseStudy)
+    data = populate_data(schema_case, CaseStudy.objects.all())
+    new_case_count = CaseStudy.objects.filter(is_submitted=False).count()
     c = {
         "title": "Case Study Admin",
         "model_name": "Case Study",
         "data": data,
         "schema": schema_case,
+        "toolbar_review": True,
+        "review_count": new_case_count,
+        "review_endpoint": reverse("case_admin:cases_review"),
+    }
+    return render(request, "case-admin.html", c)
+
+
+@staff_required
+def view_admin_case_review(request):
+    data = populate_data(schema_case, CaseStudy.objects.filter(is_submitted=False))
+    c = {
+        "title": "Review Case Studies",
+        "model_name": "Case Study",
+        "data": data,
+        "schema": schema_case,
+        "reviewing": True,
+        "review_header": "Case Study Review",
+        "review_description": "Inspect, modify, and approve case studies that have been submitted for review by users "
+                              "of UWA Pharmacy Case.",
+        "back_url": reverse("case_admin:cases"),
     }
     return render(request, "case-admin.html", c)

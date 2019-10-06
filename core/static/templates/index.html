@@ -18,20 +18,25 @@
                 </a>
             </div>
             {% if user.is_staff %}
-            <div class="action-container">
-                <a class="action-link" href="{% url "case_admin:default" %}">
-                    <div class="action-card" id="action-admin">
-                        <p class="action-title">Site Administration</p>
-                    </div>
-                </a>
-            </div>
-            <div class="action-container">
-                <a class="action-link" href="{% url "default" %}">
-                    <div class="action-card" id="action-analytics">
-                        <p class="action-title">Analytics</p>
-                    </div>
-                </a>
-            </div>
+                <div class="action-container">
+                    <a class="action-link" href="{% url "case_admin:default" %}">
+                        <div class="action-card" id="action-admin">
+                            {% if badge_count_admin > 0 %}
+                                <span class="notification-badge">
+                                    {{ badge_count_admin }}
+                                </span>
+                            {% endif %}
+                            <p class="action-title">Site Administration</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="action-container">
+                    <a class="action-link" href="{% url "default" %}">
+                        <div class="action-card" id="action-analytics">
+                            <p class="action-title">Analytics</p>
+                        </div>
+                    </a>
+                </div>
             {% endif %}
         </div>
     </div>

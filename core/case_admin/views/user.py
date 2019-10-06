@@ -179,7 +179,20 @@ def api_admin_user(request, user_id):
 @staff_required
 def view_admin_user(request):
     # get returns a template with all the users in a table
-    data = populate_data(schema_user, User)
+    data = populate_data(schema_user, User.objects.all())
+    c = {
+        "title": "User Admin",
+        "model_name": "User",
+        "data": data,
+        "schema": schema_user,
+    }
+    return render(request, "case-admin.html", c)
+
+
+@staff_required
+def view_admin_user_review(request):
+    # get returns a template with all the users in a table
+    data = populate_data(schema_user, User.objects.all())
     c = {
         "title": "User Admin",
         "model_name": "User",
