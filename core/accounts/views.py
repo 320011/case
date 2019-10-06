@@ -164,7 +164,6 @@ def view_signup(request):
                 "success": False
             })
             email_subject = "Account Approval - {} ({})".format(user.first_name, user.email)
-            # to_email = form.cleaned_data.get("email")
             email = EmailMessage(email_subject, message, from_email='UWA Pharmacy Case',
                                 bcc=staff_emails)
             email.send()
