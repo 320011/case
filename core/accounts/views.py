@@ -160,7 +160,8 @@ def view_signup(request):
                 "domain": get_current_site(request).domain,
                 "uid": urlsafe_base64_encode(force_bytes(user.pk)),
                 "token": account_activation_token.make_token(user),
-                "protocol": request.is_secure() and "https" or "http"
+                "protocol": request.is_secure() and "https" or "http",
+                "success": False
             })
             email_subject = "Account Approval - {} ({})".format(user.first_name, user.email)
             # to_email = form.cleaned_data.get("email")
@@ -212,6 +213,16 @@ def view_activate(request):
                        "Name: {} {}\n"
                        "Email: {}".format(user.first_name, user.last_name, user.email),
         }
+
+        #sends an email to the user whose account is activated
+        message = render_to_string("mail/activate-account.html", {
+            "user": user,
+            "success": True
+        })
+        email_subject = "Successful Account Approval"
+        email = EmailMessage(email_subject, message, from_email='UWA Pharmacy Case',
+                            to=[user.email])
+        email.send()
 
     return render(request, "activate-message.html", c)
 

@@ -1,5 +1,14 @@
 {% autoescape off %}
-Hello,
+{% if success %}
+Hi {{ user.first_name }},
+
+Your UWA Pharmacy Case account has been successfully approved.
+You can now login to start using the app.
+
+Kind Regards,
+UWA Pharmacy Case team
+{% else %}
+Hi,
 
 A user has just signed up and is waiting for their account's approval.
 The account details are as follows:
@@ -10,4 +19,5 @@ Degree Commencement Year: {{ user.degree_commencement_year }}
 
 Please click the link below to activate their account:
 {{ protocol }}://{{ domain }}{% url 'accounts:activate' %}?id={{ uid }}&token={{ token }}
+{% endif %}
 {% endautoescape %}
