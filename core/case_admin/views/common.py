@@ -8,6 +8,8 @@ from django.db import transaction
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
+from case_study.models import CaseStudy
+from accounts.models import User
 
 value_formatters = {
     "": lambda val: val,
@@ -15,14 +17,13 @@ value_formatters = {
 }
 
 
-def populate_data(schema, model):
-    records = model.objects.all()
+def populate_data(schema, queryset):
     data = {
         "endpoint": schema["endpoint"],
         "entities": [],
     }
     # for all records in the db
-    for r in records:
+    for r in queryset:
         row_data = []  # this rows data
         # add each field to the data
         for f in schema["fields"]:
@@ -237,6 +238,27 @@ def delete_model(request, model, entity_id):
         })
 
 
+def get_badge_counts():
+    total = 0
+    new_user_count = User.objects.filter(is_active=False).count()
+    total += new_user_count
+    new_case_count = CaseStudy.objects.filter(is_submitted=False).count()
+    total += new_case_count
+    new_comment_report_count = 0#CommentReport.objects.filter(viewed=False).count()
+    total += new_comment_report_count
+    return {
+        "total": total,
+        "users": new_user_count,  # number of new users waiting for approval
+        "cases": new_case_count,  # number of new cases waiting for approval
+        "questions": 0,  # always 0 for now
+        "comments": new_comment_report_count,  # number of comment reports waiting for review
+        "tags": 0,  # always 0 for now,
+    }
+
+
 @staff_required
 def view_landing(request):
-    return render(request, "case-admin-landing.html")
+    c = {
+        "badge_count": get_badge_counts()
+    }
+    return render(request, "case-admin-landing.html", c)

@@ -10,6 +10,11 @@
             <div class="action-container">
                 <a class="action-link" href="{% url "case_admin:users" %}">
                     <div class="action-card" id="action-admin-users">
+                        {% if badge_count.users > 0 %}
+                            <span class="notification-badge">
+                                {{ badge_count.users }}
+                            </span>
+                        {% endif %}
                         <p class="action-title">Users</p>
                     </div>
                 </a>
@@ -17,6 +22,11 @@
             <div class="action-container">
                 <a class="action-link" href="{% url "case_admin:cases" %}">
                     <div class="action-card" id="action-admin-cases">
+                        {% if badge_count.cases > 0 %}
+                            <span class="notification-badge">
+                                {{ badge_count.cases }}
+                            </span>
+                        {% endif %}
                         <p class="action-title">Cases</p>
                     </div>
                 </a>
@@ -24,6 +34,11 @@
             <div class="action-container">
                 <a class="action-link" href="{% url "case_admin:questions" %}">
                     <div class="action-card" id="action-admin-questions">
+                        {% if badge_count.questions > 0 %}
+                            <span class="notification-badge">
+                                {{ badge_count.questions }}
+                            </span>
+                        {% endif %}
                         <p class="action-title">Questions</p>
                     </div>
                 </a>
@@ -31,6 +46,11 @@
             <div class="action-container">
                 <a class="action-link" href="{% url "case_admin:comments" %}">
                     <div class="action-card" id="action-admin-comments">
+                        {% if badge_count.comments > 0 %}
+                            <span class="notification-badge">
+                                {{ badge_count.comments }}
+                            </span>
+                        {% endif %}
                         <p class="action-title">Comments</p>
                     </div>
                 </a>
@@ -38,6 +58,11 @@
             <div class="action-container">
                 <a class="action-link" href="{% url "case_admin:tags" %}">
                     <div class="action-card" id="action-admin-tags">
+                        {% if badge_count.tags > 0 %}
+                            <span class="notification-badge">
+                                {{ badge_count.tags }}
+                            </span>
+                        {% endif %}
                         <p class="action-title">Tags</p>
                     </div>
                 </a>
