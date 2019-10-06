@@ -166,12 +166,13 @@ def view_signup(request):
             email_subject = "Account Approval - {} ({})".format(user.first_name, user.email)
             email = EmailMessage(email_subject, message, from_email='UWA Pharmacy Case',
                                 bcc=staff_emails)
+            email.content_subtype = "html"
             email.send()
             c = {
                 "header": "Account Confirmation",
                 "message": "You will be able to access your account "
                            "once it gets approved by our staff.\n"
-                           "We appreciate your patience!"
+                           "We appreciate your patience."
             }
             return render(request, "activate-message.html", c)
     else:
