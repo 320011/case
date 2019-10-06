@@ -71,8 +71,12 @@ function admin_updateEntity(endpoint, entity) {
   });
 }
 
-function admin_deleteEntity(endpoint, entity) {
-  if (confirm("Are you sure you want to delete this entity?")) {
+function admin_deleteEntity(endpoint, entity, hard) {
+  let conf = () => { return confirm("Are you sure you want to SOFT DELETE this entity?\n\nThis will HIDE the entity from all areas of the site besides the admin."); };
+  if (hard) {
+    conf = () => { return confirm("Are you sure you want to HARD DELETE this entity?\n\nThis will PERMANENTLY DELETE the entity from the entire system."); };
+  }
+  if (conf()) {
     // ajax the deleted entity id to the server
     fetch(endpoint + entity, {
       method: "DELETE",
@@ -82,7 +86,9 @@ function admin_deleteEntity(endpoint, entity) {
         "X-CSRFToken": getCookie("csrftoken"),
       },
       credentials: "same-origin",
-      body: JSON.stringify({}),
+      body: JSON.stringify({
+        "hard": hard
+      }),
     }).then(r => r.json()).then(resp => {
       if (resp && resp.success) {
         alert("Deleted an entity");

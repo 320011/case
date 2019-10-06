@@ -4,11 +4,19 @@ from core.decorators import staff_required
 from django.http import JsonResponse
 from django.shortcuts import render
 
-from .common import populate_data, delete_model_soft, patch_model
+from .common import populate_data, delete_model, patch_model
 
 schema_case = {
     "endpoint": "/caseadmin/cases/",
     "fields": [
+        {
+            "title": "ID",
+            "key": "id",
+            "widget": {
+                "template": "w-number.html",
+            },
+            "write": False,
+        },
         {
             "title": "Date Created",
             "key": "date_created",
@@ -279,7 +287,7 @@ def api_admin_case(request, case_id):
     if request.method == "PATCH":
         return patch_model(request, CaseStudy, schema_case, case_id)
     elif request.method == "DELETE":
-        return delete_model_soft(request, CaseStudy, case_id)
+        return delete_model(request, CaseStudy, case_id)
     else:
         return JsonResponse({
             "success": False,

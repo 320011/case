@@ -1,44 +1,44 @@
 {% extends "base.html" %}
 
 {% block title %}
-  Admin | UWA Case
+    Admin | UWA Pharmacy Case
 {% endblock %}
 
 {% block body %}
-    <div class="action-list-container">
-        <div class="action-list">
+    <div class="action-list-container theme-container theme-contaienr-med">
+        <div class="action-list theme-form">
             <div class="action-container">
                 <a class="action-link" href="{% url "case_admin:users" %}">
-                    <div class="action-card">
-                        <p>Users</p>
+                    <div class="action-card" id="action-admin-users">
+                        <p class="action-title">Users</p>
                     </div>
                 </a>
             </div>
             <div class="action-container">
                 <a class="action-link" href="{% url "case_admin:cases" %}">
-                    <div class="action-card">
-                        <p>Cases</p>
+                    <div class="action-card" id="action-admin-cases">
+                        <p class="action-title">Cases</p>
                     </div>
                 </a>
             </div>
             <div class="action-container">
                 <a class="action-link" href="{% url "case_admin:questions" %}">
-                    <div class="action-card">
-                        <p>Questions</p>
+                    <div class="action-card" id="action-admin-questions">
+                        <p class="action-title">Questions</p>
                     </div>
                 </a>
             </div>
             <div class="action-container">
-                <a class="action-link" href="{% url "case_admin:users" %}">
-                    <div class="action-card">
-                        <p>Comments</p>
+                <a class="action-link" href="{% url "case_admin:comments" %}">
+                    <div class="action-card" id="action-admin-comments">
+                        <p class="action-title">Comments</p>
                     </div>
                 </a>
             </div>
             <div class="action-container">
                 <a class="action-link" href="{% url "case_admin:tags" %}">
-                    <div class="action-card">
-                        <p>Tags</p>
+                    <div class="action-card" id="action-admin-tags">
+                        <p class="action-title">Tags</p>
                     </div>
                 </a>
             </div>

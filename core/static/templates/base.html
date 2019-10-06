@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>{% block title %}UWA Pharmacy App{% endblock %}</title>
+    <title>{% block title %}UWA Pharmacy Case{% endblock %}</title>
     <meta charset="utf-8">
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <link rel="shortcut icon" href="{% static "favicon.ico" %}"/>
@@ -37,7 +37,7 @@
     </div>
     {% if messages %}
         {% for message in messages %}
-            <div class='alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} mt-3 mb-3'>
+            <div style="margin:auto" class='theme-container-md theme-shadow-light alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} mt-3 mb-3'>
               {{ message }}
             </div>
         {% endfor %}

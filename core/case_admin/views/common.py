@@ -221,21 +221,20 @@ def patch_model(request, model, schema, entity_id):
 
 
 @transaction.atomic
-def delete_model_soft(request, model, entity_id):
-    obj = get_object_or_404(model, pk=entity_id)
-    obj.is_deleted = True
-    obj.save()
-    return JsonResponse({
-        "success": True,
-    })
-
-
-@transaction.atomic
 def delete_model(request, model, entity_id):
-    model.objects.filter(id=entity_id).delete()
-    return JsonResponse({
-        "success": True,
-    })
+    b = json.loads(request.body)
+    if b["hard"]:
+        model.objects.filter(id=entity_id).delete()
+        return JsonResponse({
+            "success": True,
+        })
+    else:
+        obj = get_object_or_404(model, pk=entity_id)
+        obj.is_deleted = True
+        obj.save()
+        return JsonResponse({
+            "success": True,
+        })
 
 
 @staff_required

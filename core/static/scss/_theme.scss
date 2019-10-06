@@ -1,0 +1,140 @@
+.theme-container {
+  color: #999;
+  border-radius: 3px;
+  margin-bottom: 15px;
+  background: #FFFFFF;
+  box-shadow: $theme-shadow;
+  padding: 30px;
+  margin: auto;
+}
+
+.theme-shadow {
+  box-shadow: $theme-shadow;
+}
+
+.theme-shadow-light {
+  box-shadow: $theme-shadow;
+}
+
+.theme-container-sm {
+  max-width: 450px;
+
+  .theme-btn {
+    width: 100%;
+  }
+}
+
+.theme-container-md {
+  max-width: 800px;
+}
+
+.theme-container-lg {
+  max-width: 1200px;
+}
+
+.theme-container-xl {
+  max-width: initial;
+}
+
+.theme-form {
+
+}
+
+.theme-form-group {
+  padding-bottom: 20px;
+}
+
+.theme-label {
+  color: #999999;
+  margin-bottom: 0.5rem;
+}
+
+.theme-link {
+  color: $theme-color;
+
+  &:hover {
+    color: $theme-color;
+  }
+}
+
+.theme-header {
+  color: #636363;
+  margin: 0 0 15px;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.theme-input {
+  border-radius: 3px;
+  height: 40px;
+  color: #444444;
+  line-height: 1.5;
+  width: 100%;
+  padding: 0.375rem;
+  font-size: 1rem;
+  background-color: white;
+  border: 1px solid #ced4da;
+}
+
+.theme-btn {
+  background-color: $theme-color;
+  color: white;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  min-width: 150px;
+  text-align: center;
+  border-radius: 3px;
+  border: none;
+
+  &:hover {
+    background-color: darken($theme-color, 10%);
+  }
+
+  &:active {
+    background-color: darken($theme-color, 20%);
+  }
+}
+
+/* wide */
+@media only screen and (min-width: 1026px) {
+  .theme-nav {
+    box-shadow: $theme-shadow;
+    margin-bottom: 50px;
+  }
+}
+
+/* narrow */
+@media only screen and (max-width: 1026px) {
+  .theme-nav {
+    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.05);
+    margin-bottom: 15px;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+}
+
+.form-control {
+  height: 40px;
+  box-shadow: none;
+  color: #444444;
+  &:focus {
+    border-color: $theme-color;
+  }
+}
+
+.theme-container-border {
+  box-shadow: $theme-shadow;
+  border: none;
+  border-radius: 3px;
+}
+
+.theme-container-bg {
+  background-color: #FFFFFF;
+}
+
+.theme-container-padding {
+  padding: 20px;
+  margin: 0 5px 20px 5px;
+}

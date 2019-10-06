@@ -1,0 +1,40 @@
+
+.navbar {
+  padding: 8px 20vw 8px 20vw;
+  background-color: white;
+}
+
+.nav-narrow {
+  display: none;
+}
+
+.nav-wide {
+  display: block;
+}
+
+@media only screen and (max-width: 990px) {
+  .nav-narrow {
+    display: block;
+  }
+
+  .nav-wide {
+    display: none;
+  }
+}
+
+.dropdown-menu {
+  background-color: white;
+  box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.1);
+  border: none;
+
+  a.dropdown-item {
+    &:hover {
+      background-color: darken(white, 5%);
+    }
+
+    &:active {
+      background-color: darken(white, 10%);
+      color: black;
+    }
+  }
+}

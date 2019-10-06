@@ -2,7 +2,7 @@
 {% load staticfiles %}
 
 {% block title %}
-    Create New Case
+    Create New Case | UWA Pharmacy Case
 {% endblock %}
 
 {% block header %}
@@ -10,16 +10,14 @@
 {% endblock %}
 
 {% block description %}
-    <div class="mb-3 alert alert-info">
+    <div class="mb-3 alert alert-info theme-container-md theme-shadow-light" style="margin:auto">
         Please fill out the following fields to create your case study. Required fields are marked with an asterisk (*). <br><br> Do not include any information that could potentially identify your patient.
     </div>
 {% endblock %}
 
 {% block body %}
-
-    <div class="card bg-light mb-3">
-
-        <div class='card-body'>
+    <div class="theme-container theme-container-md">
+        <div class='card-body' style="padding: 0 0 35px 0;">
             {% if message.type and message.content %}
                 <div class="alert alert-{{ message.type }}">{{ message.content }}</div>
             {% endif %}
@@ -37,7 +35,6 @@
                     </div>
                 {% endfor %}
             {% endif %}
-
             <form method="post" id="case_form">
                 {% csrf_token %}
                 <input type="hidden" name="submission_type" value="default" id="submission_type">
@@ -104,7 +101,6 @@
                 {{ case_study_form.question }} <br>
                 {#        <label>Question: </label>#}
                 {#        {{ case_study_question_form.question_choice }} <br>#}
-
                 <!-- Case Study Answers -->
                 <div class="row mb-3">
                     <div class="col">
@@ -172,11 +168,9 @@
                 <hr>
                 {#        Purely for validation#}
                 {{ case_study_form.is_submitted.as_hidden }}
-
                 <input class="btn btn-primary float-left" type="submit" value="Save" id="save">
                 <input class="btn btn-primary float-right" type="submit" value="Submit" id="submit_button">
             </form>
-
         </div>
     </div>
     <script src="{% static "js/createCase.js" %}"></script>

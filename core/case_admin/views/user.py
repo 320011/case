@@ -11,7 +11,7 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 
 from ..forms import TagImportForm
-from .common import populate_data, delete_model_soft, patch_model
+from .common import populate_data, delete_model, patch_model
 
 schema_user = {
     "endpoint": "/caseadmin/users/",
@@ -101,6 +101,7 @@ schema_user = {
     ]
 }
 
+
 def user_action_reset_password(request, usr):
     form = PasswordResetForm({'email': usr.email})
     if form.is_valid():
@@ -165,7 +166,7 @@ def api_admin_user(request, user_id):
     if request.method == "PATCH":
         return patch_model(request, User, schema_user, user_id)
     elif request.method == "DELETE":
-        return delete_model_soft(request, user_id)
+        return delete_model(request, user_id)
     elif request.method == "PUT":  # use PUT for actions
         return user_action(request, user_id)
     else:

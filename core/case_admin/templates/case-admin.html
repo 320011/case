@@ -2,7 +2,7 @@
 {% load staticfiles %}
 
 {% block title %}
-    {{ title }} | UWA Case
+    {{ title }} | UWA Pharmacy Case
 {% endblock %}
 
 {% block head %}
@@ -27,6 +27,12 @@
             </button>
         {% endif %}
     </div>
+    {% if admin_message %}
+        <div class="alert {{ admin_message_type }} mt-3 mb-3">
+            <p style="margin: 0">{{ admin_message }}</p>
+        </div>
+    {% endif %}
+    <div class="">
     <table
             data-toggle="table"
             data-search="true"
@@ -62,8 +68,14 @@
                                 {% elif field.widget.template == "w-checkbox.html" %}
                                     <input type="checkbox" disabled {% if field.value %}checked{% endif %}>
                                     {{ field.value }}
-                                {% elif field.widget.template == "w-select.html" %}
+                                {% elif field.type == "foreignkey" %}
                                     {{ field.value }}
+                                {% elif field.type == "foreignkey-multiple" %}
+                                    {% for opt in field.options %}{% if opt.selected %}{{ opt.name }}, {% endif %}{% endfor %}
+                                {% elif field.type == "foreignkey-multiple-custom" %}
+                                    {% for opt in field.options %}{% if opt.selected %}{{ opt.name }}, {% endif %}{% endfor %}
+                                {% elif field.type == "foreignkey-multiple-relation" %}
+                                    {% for opt in field.options %}{% if opt.selected %}{{ opt.name }}, {% endif %}{% endfor %}
                                 {% else %}
                                     {{ field.value }}
                                 {% endif %}
@@ -75,7 +87,7 @@
         {% endfor %}
         </tbody>
     </table>
-
+    </div>
     <script src="https://unpkg.com/bootstrap-table@1.15.4/dist/bootstrap-table.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/js/select2.min.js"></script>
     <script src="{% static "js/caseAdmin.js" %}"></script>
