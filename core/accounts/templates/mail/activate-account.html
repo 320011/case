@@ -1,8 +1,13 @@
 {% autoescape off %}
-Hi {{ user.first_name }},
+Hello,
 
-Thank you for signing up with UWA Pharmacy Case.
+A user has just signed up and is waiting for their account's approval.
+The account details are as follows:
+Name: {{ user.first_name }} {{ user.last_name }}
+Email: {{ user.email }}
+University: {{ user.university }}
+Degree Commencement Year: {{ user.degree_commencement_year }}
 
-Please click the link below to activate your account:
+Please click the link below to activate their account:
 {{ protocol }}://{{ domain }}{% url 'accounts:activate' %}?id={{ uid }}&token={{ token }}
 {% endautoescape %}

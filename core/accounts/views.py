@@ -126,7 +126,8 @@ def view_login(request):
                 if dbuser.first().is_active == True:
                     m = 'The email or password entered is incorrect.'
                 else:
-                    m = 'Please confirm your email address to login.'
+                    m = '''Please be patient while your account gets approved.
+                           We will send you a confirmation email once it is approved.'''
                 messages.error(request,m)
             else:
                 messages.error(request,'The email or password entered is incorrect.')
@@ -147,6 +148,13 @@ def view_signup(request):
             user = form.save(commit=False)
             user.is_active = False
             user.save()
+
+            # get all the admins' emails
+            staff_emails = []
+            staff = User.objects.filter(is_staff = True)
+            for each in staff:
+                staff_emails.append(each.email)
+
             message = render_to_string("mail/activate-account.html", {
                 "user": user,
                 "domain": get_current_site(request).domain,
@@ -154,16 +162,16 @@ def view_signup(request):
                 "token": account_activation_token.make_token(user),
                 "protocol": request.is_secure() and "https" or "http"
             })
-            email_subject = "Activate Your Case Account"
-            to_email = form.cleaned_data.get("email")
-            email = EmailMessage(email_subject, message, to=[to_email])
+            email_subject = "Account Approval - {} ({})".format(user.first_name, user.email)
+            # to_email = form.cleaned_data.get("email")
+            email = EmailMessage(email_subject, message, from_email='UWA Pharmacy Case',
+                                bcc=staff_emails)
             email.send()
             c = {
-                "header": "Check Your Email",
-                "message": "An activation link has been "
-                           "sent to {}. Please confirm your "
-                           "email address to complete "
-                           "registration.".format(to_email)
+                "header": "Account Confirmation",
+                "message": "You will be able to access your account "
+                           "once it gets approved by our staff.\n"
+                           "We appreciate your patience!"
             }
             return render(request, "activate-message.html", c)
     else:
@@ -198,11 +206,11 @@ def view_activate(request):
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
         user.save()
-        login(request, user)
         c = {
             "header": "Activation Successful",
-            "message": "Your account is now activated.",
-            "activated": True,
+            "message": "The following account is successfully activated.\n"
+                       "Name: {} {}\n"
+                       "Email: {}".format(user.first_name, user.last_name, user.email),
         }
 
     return render(request, "activate-message.html", c)
@@ -239,7 +247,7 @@ def view_change_password(request):
             email = EmailMessage(email_subject, message, to=[request.user.email])
             email.send()
             c = {
-                "message": "A comfirmation message has been sent to your email."
+                "message": "A confirmation message has been sent to your email."
             }
             return render(request, "change-password.html", c)
         else:
