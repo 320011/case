@@ -116,7 +116,7 @@ class CaseStudy(models.Model):
         else:
             weight = None
         if self.scr:
-            scr = str(self.scr) + 'μmol/L'
+            scr = str(self.scr) + 'μmol/L SCr'
         else:
             scr = None
         optional_array = [height, weight, scr]
