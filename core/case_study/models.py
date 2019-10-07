@@ -116,7 +116,7 @@ class CaseStudy(models.Model):
         else:
             weight = None
         if self.scr:
-            scr = str(self.scr) + 'μmol/L'
+            scr = str(self.scr) + 'μmol/L SCr'
         else:
             scr = None
         optional_array = [height, weight, scr]
@@ -180,6 +180,11 @@ class Medication(models.Model):
     def __str__(self):
         return self.name
 
+class Other(models.Model):
+    other_body = models.TextField(null=True, blank=True)
+    case_study = models.ForeignKey(CaseStudy, on_delete=models.CASCADE)
+    def __str__(self):
+        return self.other_body
 
 class Attempt(models.Model):
     user_answer = models.CharField(max_length=1, null=True)

@@ -16,12 +16,20 @@ $('#add_medication').click(function () {
   $('form').submit();
 });
 
+// Add other 
+$('#add_other').click(function () {
+  $('#submission_type').val("other");
+  $('form').submit();
+});
+
+// Save 
 $('#save').click(function () {
   $('#submission_type').val("save");
   $('#id_is_submitted').prop('value', false);
   $('form').submit();
 });
 
+// Submit 
 $('#submit_button').click(function () {
   $('#submission_type').val("submit");
   $('#id_is_submitted').prop('value', true);
@@ -46,6 +54,7 @@ window.onload = function () {
   height.addEventListener("change", handleChange);
   weight.addEventListener("change", handleChange);
   scr.addEventListener("change", handleChange);
+  scr.addEventListener("load", handleChange);
 
   // Conditionally creates optionals string in the format [(*optional* height/weight/SCr)]
   function createOptionals(height, weight, scr) {
@@ -55,7 +64,7 @@ window.onload = function () {
     let weight_value = weight.value;
     weight_value ? weight_value += 'kg' : weight_value = '';
     let scr_value = scr.value;
-    scr_value ? scr_value += 'μmol/L' : scr_value = '';
+    scr_value ? scr_value += 'μmol/L SCr' : scr_value = '';
     let optional_array = [height_value, weight_value, scr_value];
     if (!height_value && !weight_value && !scr_value) {
       optional_string = '';

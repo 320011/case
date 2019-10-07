@@ -29,6 +29,7 @@ class UserManager(BaseUserManager):
         Create and save a regular User with the given email and password.
         """
         extra_fields.setdefault("is_staff", False)
+        extra_fields.setdefault("is_tutor", False)
         extra_fields.setdefault("is_superuser", False)
         return self._create_user(email, password, **extra_fields)
 
@@ -64,6 +65,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)  # whether this user is still active
     is_staff = models.BooleanField(default=False)  # whether this user can access the admin site
+    is_tutor = models.BooleanField(default=False) # whether this user will appear as a tutor / lecturer on the site
     is_deleted = models.BooleanField(default=False)  # used to soft delete a model
 
     # Assigns the new Manager to the User model
