@@ -123,12 +123,12 @@ def view_login(request):
                     login(request, user)
                     return redirect('/')
             elif user is None and dbuser:
-                if dbuser.first().is_active == True:
+                if dbuser.first().is_active:
                     m = 'The email or password entered is incorrect.'
                 else:
-                    m = '''Please be patient while your account gets approved.
-                           We will send you a confirmation email once it is approved.'''
-                messages.error(request,m)
+                    m = "Your account needs to be activated by a member of staff. " \
+                        "You will receive an email when you have been approved and can log in."
+                messages.error(request, m)
             else:
                 messages.error(request,'The email or password entered is incorrect.')
     else:
@@ -151,9 +151,9 @@ def view_signup(request):
 
             # get all the admins' emails
             staff_emails = []
-            staff = User.objects.filter(is_staff = True)
-            for each in staff:
-                staff_emails.append(each.email)
+            staff = User.objects.filter(is_staff=True)
+            for s in staff:
+                staff_emails.append(s.email)
 
             message = render_to_string("mail/activate-account.html", {
                 "user": user,
@@ -165,13 +165,12 @@ def view_signup(request):
             })
             email_subject = "Account Approval - {} ({})".format(user.first_name, user.email)
             email = EmailMessage(email_subject, message, from_email='UWA Pharmacy Case',
-                                bcc=staff_emails)
+                                 bcc=staff_emails)
             email.content_subtype = "html"
             email.send()
             c = {
                 "header": "Account Confirmation",
-                "message": "You will be able to access your account "
-                           "once it gets approved by our staff.\n"
+                "message": "You will receive an email once your account has been activated by a staff member.\n"
                            "We appreciate your patience."
             }
             return render(request, "activate-message.html", c)
