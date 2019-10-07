@@ -69,7 +69,7 @@ schema_user = {
             "write": True,
         },
         {
-            "title": "Is_Tutor",
+            "title": "Is Tutor",
             "key": "is_tutor",
             "widget": {
                 "template": "w-checkbox.html",
