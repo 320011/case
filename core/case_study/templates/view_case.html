@@ -138,7 +138,11 @@
                                                         {% if comment.is_anon == True %}
                                                             {{ comment.user }} (Anonymous)
                                                         {% else %}
-                                                            {{ comment.user }}
+                                                            {% if request.user.is_staff or request.user.is_tutor %}
+                                                            <a data-toggle="tooltip" title="Tutor"><i class="fa fa-fw fa-graduation-cap" data-toggle="tooltip"></i></a> {{ comment.user }}
+                                                            {% else %}
+                                                                {{ comment.user }}
+                                                            {% endif %}
                                                         {% endif %}
                                                     </small>
                                                     <br class="comment-break d-none">
@@ -154,7 +158,7 @@
                                             <div class="alert alert-info " role="alert">
                                                 <div class="d-flex w-100 justify-content-between comment-content">
                                                     <small class="text-muted">
-                                                        <i class="fa fa-fw fa-shield"></i> {{ comment.user }}
+                                                            <a data-toggle="tooltip" title="Tutor"><i class="fa fa-fw fa-graduation-cap" data-toggle="tooltip"></i></a> {{ comment.user }}
                                                     </small>
                                                     <br class="comment-break d-none">
                                                     <small class="text-muted">{{ comment.comment_date }}</small>

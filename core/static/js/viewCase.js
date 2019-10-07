@@ -96,7 +96,8 @@ $('#show_discussion').click(function () {
 
 $('#submit_comment').click(function () {
   let comment_body = document.getElementById('comment-box').value;
-  let comment_is_anon = document.getElementById('is_anonymous_checkbox').checked;
+  let comment_is_anon = false; 
+  if (document.getElementById('is_anonymous_checkbox') && document.getElementById('is_anonymous_checkbox').checked) comment_is_anon = true; 
   let id = document.getElementById('case_id').innerText;
   if (comment_body) {
     $.ajax({
@@ -113,7 +114,7 @@ $('#submit_comment').click(function () {
         let br = window.innerWidth < 1026 ? "comment-break" : "comment-break d-none";
 
         let date = moment(data.comment.date).format("MMM D YYYY, hh:mm a.");
-        let name = data.comment.is_anon ? data.user.name + " (Anonymous)" : data.user.name;
+        let name = data.comment.is_anon ? data.user.name + " (Anonymous)" :  data.user.name;
 
         htmlstring =
           `<div class="row justify-content-end">\
@@ -121,7 +122,7 @@ $('#submit_comment').click(function () {
                     <div class="alert alert-primary" role="alert">\
                       <div class="${content}">\
                         <small class="text-muted">\
-                          ${name}\
+                        <a data-toggle="tooltip" title="Tutor"><i class="fa fa-fw fa-graduation-cap" data-toggle="tooltip"></i></a> ${name}\
                         </small>\
                         <br class="${br}">\
                         <small class="text-muted">${date}</small>\
