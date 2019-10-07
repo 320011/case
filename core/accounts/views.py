@@ -16,13 +16,36 @@ from .decorators import anon_required
 from django.contrib import messages
 from datetime import datetime, timedelta
 from django.contrib.auth.forms import PasswordChangeForm
+import threading
+
+
+def send_email_async(subject, content_subtype, template, template_context=None, from_email="UWA Pharmacy Case", to=None, cc=None, bcc=None):
+    if not to:
+        to = []
+    if not cc:
+        cc = []
+    if not bcc:
+        bcc = []
+    if not template_context:
+        template_context = {}
+
+    def _send_mail_async(_subject, _content_subtype, _template, _template_context, _from_email, _to, _cc, _bcc):
+        _message = render_to_string(_template, _template_context)
+        _email = EmailMessage(_subject, _message, from_email=_from_email, to=_to, cc=_cc, bcc=_bcc)
+        _email.content_subtype = _content_subtype
+        _email.send()
+    mailing_thread = threading.Thread(
+        target=_send_mail_async,
+        args=(subject, content_subtype, template, template_context, from_email, to, cc, bcc)
+    )
+    mailing_thread.start()
 
 
 @login_required
 def view_profile(request):
     user = request.user
     attempts = Attempt.objects.filter(user=request.user).distinct().values('case_study').annotate(
-            case_count=Count('case_study')).filter(case_count__gt=0).order_by('case_study')
+        case_count=Count('case_study')).filter(case_count__gt=0).order_by('case_study')
     cases = CaseStudy.objects.filter(id__in=[item['case_study'] for item in attempts])
 
     # extract all the tags related to user's submitted cases and also the user averages and user
@@ -32,7 +55,7 @@ def view_profile(request):
         all_tags.append(TagRelationship.objects.filter(case_study=case))
         user_average.append(case.get_average_score(user=request.user))
         user_attempts.append(len(Attempt.objects.filter(case_study=case, user=request.user)))
-    
+
     # extracts all the tags names and only keeps the unique ones
     for tags in all_tags:
         for tag in tags:
@@ -73,7 +96,7 @@ def view_profile(request):
         for case in cases:
             tag_average.append(case.get_average_score(user=request.user))
             tag_attempts.append(len(Attempt.objects.filter(case_study=case, user=request.user)))
-        
+
         total_tag_score = sum([a*b for a,b in zip(tag_average, tag_attempts)])
         total_tag_tries = sum(tag_attempts)
         tag_score = float("{0:.2f}".format(total_tag_score/total_tag_tries))
@@ -111,13 +134,13 @@ def view_profile_results(request):
 
 def view_login(request):
     if request.method == "POST":
-        form = LogInForm(data = request.POST)
+        form = LogInForm(data=request.POST)
         if form.is_valid():
             email = request.POST['email']
             password = request.POST['password']
             user = authenticate(email=email, password=password)
             dbuser = User.objects.filter(email=email)
-            
+
             if user is not None:
                 if user.is_active:
                     login(request, user)
@@ -133,7 +156,7 @@ def view_login(request):
                 messages.error(request,'The email or password entered is incorrect.')
     else:
         form = LogInForm()
-    
+
     c = {
         "form": form
     }
@@ -155,19 +178,17 @@ def view_signup(request):
             for s in staff:
                 staff_emails.append(s.email)
 
-            message = render_to_string("mail/activate-account.html", {
-                "user": user,
-                "domain": get_current_site(request).domain,
-                "uid": urlsafe_base64_encode(force_bytes(user.pk)),
-                "token": account_activation_token.make_token(user),
-                "protocol": request.is_secure() and "https" or "http",
-                "success": False
-            })
-            email_subject = "Account Approval - {} ({})".format(user.first_name, user.email)
-            email = EmailMessage(email_subject, message, from_email='UWA Pharmacy Case',
-                                 bcc=staff_emails)
-            email.content_subtype = "html"
-            email.send()
+            send_email_async("Account Approval - {} ({})".format(user.first_name, user.email),
+                             "html",
+                             "mail/activate-account.html", {
+                                 "user": user,
+                                 "domain": get_current_site(request).domain,
+                                 "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+                                 "token": account_activation_token.make_token(user),
+                                 "protocol": request.is_secure() and "https" or "http",
+                                 "success": False
+                             },
+                             bcc=staff_emails)
             c = {
                 "header": "Account Confirmation",
                 "message": "You will receive an email once your account has been activated by a staff member.\n"
@@ -208,20 +229,21 @@ def view_activate(request):
         user.save()
         c = {
             "header": "Activation Successful",
-            "message": "The following account is successfully activated.\n"
-                       "Name: {} {}\n"
+            "message": "Name: {} {}\n"
                        "Email: {}".format(user.first_name, user.last_name, user.email),
         }
 
         #sends an email to the user whose account is activated
-        message = render_to_string("mail/activate-account.html", {
-            "user": user,
-            "success": True
-        })
-        email_subject = "Successful Account Approval"
-        email = EmailMessage(email_subject, message, from_email='UWA Pharmacy Case',
-                            to=[user.email])
-        email.send()
+        send_email_async("Account Activated",
+                         "html",
+                         "mail/activate-account.html", {
+                             "user": user,
+                             "success": True,
+                             "domain": get_current_site(request).domain,
+                             "protocol": request.is_secure() and "https" or "http"
+                         },
+                         from_email='UWA Pharmacy Case',
+                         to=[user.email])
 
     return render(request, "activate-message.html", c)
 

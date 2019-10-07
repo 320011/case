@@ -5,26 +5,23 @@
         padding: 7px;
     }
     th {
-        text-align: left;
+        text-align: right;
     }
     td {
-        text-align: center;
+        text-align: left;;
     }
 </style>
 
 {% autoescape on %}
 {% if success %}
-Hi {{ user.first_name }},<br><br>
-
+Hi {{ user.first_name }},<br>
 Your UWA Pharmacy Case account has been successfully approved.<br>
-You can now login to start using the app.<br><br>
-
-Kind Regards,
+Please <a href="{{ protocol }}://{{ domain }}{% url 'accounts:login' %}">login</a> to start using the app.<br><br>
+{{ protocol }}://{{ domain }}{% url 'accounts:login' %}<br><br>
+Kind Regards,<br>
 UWA Pharmacy Case team
 {% else %}
-Hi,<br><br>
-
-A user has just signed up and is waiting for their account's approval.<br>
+A user has just signed up and is waiting for approval by a member of staff.<br>
 The account details are as follows:<br>
 <table>
     <tr>
