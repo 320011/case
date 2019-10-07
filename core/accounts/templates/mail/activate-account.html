@@ -1,8 +1,48 @@
-{% autoescape off %}
-Hi {{ user.first_name }},
+<style>
+    table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+        padding: 7px;
+    }
+    th {
+        text-align: right;
+    }
+    td {
+        text-align: left;;
+    }
+</style>
 
-Thank you for signing up with UWA Pharmacy Case.
+{% autoescape on %}
+{% if success %}
+Hi {{ user.first_name }},<br><br>
+Your UWA Pharmacy Case account has been successfully approved.<br>
+Please <a href="{{ protocol }}://{{ domain }}{% url 'accounts:login' %}">login</a> to start using the app.<br><br>
+{{ protocol }}://{{ domain }}{% url 'accounts:login' %}<br><br>
+Kind Regards,<br>
+UWA Pharmacy Case team
+{% else %}
+A user has just signed up and is waiting for approval by a member of staff.<br>
+The account details are as follows:<br>
+<table>
+    <tr>
+        <th>Name</th>
+        <td>{{ user.first_name }} {{ user.last_name }}</td>
+    </tr>
+    <tr>
+        <th>Email</th>
+        <td>{{ user.email }}</td>
+    </tr>
+    <tr>
+        <th>University</th>
+        <td>{{ user.university }}</td>
+    </tr>
+    <tr>
+        <th>Degree Commencement Year</th>
+        <td>{{ user.degree_commencement_year }}</td>
+    </tr>
+</table> <br><br>
 
-Please click the link below to activate your account:
+Please click the link below to activate their account:
 {{ protocol }}://{{ domain }}{% url 'accounts:activate' %}?id={{ uid }}&token={{ token }}
+{% endif %}
 {% endautoescape %}

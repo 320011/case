@@ -6,12 +6,9 @@
 
 {% block body %}
     <div class='container'>
-        <div class='theme-container theme-container-sm'>
+        <div class='theme-container theme-container-sm' style="text-align:center">
             <h1 class="theme-header">{{ header }}</h1>
-            <p>{{ message }}</p>
-            {% if activated %}
-                <p><a class="theme-link" href="{% url "accounts:login" %}">Log In</a> to continue.</p>
-            {% endif %}
+            <p>{{ message|linebreaks }}</p>
             {% if error %}
                 <p><a class="theme-link" href="{% url "default" %}">Home</a></p>
                 <p><a class="theme-link" href="{% url "default" %}">Discover cases</a></p>
