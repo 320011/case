@@ -14,7 +14,7 @@
 
 {% autoescape on %}
 {% if success %}
-Hi {{ user.first_name }},<br>
+Hi {{ user.first_name }},<br><br>
 Your UWA Pharmacy Case account has been successfully approved.<br>
 Please <a href="{{ protocol }}://{{ domain }}{% url 'accounts:login' %}">login</a> to start using the app.<br><br>
 {{ protocol }}://{{ domain }}{% url 'accounts:login' %}<br><br>

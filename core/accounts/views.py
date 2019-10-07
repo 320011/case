@@ -269,15 +269,14 @@ def view_change_password(request):
             user = form.save()
             update_session_auth_hash(request, user)  # Important!
             messages.success(request, 'Your password has been changed.')
-            message = render_to_string("mail/password-change.html", {
-                "user": user,
-                "domain": get_current_site(request).domain,
-                "protocol": request.is_secure() and "https" or "http"
-            })
-            email_subject = "Password Changed"
-            print("this is hte email we will send the msg to:", request.user.email)
-            email = EmailMessage(email_subject, message, to=[request.user.email])
-            email.send()
+            send_email_async("Password Changed",
+                             "plain",
+                             "mail/password-change.html", {
+                                 "user": user,
+                                 "domain": get_current_site(request).domain,
+                                 "protocol": request.is_secure() and "https" or "http"
+                             },
+                             to=[request.user.email])
             c = {
                 "message": "A confirmation message has been sent to your email."
             }
