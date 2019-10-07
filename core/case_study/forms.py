@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ModelForm
 
-from .models import Tag, CaseStudy, MedicalHistory, Medication, Other
+from .models import Tag, CaseStudy, MedicalHistory, Medication
 
 
 # populate patient particulars and description
@@ -123,18 +123,5 @@ class MedicationForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(MedicationForm, self).__init__(*args, **kwargs)
-        for fname, f in self.fields.items():
-            f.widget.attrs["class"] = "form-control"
-
-class OtherForm(ModelForm):
-    class Meta:
-        model = Other
-        fields = ["other_body"]
-        widgets = {
-            "other_body": forms.Textarea(attrs={"rows": 1}),
-        }
-    
-    def __init__(self, *args, **kwargs):
-        super(OtherForm, self).__init__(*args, **kwargs)
         for fname, f in self.fields.items():
             f.widget.attrs["class"] = "form-control"

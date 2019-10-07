@@ -16,13 +16,36 @@ from .decorators import anon_required
 from django.contrib import messages
 from datetime import datetime, timedelta
 from django.contrib.auth.forms import PasswordChangeForm
+import threading
+
+
+def send_email_async(subject, content_subtype, template, template_context=None, from_email="UWA Pharmacy Case", to=None, cc=None, bcc=None):
+    if not to:
+        to = []
+    if not cc:
+        cc = []
+    if not bcc:
+        bcc = []
+    if not template_context:
+        template_context = {}
+
+    def _send_mail_async(_subject, _content_subtype, _template, _template_context, _from_email, _to, _cc, _bcc):
+        _message = render_to_string(_template, _template_context)
+        _email = EmailMessage(_subject, _message, from_email=_from_email, to=_to, cc=_cc, bcc=_bcc)
+        _email.content_subtype = _content_subtype
+        _email.send()
+    mailing_thread = threading.Thread(
+        target=_send_mail_async,
+        args=(subject, content_subtype, template, template_context, from_email, to, cc, bcc)
+    )
+    mailing_thread.start()
 
 
 @login_required
 def view_profile(request):
     user = request.user
     attempts = Attempt.objects.filter(user=request.user).distinct().values('case_study').annotate(
-            case_count=Count('case_study')).filter(case_count__gt=0).order_by('case_study')
+        case_count=Count('case_study')).filter(case_count__gt=0).order_by('case_study')
     cases = CaseStudy.objects.filter(id__in=[item['case_study'] for item in attempts])
 
     # extract all the tags related to user's submitted cases and also the user averages and user
@@ -32,14 +55,14 @@ def view_profile(request):
         all_tags.append(TagRelationship.objects.filter(case_study=case))
         user_average.append(case.get_average_score(user=request.user))
         user_attempts.append(len(Attempt.objects.filter(case_study=case, user=request.user)))
-    
+
     # extracts all the tags names and only keeps the unique ones
     for tags in all_tags:
         for tag in tags:
             all_tags_names.append(tag.tag.name)
     distinct_tags = set(all_tags_names)
 
-    # user's overall performance
+    # user's overall performance (average was calculated by each tries)
     total_score = sum([a*b for a,b in zip(user_average, user_attempts)])
     total_tries = sum(user_attempts)
     if total_tries == 0:
@@ -47,6 +70,7 @@ def view_profile(request):
     else:
         overall_score = float("{0:.2f}".format(total_score/total_tries))
 
+    tag_filter, tag_score = "", 0
     # if the user filters the cases by tags or time, then the view needs to be updated
     if request.POST.get("filter_tag") and request.POST['filter_tag'] == 'All':
         pass
@@ -67,6 +91,17 @@ def view_profile(request):
                     filter_ids.append(case.id)
         cases = CaseStudy.objects.filter(id__in=[item for item in filter_ids])
 
+        #calculate the score for this particular tag
+        tag_average, tag_attempts = [], []
+        for case in cases:
+            tag_average.append(case.get_average_score(user=request.user))
+            tag_attempts.append(len(Attempt.objects.filter(case_study=case, user=request.user)))
+
+        total_tag_score = sum([a*b for a,b in zip(tag_average, tag_attempts)])
+        total_tag_tries = sum(tag_attempts)
+        tag_score = float("{0:.2f}".format(total_tag_score/total_tag_tries))
+
+
     # all of these are calculated per case to be shown
     total_average, user_average, user_attempts, total_attempts, tags = [], [], [], [], []
     for case in cases:
@@ -82,7 +117,9 @@ def view_profile(request):
         'cases' : cases,
         'user' : user,
         'overall_score' : overall_score,
-        'all_tags' : distinct_tags
+        'all_tags' : distinct_tags,
+        'tag_filter' : tag_filter,
+        'tag_score' : tag_score
     }
     return render(request, "profile-cases.html", c)
 
@@ -97,28 +134,32 @@ def view_profile_results(request):
 
 def view_login(request):
     if request.method == "POST":
-        form = LogInForm(data = request.POST)
+        form = LogInForm(data=request.POST)
         if form.is_valid():
             email = request.POST['email']
             password = request.POST['password']
             user = authenticate(email=email, password=password)
             dbuser = User.objects.filter(email=email)
-            
+
             if user is not None:
-                if user.is_active:
+                if user.is_active and not user.is_deleted:
                     login(request, user)
                     return redirect('/')
+                elif user.is_deleted:
+                    messages.error(request, "This account has been closed. "
+                                            "Please contact a member of staff if you believe this to be an error.")
             elif user is None and dbuser:
-                if dbuser.first().is_active == True:
+                if dbuser.first().is_active:
                     m = 'The email or password entered is incorrect.'
                 else:
-                    m = 'Please confirm your email address to login.'
-                messages.error(request,m)
+                    m = "Your account needs to be activated by a member of staff. " \
+                        "You will receive an email when you have been approved and can log in."
+                messages.error(request, m)
             else:
                 messages.error(request,'The email or password entered is incorrect.')
     else:
         form = LogInForm()
-    
+
     c = {
         "form": form
     }
@@ -133,23 +174,28 @@ def view_signup(request):
             user = form.save(commit=False)
             user.is_active = False
             user.save()
-            message = render_to_string("mail/activate-account.html", {
-                "user": user,
-                "domain": get_current_site(request).domain,
-                "uid": urlsafe_base64_encode(force_bytes(user.pk)),
-                "token": account_activation_token.make_token(user),
-                "protocol": request.is_secure() and "https" or "http"
-            })
-            email_subject = "Activate Your Case Account"
-            to_email = form.cleaned_data.get("email")
-            email = EmailMessage(email_subject, message, to=[to_email])
-            email.send()
+
+            # get all the admins' emails
+            staff_emails = []
+            staff = User.objects.filter(is_staff=True)
+            for s in staff:
+                staff_emails.append(s.email)
+
+            send_email_async("Account Approval - {} ({})".format(user.first_name, user.email),
+                             "html",
+                             "mail/activate-account.html", {
+                                 "user": user,
+                                 "domain": get_current_site(request).domain,
+                                 "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+                                 "token": account_activation_token.make_token(user),
+                                 "protocol": request.is_secure() and "https" or "http",
+                                 "success": False
+                             },
+                             bcc=staff_emails)
             c = {
-                "header": "Check Your Email",
-                "message": "An activation link has been "
-                           "sent to {}. Please confirm your "
-                           "email address to complete "
-                           "registration.".format(to_email)
+                "header": "Account Confirmation",
+                "message": "You will receive an email once your account has been activated by a staff member.\n"
+                           "We appreciate your patience."
             }
             return render(request, "activate-message.html", c)
     else:
@@ -184,12 +230,23 @@ def view_activate(request):
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
         user.save()
-        login(request, user)
         c = {
             "header": "Activation Successful",
-            "message": "Your account is now activated.",
-            "activated": True,
+            "message": "Name: {} {}\n"
+                       "Email: {}".format(user.first_name, user.last_name, user.email),
         }
+
+        #sends an email to the user whose account is activated
+        send_email_async("Account Activated",
+                         "html",
+                         "mail/activate-account.html", {
+                             "user": user,
+                             "success": True,
+                             "domain": get_current_site(request).domain,
+                             "protocol": request.is_secure() and "https" or "http"
+                         },
+                         from_email='UWA Pharmacy Case',
+                         to=[user.email])
 
     return render(request, "activate-message.html", c)
 
@@ -215,17 +272,16 @@ def view_change_password(request):
             user = form.save()
             update_session_auth_hash(request, user)  # Important!
             messages.success(request, 'Your password has been changed.')
-            message = render_to_string("mail/password-change.html", {
-                "user": user,
-                "domain": get_current_site(request).domain,
-                "protocol": request.is_secure() and "https" or "http"
-            })
-            email_subject = "Password Changed"
-            print("this is hte email we will send the msg to:", request.user.email)
-            email = EmailMessage(email_subject, message, to=[request.user.email])
-            email.send()
+            send_email_async("Password Changed",
+                             "plain",
+                             "mail/password-change.html", {
+                                 "user": user,
+                                 "domain": get_current_site(request).domain,
+                                 "protocol": request.is_secure() and "https" or "http"
+                             },
+                             to=[request.user.email])
             c = {
-                "message": "A comfirmation message has been sent to your email."
+                "message": "A confirmation message has been sent to your email."
             }
             return render(request, "change-password.html", c)
         else:

@@ -27,7 +27,7 @@ schema_tag = {
 
 
 def render_tag_view(request, message=None, message_type=None):
-    data = populate_data(schema_tag, Tag)
+    data = populate_data(schema_tag, Tag.objects.all())
     c = {
         "title": "Tag Admin",
         "model_name": "Tag",
@@ -187,7 +187,7 @@ def api_admin_tag_import(request):
 @staff_required
 def view_admin_tag(request):
     if request.method == "GET":
-        data = populate_data(schema_tag, Tag)
+        data = populate_data(schema_tag, Tag.objects.all())
         c = {
             "title": "Tag Admin",
             "model_name": "Tag",
