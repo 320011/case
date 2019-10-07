@@ -142,9 +142,12 @@ def view_login(request):
             dbuser = User.objects.filter(email=email)
 
             if user is not None:
-                if user.is_active:
+                if user.is_active and not user.is_deleted:
                     login(request, user)
                     return redirect('/')
+                elif user.is_deleted:
+                    messages.error(request, "This account has been closed. "
+                                            "Please contact a member of staff if you believe this to be an error.")
             elif user is None and dbuser:
                 if dbuser.first().is_active:
                     m = 'The email or password entered is incorrect.'

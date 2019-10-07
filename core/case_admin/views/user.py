@@ -9,6 +9,9 @@ from django.db import transaction
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
+from django.urls import reverse
+from accounts.views import send_email_async
+from django.contrib.sites.shortcuts import get_current_site
 
 from ..forms import TagImportForm
 from .common import populate_data, delete_model, patch_model
@@ -101,6 +104,68 @@ schema_user = {
     ]
 }
 
+schema_user_review = {
+    "endpoint": "/caseadmin/users/",
+    "fields": [
+        {
+            "title": "First Name",
+            "key": "first_name",
+            "widget": {
+                "template": "w-text.html",
+                "maxlength": 40,
+            },
+            "write": True,
+        },
+        {
+            "title": "Last Name",
+            "key": "last_name",
+            "widget": {
+                "template": "w-text.html",
+                "maxlength": 60,
+            },
+            "write": True,
+        },
+        {
+            "title": "Email",
+            "key": "email",
+            "widget": {
+                "template": "w-email.html",
+                "maxlength": 250,
+            },
+            "write": True,
+        },
+        {
+            "title": "University",
+            "key": "university",
+            "widget": {
+                "template": "w-text.html",
+                "maxlength": 150,
+            },
+            "write": True,
+        },
+        {
+            "title": "Degree Start",
+            "key": "degree_commencement_year",
+            "widget": {
+                "template": "w-number.html",
+            },
+            "write": True,
+        },
+        {
+            "title": "Approve",
+            "type": "action",
+            "key": "ACTION_APPROVE",
+            "widget": {
+                "template": "w-button.html",
+                "text": "Approve User",
+                "action": "APPROVE",
+                "reload": True,
+            },
+            "write": True,
+        },
+    ]
+}
+
 
 def user_action_reset_password(request, usr):
     form = PasswordResetForm({'email': usr.email})
@@ -150,7 +215,29 @@ def user_action(request, user_id):
     usr = get_object_or_404(User, pk=user_id)  # get the user
     data = json.loads(request.body)
     action = data["action"]
-    if action == "RESET_PASSWORD":
+    if action == "APPROVE":
+        User.objects.filter(pk=user_id).update(is_active=True)
+        send_email_async("Account Activated",
+                         "html",
+                         "mail/activate-account.html", {
+                             "user": usr,
+                             "success": True,
+                             "domain": get_current_site(request).domain,
+                             "protocol": request.is_secure() and "https" or "http"
+                         },
+                         from_email='UWA Pharmacy Case',
+                         to=[usr.email])
+        return JsonResponse({
+            "success": True,
+            "message": "Approved user"
+        })
+    elif action == "DENY":
+        User.objects.filter(pk=user_id).delete()
+        return JsonResponse({
+            "success": True,
+            "message": "Denied user"
+        })
+    elif action == "RESET_PASSWORD":
         return user_action_reset_password(request, usr)
     elif action == "LOGOUT":
         return user_action_logout(request, usr)
@@ -180,11 +267,15 @@ def api_admin_user(request, user_id):
 def view_admin_user(request):
     # get returns a template with all the users in a table
     data = populate_data(schema_user, User.objects.all())
+    new_user_count = User.objects.filter(is_active=False).count()
     c = {
         "title": "User Admin",
         "model_name": "User",
         "data": data,
         "schema": schema_user,
+        "toolbar_review": True,
+        "review_count": new_user_count,
+        "review_endpoint": reverse("case_admin:users_review"),
     }
     return render(request, "case-admin.html", c)
 
@@ -192,11 +283,16 @@ def view_admin_user(request):
 @staff_required
 def view_admin_user_review(request):
     # get returns a template with all the users in a table
-    data = populate_data(schema_user, User.objects.all())
+    data = populate_data(schema_user_review, User.objects.filter(is_active=False))
     c = {
         "title": "User Admin",
         "model_name": "User",
         "data": data,
-        "schema": schema_user,
+        "schema": schema_user_review,
+        "reviewing": True,
+        "review_header": "User Review",
+        "review_description": "Approve users who have recently signed up for the site.",
+        "back_url": reverse("case_admin:users"),
+
     }
     return render(request, "case-admin.html", c)

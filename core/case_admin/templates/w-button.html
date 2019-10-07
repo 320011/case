@@ -1,5 +1,5 @@
 <button class="admin-input admin-input-btn theme-btn"
-onclick="admin_entityAction('{{ data.endpoint }}', {{ fields.0.entity }}, '{{ field.widget.action }}')"
+onclick="admin_entityAction('{{ data.endpoint }}', {{ fields.0.entity }}, '{{ field.widget.action }}'{% if field.widget.reload %}, false, null, true{% endif %})"
 {% if not field.write %}
 disabled
 {% endif %}>
