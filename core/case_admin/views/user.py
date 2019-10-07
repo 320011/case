@@ -10,6 +10,8 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.urls import reverse
+from accounts.views import send_email_async
+from django.contrib.sites.shortcuts import get_current_site
 
 from ..forms import TagImportForm
 from .common import populate_data, delete_model, patch_model
@@ -157,6 +159,7 @@ schema_user_review = {
                 "template": "w-button.html",
                 "text": "Approve User",
                 "action": "APPROVE",
+                "reload": True,
             },
             "write": True,
         },
@@ -214,6 +217,16 @@ def user_action(request, user_id):
     action = data["action"]
     if action == "APPROVE":
         User.objects.filter(pk=user_id).update(is_active=True)
+        send_email_async("Account Activated",
+                         "html",
+                         "mail/activate-account.html", {
+                             "user": usr,
+                             "success": True,
+                             "domain": get_current_site(request).domain,
+                             "protocol": request.is_secure() and "https" or "http"
+                         },
+                         from_email='UWA Pharmacy Case',
+                         to=[usr.email])
         return JsonResponse({
             "success": True,
             "message": "Approved user"

@@ -185,7 +185,7 @@ function admin_newEntity(endpoint, silent=false) {
 
 function admin_approveEntity(endpoint, entity) {
   admin_updateEntity(endpoint, entity, true);
-  admin_entityAction(endpoint, entity, "APPROVE", false, "Are you sure you want to approve this entity?\n\nThis will allow all users of the site to view it.");
+  admin_entityAction(endpoint, entity, "APPROVE", false, "Are you sure you want to approve this entity?\n\nThis will allow all users of the site to view it.", true);
 }
 
 function admin_denyEntity(endpoint, entity) {
