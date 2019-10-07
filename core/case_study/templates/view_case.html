@@ -56,7 +56,7 @@
                     </div>
                 </div>
             </div>
-            Medical History:
+            MHx:
             <ul style="display: inherit; list-style-type: inherit">
                 {% for history in mhx %}
                     <li>{{ history }}</li>
@@ -66,12 +66,6 @@
             <ul style="display: inherit; list-style-type: inherit">
                 {% for medication in medications %}
                     <li>{{ medication }}</li>
-                {% endfor %}
-            </ul>
-            Other:
-            <ul style="display: inherit; list-style-type: inherit">
-                {% for other in others %}
-                    <li>{{ other }}</li>
                 {% endfor %}
             </ul>
             Question:
@@ -142,7 +136,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                {% elif comment.user.is_staff or comment.user.is_tutor %}
+                                {% elif comment.user.is_staff == True %}
                                     <div class="row justify-content-start">
                                         <div class="col-8 comment-container">
                                             <div class="alert alert-info " role="alert">

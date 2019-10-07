@@ -69,14 +69,6 @@ schema_user = {
             "write": True,
         },
         {
-            "title": "Is_Tutor",
-            "key": "is_tutor",
-            "widget": {
-                "template": "w-checkbox.html",
-            },
-            "write": True,
-        },
-        {
             "title": "Is Deleted",
             "key": "is_deleted",
             "widget": {
