@@ -253,8 +253,12 @@ def submit_comment(request, case_study_id):
     body = request.GET.get('body', None)
     is_anon = request.GET.get('is_anon', None).capitalize()
     # Create comment 
-    comment = Comment.objects.create(comment=body, case_study=case, user=request.user, is_anon=is_anon,
-                                     comment_date=timezone.now())
+    if request.user.is_tutor: 
+        comment = Comment.objects.create(comment=body, case_study=case, user=request.user, is_anon=False,
+                                        comment_date=timezone.now())
+    else: 
+        comment = Comment.objects.create(comment=body, case_study=case, user=request.user, is_anon=is_anon,
+                                        comment_date=timezone.now())
     data = {
         'comment': {
             'body': body,
@@ -263,7 +267,8 @@ def submit_comment(request, case_study_id):
         },
         'user': {
             'name': request.user.get_full_name(),
-            'is_staff': request.user.is_staff
+            'is_staff': request.user.is_staff,
+            'is_tutor': request.user.is_tutor
         }
     }
     return JsonResponse(data)
