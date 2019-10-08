@@ -17,11 +17,12 @@
         <h5 class="mb-2"><strong>Search</strong></h5>
         <form action="{% url 'cases:search'%}" method="GET">
         <div>Key Words</div>
-        <div class="mb-3"><input type="text" name="key_words" id="kw_choice"  value="{{ key_words }}"> </div>
+        <div class="form-group">
+          <input type="text" name="key_words" id="kw_choice"  value="{{ key_words }}"> 
+        </div>
       
-        
         <div><strong>Tags</strong></div>
-        <div class="mb-0">
+        <div class="form-group">
           {% for tag in tags %}
           <input type="checkbox" name="tag_choice" id="tag_choice{{ forloop.counter }}" value="{{tag}}" 
           {% if tag.name in tag_choices %}
@@ -35,7 +36,7 @@
         </div>
 
         <br>        
-        <div class="mb-0">
+        <div class="form-group">
           
           <input type="checkbox" name="staff_choice" id="staff_choice1" value="staff_choice"
             {% if staff_choice %} checked {% endif %}>
