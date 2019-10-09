@@ -209,3 +209,13 @@ class CommentVote(models.Model):
     def get_vote_score(self, comment):
         vote_object_count = CommentVote.objects.filter(comment=comment).count()
         return vote_object_count
+
+class Playlist(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    current_position = models.IntegerField(default=0)
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE, null=True)
+    case_list = models.TextField(null=True)
+    date_created = models.DateTimeField(default=datetime.now)
+
+    def __str__(self):
+        return self.playlist
