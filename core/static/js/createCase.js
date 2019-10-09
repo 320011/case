@@ -16,6 +16,12 @@ $('#add_medication').click(function () {
   $('form').submit();
 });
 
+// Add other
+$('#add_other').click(function () {
+  $('#submission_type').val("other");
+  $('form').submit();
+});
+
 $('#save').click(function () {
   $('#submission_type').val("save");
   $('#id_is_submitted').prop('value', false);

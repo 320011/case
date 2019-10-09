@@ -19,6 +19,7 @@ class UserAdmin(BaseUserAdmin):
     )
     list_filter = (
         "is_staff",
+        "is_tutor",
         "university",
         "degree_commencement_year",
     )

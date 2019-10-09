@@ -6,8 +6,8 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
 
-from .forms import CaseStudyForm, CaseStudyTagForm, MedicalHistoryForm, MedicationForm  # , CaseTagForm
-from .models import Tag, TagRelationship, CaseStudy, MedicalHistory, Medication, Attempt, Comment
+from .forms import CaseStudyForm, CaseStudyTagForm, MedicalHistoryForm, MedicationForm, OtherForm  # , CaseTagForm
+from .models import Tag, TagRelationship, CaseStudy, MedicalHistory, Medication, Attempt, Comment, Other
 
 
 @login_required
@@ -24,6 +24,7 @@ def create_new_case(request, case_study_id):
     relevant_tags = TagRelationship.objects.filter(case_study=case_study)  # return Tags for that case_study
     medical_histories = MedicalHistory.objects.filter(case_study=case_study)
     medications = Medication.objects.filter(case_study=case_study)
+    others = Other.objects.filter(case_study=case_study)
     # Check if the choice was in years format, if yes, integer division by 12.
     if case_study.age:
         if case_study.age_type == 'Y':
@@ -36,6 +37,7 @@ def create_new_case(request, case_study_id):
         case_study_tag_form = CaseStudyTagForm(request.POST)
         medical_history_form = MedicalHistoryForm(request.POST)
         medication_form = MedicationForm(request.POST)
+        other_form = OtherForm(request.POST)
 
         # if user adds medical history
         if request.POST["submission_type"] == "medical_history":
@@ -56,10 +58,12 @@ def create_new_case(request, case_study_id):
                               "tags": relevant_tags,
                               "medical_histories": medical_histories,
                               "medications": medications,
+                              "others": others,
                               # "case_study_question_form": case_study_question_form,
                               "case_study_tag_form": case_study_tag_form,
                               "medical_history_form": medical_history_form,
                               "medication_form": medication_form,
+                              "other_form": other_form,
                           })
 
         # if user adds medication
@@ -79,9 +83,33 @@ def create_new_case(request, case_study_id):
                               "tags": relevant_tags,
                               "medical_histories": medical_histories,
                               "medications": medications,
+                              "others": others,
                               "case_study_tag_form": case_study_tag_form,
                               "medical_history_form": medical_history_form,
                               "medication_form": medication_form,
+                          })
+            # if user adds other
+        elif request.POST["submission_type"] == "other":
+            other_body = request.POST["other_body"]  # obtain other
+            if other_body:
+                # get or create new medication relationship in the database
+                other, created = Other.objects.get_or_create(other_body=other_body, case_study=case_study)
+                if created:
+                    messages.success(request, 'Other added!')
+                else:
+                    messages.error(request, 'This other item already exists.')
+            other_form = OtherForm(request.POST)
+            return render(request, "create_new_case.html",
+                          {
+                              "case_study_form": case_study_form,
+                              "tags": relevant_tags,
+                              "medical_histories": medical_histories,
+                              "medications": medications,
+                              "others": others,
+                              "case_study_tag_form": case_study_tag_form,
+                              "medical_history_form": medical_history_form,
+                              "medication_form": medication_form,
+                              "other_form": other_form,
                           })
         # if user adds tag
         elif request.POST["submission_type"] == "tag" and request.POST["tag_choice"]:
@@ -101,10 +129,12 @@ def create_new_case(request, case_study_id):
                               "tags": relevant_tags,
                               "medical_histories": medical_histories,
                               "medications": medications,
+                              "others": others,
                               # "case_study_question_form": case_study_question_form,
                               "case_study_tag_form": case_study_tag_form,
                               "medical_history_form": medical_history_form,
                               "medication_form": medication_form,
+                              "other_form": other_form,
                           })
 
         elif request.POST["submission_type"] == "save":
@@ -124,9 +154,11 @@ def create_new_case(request, case_study_id):
                                   "tags": relevant_tags,
                                   "medical_histories": medical_histories,
                                   "medications": medications,
+                                  "others": others,
                                   "case_study_tag_form": case_study_tag_form,
                                   "medical_history_form": medical_history_form,
                                   "medication_form": medication_form,
+                                  "other_form": other_form,
                               })
         elif request.POST["submission_type"] == "submit":
             if request.POST['age_type'] == 'Y':
@@ -147,10 +179,12 @@ def create_new_case(request, case_study_id):
                                   "tags": relevant_tags,
                                   "medical_histories": medical_histories,
                                   "medications": medications,
+                                  "others": others,
                                   # "case_study_question_form": case_study_question_form,
                                   "case_study_tag_form": case_study_tag_form,
                                   "medical_history_form": medical_history_form,
                                   "medication_form": medication_form,
+                                  "other_form": other_form,
                               })
         else:
             return render(request, "create_new_case.html",
@@ -159,24 +193,29 @@ def create_new_case(request, case_study_id):
                               "tags": relevant_tags,
                               "medical_histories": medical_histories,
                               "medications": medications,
+                              "others": others,
                               "case_study_tag_form": case_study_tag_form,
                               "medical_history_form": medical_history_form,
                               "medication_form": medication_form,
+                              "other_form": other_form,
                           })
     else:
         case_study_form = CaseStudyForm(instance=case_study)
         case_study_tag_form = CaseStudyTagForm()
         medical_history_form = MedicalHistoryForm()
         medication_form = MedicationForm()
+        other_form = OtherForm()
     return render(request, "create_new_case.html",
                   {
                       "case_study_form": case_study_form,
                       "tags": relevant_tags,
                       "medical_histories": medical_histories,
                       "medications": medications,
+                      "others": others,
                       "case_study_tag_form": case_study_tag_form,
                       "medical_history_form": medical_history_form,
                       "medication_form": medication_form,
+                      "other_form": other_form,
                   })
 
 
