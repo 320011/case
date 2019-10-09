@@ -23,16 +23,17 @@
       
         <div><strong>Tags</strong></div>
         <div class="form-group">
+          <select multiple name="tag_choice" class="admin-input admin-input-select">
           {% for tag in tags %}
-          <input type="checkbox" name="tag_choice" id="tag_choice{{ forloop.counter }}" value="{{tag}}" 
-          {% if tag.name in tag_choices %}
-          checked
-          {% endif %}
-          >
-          {{tag_choice}}
-          <label for="tag_choice{{ forloop.counter }}">{{ tag.name }}</label>  
-          <br>
-          {% endfor %}
+          <option  id="tag_choice{{ forloop.counter }}" value="{{tag}}" 
+           {% if tag.name in tag_choices %}
+          selected
+          {% endif %} 
+          
+          
+            >{{tag}}</option>
+            {% endfor %} 
+          </select>
         </div>
 
         <br>        
