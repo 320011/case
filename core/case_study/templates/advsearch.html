@@ -34,24 +34,27 @@
                 </div>
 
                 <div>Patient Sex</div>
-                <div class="form-group form-check">
+                <div class="form-group">
+                    <select multiple name="sex_choice" class="admin-input admin-input-select">
                     {% for a,b in sexes %}
-                    <input class="form-check-input" type="checkbox" name="sex_choice" id="sex_choice{{ forloop.counter }}" value="{{ a }}"
-                        {% if a in sex_choices %} checked {% endif %}>
-                    <label class="form-check-label" for="sex_choice{{ forloop.counter }}">{{ b }}</label>
-                    <br>
+                    <option id="sex_choice{{ forloop.counter }}" value="{{ a }}"
+                        {% if a in sex_choices %} checked {% endif %}
+                    >{{a}}</option>
                     {% endfor %}
+                    
+                    </select>
                 </div>
 
                 <div>Tags</div>
-                <div class="form-group form-check">
+                <div class="form-group">
+                    <select multiple name="tag_choice">
                     {% for tag in tags %}
-                    <input class="form-check-input" type="checkbox" name="tag_choice" id="tag_choice{{ forloop.counter }}" value="{{tag}}"
-                        {% if tag.name in tag_choices %} checked {% endif %}>
-                    {{tag_choice}}
-                    <label class="form-check-label" for="tag_choice{{ forloop.counter }}">{{ tag.name }}</label>
-                    <br>
+                    <option id="tag_choice{{ forloop.counter }}" value="{{tag}}"
+                        {% if tag.name in tag_choices %} checked {% endif %}
+                    >{{tag}}</option>
+                    
                     {% endfor %}
+                    </select>
                 </div>
 
 
