@@ -19,22 +19,22 @@
             <h5 class="mb-2"><strong>Search</strong></h5>
             <form action="{% url 'cases:advsearch'%}" method="GET">
                 <div class="form-group">
-                    <label class="form-check-label" for="kw_choice">Key Words</label>
+                    <div><strong>Key Words</strong></div>
                     <input class="form-text-input" type="text" name="key_words" id="kw_choice" value="{{ key_words }}"> 
                 </div>
 
                 <div class="form-group">
-                    <div>MHx</div>
+                    <div><strong>Medical History</strong></div>
                     <input class="form-text-input" type="text" name="mhx" id="mhx_choice" value="{{ mhx }}">
                 </div>
 
                 <div class="form-group">
-                    <div>Medication</div>
+                    <div><strong>Medication</strong></div>
                     <input class="form-text-input" type="text" name="medication" id="medication_choice" value="{{ medication }}">
                 </div>
 
-                <div>Patient Sex</div>
                 <div class="form-group">
+                        <div><strong>Patient Sex</strong></div>
                     <select multiple name="sex_choice" class="admin-input admin-input-select">
                     {% for a,b in sexes %}
                     <option id="sex_choice{{ forloop.counter }}" value="{{ a }}"
@@ -45,8 +45,8 @@
                     </select>
                 </div>
 
-                <div>Tags</div>
                 <div class="form-group">
+                        <div><strong>Tags</strong></div>
                     <select multiple name="tag_choice">
                     {% for tag in tags %}
                     <option id="tag_choice{{ forloop.counter }}" value="{{tag}}"
@@ -58,7 +58,7 @@
                 </div>
 
 
-                <div>Date Created</div>
+                <div><strong>Date Created</strong></div>
                 <div class="form-group">
                     <input class="form-date-input" type="date" name="before_date" id="before_date_inp" value="{{ before_date }}">
                     <br>
@@ -73,7 +73,7 @@
                 </div>
 
 
-                <div>Age</div>
+                <div><strong>Patient Age</strong></div>
                 <div class="form-group">
                     <input class="form-number-input" type="number" name="min_age" id="min_age_inp"  value="{{ min_age }}">
                     <label for="min_age_inp">Minimum Age:</label>
