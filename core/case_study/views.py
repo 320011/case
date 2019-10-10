@@ -389,28 +389,46 @@ def advsearch(request):
     else:
         keywords=''
 
+#Sexes
     sex_choices = get.getlist('sex_choice')
     if len(sex_choices) != 0:
         sex_choices = sex_choices
         cases = cases.filter(sex__in=[s for s in sex_choices])
 
-    mhxs = get.get("mhx")
-    if mhxs is not None and len(mhxs) != 0:
-        mhx_list = mhxs.split()
-        for k in mhx_list:
-            cases = cases.filter(medicalhistory__body__icontains=k)
-    else:
-        mhxs=''
+#Medical Histories
+    mhx_list = get.getlist('mhx_choice')
+    if len(mhx_list) != 0:
+        filter_ids = []
+        for case in cases:
+            case_mhxs = MedicalHistory.objects.filter(case_study=case)
+            for mhx in case_mhxs:
+                if mhx.body in mhx_list:
+                    filter_ids.append(case.id)
+        cases = cases.filter(id__in=[item for item in filter_ids])
 
-    medicines = get.get("medication")
-    if medicines is not None and len(medicines) != 0:
-        medication_list = medicines.split()
-        for k in medication_list:
-            cases = cases.filter(medication__name__icontains=k)
-    else:
-        medicines=''
+#Medicines
+    medicine_list = get.getlist('medicine_choice')
+    if len(medicine_list) != 0:
+        filter_ids = []
+        for case in cases:
+            case_medicines = Medication.objects.filter(case_study=case)
+            for medicine in case_medicines:
+                if medicine.name in medicine_list:
+                    filter_ids.append(case.id)
+        cases = cases.filter(id__in=[item for item in filter_ids])
 
+#Others
+    other_list = get.getlist('other_choice')
+    if len(other_list) != 0:
+        filter_ids = []
+        for case in cases:
+            case_others = Other.objects.filter(case_study=case)
+            for other in case_others:
+                if other.other_body in other_list:
+                    filter_ids.append(case.id)
+        cases = cases.filter(id__in=[item for item in filter_ids])
 
+#Tags
     tag_list = get.getlist('tag_choice')
     if len(tag_list) != 0:
         filter_ids = []
@@ -457,23 +475,34 @@ def advsearch(request):
     for case in cases:
         case_tags = TagRelationship.objects.filter(case_study=case)
         case.tags = case_tags
+        
 
-    #all tags
+    #all tags, sexes, medications, medical histories
     tags = Tag.objects.filter()
     sexes = CaseStudy.SEX_CHOICES
+    mhxes=MedicalHistory.objects.filter()
+    medicines=Medication.objects.filter()
+    others=Other.objects.filter()
 
     c = {
+        "key_words": keywords,
+
         "tags": tags,
         "sexes": sexes,
+        "mhxes": mhxes,
+        "medicines": medicines,
+        "others": others,
+        
+    
         "get": get,
-
         "cases": cases,
 
-        "key_words": keywords,
-        "mhx": mhxs,
-        "medication": medicines,
         "sex_choices": get.getlist('sex_choice'),
         "tag_choices": get.getlist('tag_choice'),
+        "mhx_choices": get.getlist('mhx_choice'),
+        "medicine_choices": get.getlist('medicine_choice'),
+        "other_choices": get.getlist('other_choice'),
+
         "after_date": after_date,
         "before_date": before_date,
         "min_age": min_age,

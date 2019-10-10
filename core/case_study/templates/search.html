@@ -3,93 +3,106 @@
 {% load tags %}
 
 {% block title %}
-    Search | UWA Pharmacy Case
+Search | UWA Pharmacy Case
 {% endblock %}
 
-{% block header %}
-    Search
+{% block head %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/css/select2.min.css" rel="stylesheet" />
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+
+
 {% endblock %}
 
 {% block body %}
-  <div class="row" id="row-container">
-    <div class="card col-3 mb-3 theme-container-border theme-container-bg case-side" id="details">
-      <div class="card-body">
-        <h5 class="mb-2"><strong>Search</strong></h5>
-        <form action="{% url 'cases:search'%}" method="GET">
-          <div class="form-group">
-              <div><strong>Key Words</strong></div>
-          <input type="text" name="key_words" id="kw_choice"  value="{{ key_words }}"> 
-        </div>
-      
+<div class="row" id="row-container">
+  <div class="card col-3 mb-3 theme-container-border theme-container-bg case-side" id="details">
+    <div class="card-body">
+      <h5 class="mb-2"><strong>Search</strong></h5>
+      <form action="{% url 'cases:search'%}" method="GET">
         <div class="form-group">
-            <div><strong>Tags</strong></div>
-          <select multiple name="tag_choice" class="admin-input admin-input-select">
-          {% for tag in tags %}
-          <option  id="tag_choice{{ forloop.counter }}" value="{{tag}}" 
-           {% if tag.name in tag_choices %}
-          selected
-          {% endif %} 
-          
-          
-            >{{tag}}</option>
-            {% endfor %} 
-          </select>
+          <div><strong>Key Words</strong></div>
+          <input type="text" name="key_words" id="kw_choice" value="{{ key_words }}">
         </div>
 
-        <br>        
+        <div class="form-group"  >
+          <div><strong>Tags</strong></div>
+          <div id="tags-group-select-parent" >
+            <select  data-width="fit" multiple name="tag_choice" id="tags-group" >
+              {% for tag in tags %}
+              <option  id="tag_choice{{ forloop.counter }}" value="{{tag}}" {% if tag.name in tag_choices %} selected
+                {% endif %}>{{tag}}</option>
+              {% endfor %}
+            </select>
+            <script>
+              $(document).ready(function () {
+                $("#tags-group").select2({
+                  dropdownParent: $("#tags-group-select-parent"), 
+                                    });
+                                });
+            </script>
+          </div>
+        </div>
+
+        <br>
         <div class="form-group">
-          
-          <input type="checkbox" name="staff_choice" id="staff_choice1" value="staff_choice"
-            {% if staff_choice %} checked {% endif %}>
-          
+
+          <input type="checkbox" name="staff_choice" id="staff_choice1" value="staff_choice" {% if staff_choice %}
+            checked {% endif %}>
+
           <label for="staff_choice1">Only Public Staff Cases?</label>
-          
-          
-        </div>
-        
-      </div>
-      <div class="card-body border-top">
-        <a href="{% url "cases:advsearch" %}">Advanced Search</a>
-        <div class="float-right">
-            <input type="submit" class="btn btn-primary btn-sm brand-green-bg brand-green-bg-hover" value="Submit">
-        </div>
-      </div>
-    </form>
-    </div>
 
-    <div class="case-content" id="main">
-      {% if cases %}
-        {% for case in cases %}
-        <div class="theme-container-border theme-container-bg theme-container-padding">
-            <div>
-                <a class="action-link text-decoration-none" href="{% url "cases:view-case" case_study_id=case.id %}" style="margin:0 0 20px 0;">
-                    <h3 class="text-center"><strong>Case <span id="case_id">{{ case.id }}</span></strong></h5>
-                </a>
-                <div class="float-right">
-                    {% for tag in case.tags %}
-                    <span class="badge badge-secondary">{{ tag.tag.name }}</span>
-                    {% endfor %}
-                </div>
-                </br>
-                <div class="card mt-2 mb-3 bg-light">
-                    <div class="card-body">
-                        {{ case.get_age_in_words|an|title }} {{ case.get_age_string }} {{ case.get_sex }}
-                        {{ case.get_optionals }}
-                        presents to your
-                        pharmacy {{ case.description }}
-                    </div>
-                </div>
-            </div>
+
         </div>
-        {% endfor %}
-        {% else %}
-        <div class="theme-container-border theme-container-bg theme-container-padding">
-            <h5 class="text-center"><strong>No results found.</strong></h5>
-        </div>
-        {% endif %}
+
     </div>
+    <div class="card-body border-top">
+      <a href="{% url "cases:advsearch" %}">Advanced Search</a>
+      <div class="float-right">
+        <input type="submit" class="btn btn-primary btn-sm brand-green-bg brand-green-bg-hover" value="Submit">
+      </div>
+    </div>
+    </form>
   </div>
 
-  <br>
-  
+  <div class="case-content" id="main">
+    {% if cases %}
+    {% for case in cases %}
+    <div class="theme-container-border theme-container-bg theme-container-padding">
+      <div>
+        <a class="action-link text-decoration-none" href="{% url "cases:view-case" case_study_id=case.id %}"
+          style="margin:0 0 20px 0;">
+          <h3 class="text-center"><strong>Case <span id="case_id">{{ case.id }}</span></strong></h5>
+        </a>
+        <div class="float-right">
+          {% for tag in case.tags %}
+          <span class="badge badge-secondary">{{ tag.tag.name }}</span>
+          {% endfor %}
+        </div>
+        </br>
+        <div class="card mt-2 mb-3 bg-light">
+          <div class="card-body">
+            {{ case.get_age_in_words|an|title }} {{ case.get_age_string }} {{ case.get_sex }}
+            {{ case.get_optionals }}
+            presents to your
+            pharmacy {{ case.description }}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="theme-container-border theme-container-bg theme-container-padding">
+      <h5 class="text-center"><strong>No results found.</strong></h5>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/js/select2.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.15.4/dist/bootstrap-table.min.js"></script>
+<script src="{% static "js/viewCase.js" %}"></script>
+
+
 {% endblock %}
