@@ -229,7 +229,7 @@ def view_case(request, case_study_id):
     user_average = case_study.get_average_score(user=request.user)
     user_attempts = Attempt.objects.filter(case_study=case_study, user=request.user).count()
     total_attempts = Attempt.objects.filter(case_study=case_study).count()
-    comments = Comment.objects.filter(case_study=case_study_id).order_by("-comment_date")
+    comments = Comment.objects.filter(case_study=case_study_id, is_deleted=False).order_by("-comment_date")
     c = {
         "attempts": {
             "total_average": total_average,

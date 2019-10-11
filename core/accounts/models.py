@@ -3,6 +3,7 @@ from django.contrib.auth.models import (
     AbstractBaseUser, BaseUserManager, PermissionsMixin)
 from django.core.mail import send_mail
 from django.utils import timezone
+from django.contrib.sessions.models import Session
 
 
 class UserManager(BaseUserManager):
@@ -78,6 +79,15 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.get_full_name()
+
+    def ban(self):
+        # ban the user
+        self.is_banned = True
+        self.save()
+        # log the user out
+        for s in Session.objects.all():
+            if int(s.get_decoded().get('_auth_user_id')) == self.id:
+                s.delete()
 
     def get_full_name(self):
         """

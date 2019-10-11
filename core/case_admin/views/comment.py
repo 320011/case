@@ -44,8 +44,16 @@ schema_comment = {
             "write": True,
         },
         {
-            "title": "Anonymous",
+            "title": "Is Anonymous",
             "key": "is_anon",
+            "widget": {
+                "template": "w-checkbox.html",
+            },
+            "write": True,
+        },
+        {
+            "title": "Is Deleted",
+            "key": "is_deleted",
             "widget": {
                 "template": "w-checkbox.html",
             },
@@ -145,8 +153,7 @@ def comment_action(request, comment_id):
     elif action == "BAN_COMMENT_AUTHOR":
         cr = get_object_or_404(CommentReport, id=comment_id)
         usr = get_object_or_404(User, id=cr.comment_author.id)
-        usr.is_banned = True
-        usr.save()
+        usr.ban()  # this will set is_banned to true and log the user out
         comm = Comment.objects.get(pk=cr.comment.id)  # comments might be deleted as we DO_NOTHING
         if comm:
             comm.is_deleted = True
@@ -198,7 +205,7 @@ def api_admin_comment(request, comment_id):
 def view_admin_comment(request):
     if request.method == "GET":
         data = populate_data(schema_comment, Comment.objects.all())
-        comment_report_count = CommentReport.objects.filter(report_reviewed=False).count()
+        comment_report_count = CommentReport.objects.filter(report_reviewed=False, report_author__is_report_silenced=False).count()
         c = {
             "title": "Comment Admin",
             "model_name": "Comment",
@@ -215,7 +222,7 @@ def view_admin_comment(request):
 @staff_required
 def view_admin_comment_review(request):
     if request.method == "GET":
-        data = populate_data(schema_comment_report, CommentReport.objects.filter(report_author__is_report_silenced=False))
+        data = populate_data(schema_comment_report, CommentReport.objects.filter(report_reviewed=False, report_author__is_report_silenced=False))
         c = {
             "title": "Comment Reports",
             "model_name": "Comment",

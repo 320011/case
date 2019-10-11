@@ -196,8 +196,8 @@ class Comment(models.Model):
     comment = models.TextField(null=True, blank=True)
     case_study = models.ForeignKey(CaseStudy, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    is_anon = models.BooleanField(null=True)
-    is_deleted = models.BooleanField(null=True)
+    is_anon = models.BooleanField(null=False, default=False)
+    is_deleted = models.BooleanField(null=False, default=False)
     comment_date = models.DateTimeField(null=True)
 
     def __str__(self):
