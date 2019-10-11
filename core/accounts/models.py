@@ -67,6 +67,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)  # whether this user can access the admin site
     is_tutor = models.BooleanField(default=False) # whether this user will appear as a tutor / lecturer on the site
     is_deleted = models.BooleanField(default=False)  # used to soft delete a model
+    is_report_silenced = models.BooleanField(default=False)  # used to stop false report spam
+    is_banned = models.BooleanField(default=False)  # used to ban a user from the site
 
     # Assigns the new Manager to the User model
     objects = UserManager()

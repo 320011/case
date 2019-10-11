@@ -8,7 +8,7 @@ from django.db import transaction
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
-from case_study.models import CaseStudy
+from case_study.models import CaseStudy, CommentReport
 from accounts.models import User
 
 value_formatters = {
@@ -244,7 +244,7 @@ def get_badge_counts():
     total += new_user_count
     new_case_count = CaseStudy.objects.filter(is_submitted=False).count()
     total += new_case_count
-    new_comment_report_count = 0#CommentReport.objects.filter(viewed=False).count()
+    new_comment_report_count = CommentReport.objects.filter(report_reviewed=False).count()
     total += new_comment_report_count
     return {
         "total": total,

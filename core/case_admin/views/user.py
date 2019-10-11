@@ -88,6 +88,22 @@ schema_user = {
             "write": True,
         },
         {
+            "title": "Is Silenced",
+            "key": "is_report_silenced",
+            "widget": {
+                "template": "w-checkbox.html",
+            },
+            "write": True,
+        },
+        {
+            "title": "Is Banned",
+            "key": "is_banned",
+            "widget": {
+                "template": "w-checkbox.html",
+            },
+            "write": True,
+        },
+        {
             "title": "Password",
             "type": "action",
             "key": "ACTION_RESET_PASSWORD",
