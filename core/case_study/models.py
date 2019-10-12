@@ -249,3 +249,4 @@ class CommentReport(models.Model):
     report_date = models.DateTimeField(null=False)
     reason = models.TextField(null=False, blank=False)
     report_reviewed = models.BooleanField(null=False, default=False)
+

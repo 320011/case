@@ -139,12 +139,27 @@
                                                             {% endif %}
                                                         {% endif %}
                                                     </small>
+                                         
+
                                                     <br class="comment-break d-none">
-                                                    <small class="text-muted">{{ comment.comment_date }}</small>
+
+                                            <small class="text-muted" id="comment_date">{{ comment.comment_date }}</small>
+
+                                    <small class="float-right report" >report</small>
+                                                <br>
+
+                                                  <small class="float-right delete" >delete</small> 
+                                                
                                                 </div>
-                                                <p class="mb-1">{{ comment.comment }}</p>
+
+                                  
+
+                            <p class="mb-1" id="comment_body">{{ comment.comment }}</p>
+
                                             </div>
+
                                         </div>
+
                                     </div>
                                 {% elif comment.user.is_tutor %}
                                     <div class="row justify-content-start">
@@ -154,9 +169,12 @@
                                                     <small class="text-muted">
                                                             <a data-toggle="tooltip" title="Tutor"><i class="fa fa-fw fa-graduation-cap" data-toggle="tooltip"></i></a> {{ comment.user }}
                                                     </small>
+                                                       <a class="float-right report" href="#" >report</a>  
                                                     <br class="comment-break d-none">
                                                     <small class="text-muted">{{ comment.comment_date }}</small>
                                                 </div>
+                                                                                      
+
                                                 <p class="mb-1">{{ comment.comment }}</p>
                                             </div>
                                         </div>
@@ -173,9 +191,11 @@
                                                             {{ comment.user }}
                                                         {% endif %}
                                                     </small>
+                                                       <a class="float-right report" href="#" >report</a>  
                                                     <br class="comment-break d-none">
                                                     <small class="text-muted">{{ comment.comment_date }}</small>
                                                 </div>
+                                                <button class="btn-sm btn-danger float-right report" >report</button>
                                                 <p class="mb-1">{{ comment.comment }}</p>
                                             </div>
                                         </div>
@@ -192,4 +212,6 @@
     </div>
     <br>
     <script src="{% static "js/viewCase.js" %}"></script>
+    <script src="{% static "js/report.js" %}"></script>
+
 {% endblock %}

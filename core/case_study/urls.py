@@ -14,4 +14,5 @@ urlpatterns = [
     path("api/v1/validate_answer/<int:case_study_id>/", view_case.validate_answer, name="validate-answer"),
     path("api/v1/submit_comment/<int:case_study_id>/", view_case.submit_comment, name="submit-comment"),
     path("api/v1/delete_unsubmitted_case/", create_case.delete_unsubmitted_case, name="delete-unsubmitted-case"),
+    path("api/v1/submit_report/<int:report_id>", view_case.submit_report, name="submit-report"),
 ]
