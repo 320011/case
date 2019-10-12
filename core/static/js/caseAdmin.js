@@ -191,3 +191,19 @@ function admin_approveEntity(endpoint, entity) {
 function admin_denyEntity(endpoint, entity) {
   admin_entityAction(endpoint, entity, "DENY", false, "Are you sure you want to deny this entity?\n\nThis will PERMANENTLY DELETE the entity from the entire system.", true);
 }
+
+function admin_silenceReporter(endpoint, entity) {
+  admin_entityAction(endpoint, entity, "SILENCE_REPORT_AUTHOR", false, "Are you sure you want to silence this user?\n\nThis will prevent reports from this user appearing in the report admin. To undo this, change the 'Report Silence' field in the user admin.", true);
+}
+
+function admin_banCommentAuthor(endpoint, entity) {
+  admin_entityAction(endpoint, entity, "BAN_COMMENT_AUTHOR", false, "Are you sure you want to ban this user?\n\nThis will prevent the user from logging in and using the site. To undo this, change the 'Banned' field in the user admin. This does not fully delete the user's account from the system. This does not fully delete the comment from the system, but it will be hidden from users. To fully delete the comment please hard delete it in the comment admin.", true);
+}
+
+function admin_deleteComment(endpoint, entity) {
+  admin_entityAction(endpoint, entity, "DELETE_COMMENT", false, "Are you sure you want to delete this comment?\n\nThis will simply delete the comment and take no action against the offending user.", true);
+}
+
+function admin_dismissCommentReport(endpoint, entity) {
+  admin_entityAction(endpoint, entity, "DISMISS_REPORT", false, "Are you sure you want to dismiss this report?\n\nThis will dismiss the report with no further action taken.", true);
+}

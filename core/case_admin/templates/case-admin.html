@@ -50,7 +50,11 @@
                         {{ review_count }}
                     </span>
                     {% endif %}
-                    Review
+                    {% if review_button_text %}
+                        {{ review_button_text }}
+                    {% else %}
+                        Review
+                    {% endif %}
                 </a>
             {% endif %}
         </div>

@@ -21,7 +21,14 @@
                     {% endfor %}
                 </div>
             </div>
-            {% if creating_new %}
+            {% if reporting %}
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" onclick="admin_silenceReporter('{{ data.endpoint }}', {{ fields.0.entity }})">Silence Reporter</button>
+                    <button type="button" class="btn btn-danger" onclick="admin_banCommentAuthor('{{ data.endpoint }}', {{ fields.0.entity }})">Delete Comment and Ban User</button>
+                    <button type="button" class="btn btn-warning" style="color:white" onclick="admin_deleteComment('{{ data.endpoint }}', {{ fields.0.entity }})">Only Delete Comment</button>
+                    <button type="button" class="btn btn-success" onclick="admin_dismissCommentReport('{{ data.endpoint }}', {{ fields.0.entity }})">Dismiss Report</button>
+                </div>
+            {% elif creating_new %}
                 <div class="modal-footer">
                     <button type="button" class="btn btn-success" onclick="admin_newEntity('{{ data.endpoint }}', {{ fields.0.entity }})">Create</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>

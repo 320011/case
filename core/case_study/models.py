@@ -196,7 +196,8 @@ class Comment(models.Model):
     comment = models.TextField(null=True, blank=True)
     case_study = models.ForeignKey(CaseStudy, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    is_anon = models.BooleanField(null=True)
+    is_anon = models.BooleanField(null=False, default=False)
+    is_deleted = models.BooleanField(null=False, default=False)
     comment_date = models.DateTimeField(null=True)
 
     def __str__(self):
@@ -209,3 +210,13 @@ class CommentVote(models.Model):
     def get_vote_score(self, comment):
         vote_object_count = CommentVote.objects.filter(comment=comment).count()
         return vote_object_count
+
+class CommentReport(models.Model):
+    comment = models.ForeignKey(Comment, on_delete=models.DO_NOTHING, related_name="report_comment")  # dont let people delete comments to hide from admins
+    comment_author = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="report_comment_author")
+    report_author = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="report_author")
+    comment_body = models.TextField(null=False, blank=False)  # save a copy of the comment body at the time of the report so user cannot edit to hide
+    comment_date = models.DateTimeField(null=False)
+    report_date = models.DateTimeField(null=False)
+    reason = models.TextField(null=False, blank=False)
+    report_reviewed = models.BooleanField(null=False, default=False)

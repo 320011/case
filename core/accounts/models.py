@@ -3,6 +3,7 @@ from django.contrib.auth.models import (
     AbstractBaseUser, BaseUserManager, PermissionsMixin)
 from django.core.mail import send_mail
 from django.utils import timezone
+from django.contrib.sessions.models import Session
 
 
 class UserManager(BaseUserManager):
@@ -67,6 +68,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)  # whether this user can access the admin site
     is_tutor = models.BooleanField(default=False) # whether this user will appear as a tutor / lecturer on the site
     is_deleted = models.BooleanField(default=False)  # used to soft delete a model
+    is_report_silenced = models.BooleanField(default=False)  # used to stop false report spam
+    is_banned = models.BooleanField(default=False)  # used to ban a user from the site
 
     # Assigns the new Manager to the User model
     objects = UserManager()
@@ -76,6 +79,15 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.get_full_name()
+
+    def ban(self):
+        # ban the user
+        self.is_banned = True
+        self.save()
+        # log the user out
+        for s in Session.objects.all():
+            if int(s.get_decoded().get('_auth_user_id')) == self.id:
+                s.delete()
 
     def get_full_name(self):
         """
