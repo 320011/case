@@ -38,6 +38,7 @@ def render_question_view(request, message=None, message_type=None):
         "schema": schema_question,
         "admin_message": message,
         "admin_message_type": message_type,
+        "hard_delete_only": True,
 
     }
     return render(request, "case-admin.html", c)

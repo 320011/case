@@ -41,8 +41,12 @@
                 </div>
             {% else %}
                 <div class="modal-footer">
+                {% if not hard_delete_only %}
                     <button type="button" class="btn btn-danger" onclick="admin_deleteEntity('{{ data.endpoint }}', {{ fields.0.entity }}, false)">Soft Delete</button>
                     <button type="button" class="btn btn-danger" onclick="admin_deleteEntity('{{ data.endpoint }}', {{ fields.0.entity }}, true)">Hard Delete</button>
+                {% else %}
+                    <button type="button" class="btn btn-danger" onclick="admin_deleteEntity('{{ data.endpoint }}', {{ fields.0.entity }}, true)">Delete</button>
+                {% endif %}
                     <button type="button" class="btn btn-success" onclick="admin_updateEntity('{{ data.endpoint }}', {{ fields.0.entity }})">Update</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
