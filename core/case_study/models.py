@@ -180,17 +180,20 @@ class Medication(models.Model):
     def __str__(self):
         return self.name
 
+
 class Other(models.Model):
     other_body = models.TextField(null=True, blank=True)
     case_study = models.ForeignKey(CaseStudy, on_delete=models.CASCADE)
     def __str__(self):
         return self.other_body
 
+
 class Attempt(models.Model):
     user_answer = models.CharField(max_length=1, null=True)
     case_study = models.ForeignKey(CaseStudy, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     attempt_date = models.DateTimeField(null=True)
+
 
 class Comment(models.Model):
     comment = models.TextField(null=True, blank=True)
@@ -203,6 +206,7 @@ class Comment(models.Model):
     def __str__(self):
         return self.comment
 
+
 class CommentVote(models.Model):
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -210,6 +214,7 @@ class CommentVote(models.Model):
     def get_vote_score(self, comment):
         vote_object_count = CommentVote.objects.filter(comment=comment).count()
         return vote_object_count
+
 
 class CommentReport(models.Model):
     comment = models.ForeignKey(Comment, on_delete=models.DO_NOTHING, related_name="report_comment")  # dont let people delete comments to hide from admins
