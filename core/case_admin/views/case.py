@@ -1,5 +1,5 @@
 from accounts.models import User
-from case_study.models import CaseStudy, Tag, Question, TagRelationship, MedicalHistory, Medication
+from case_study.models import CaseStudy, Tag, Question, TagRelationship, MedicalHistory, Medication, Other
 from core.decorators import staff_required
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
@@ -214,6 +214,22 @@ schema_case = {
             "widget": {
                 "template": "w-foreignkey-collection.html",
                 "multiple": True,
+            },
+            "write": True,
+        },
+        {
+            "title": "Other",
+            "type": "foreignkey-multiple-custom",
+            "model": {
+                "model": Other,
+                "key": "other_body",
+                "related_fkey": "case_study",
+            },
+            "key": "other",
+            "widget": {
+                "template": "w-foreignkey-collection.html",
+                "multiple": True,
+                "tags": True
             },
             "write": True,
         },
