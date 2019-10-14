@@ -87,6 +87,7 @@ def create_new_case(request, case_study_id):
                               "case_study_tag_form": case_study_tag_form,
                               "medical_history_form": medical_history_form,
                               "medication_form": medication_form,
+                              "other_form": other_form,		
                           })
             # if user adds other
         elif request.POST["submission_type"] == "other":
@@ -240,6 +241,7 @@ def view_case(request, case_study_id):
         "case": case_study,
         "mhx": mhx,
         "medications": medications,
+        "others" : others, 
         "tags": tags,
         "comments": comments
     }
