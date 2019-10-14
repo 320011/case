@@ -90,7 +90,6 @@ $('#add_tag').click(function () {
           </span>`;
           $("#tag-container").append($(htmlstring).hide().delay(500).show('slow'));
         } else {
-          console.log("NOOOO");
           htmlstring = 
           `<div class="alert alert-danger" role="alert">\
           Tag has already been added.\
