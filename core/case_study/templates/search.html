@@ -1,16 +1,19 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load staticfiles %}
 {% load tags %}
 
 {% block title %}
-  	Search Cases | UWA Pharmacy Case
+Search | UWA Pharmacy Case
 {% endblock %}
 
-{% block header %}
-  	Search Cases
-{% endblock %}
-
-{% block description %}
+{% block head %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/css/select2.min.css" rel="stylesheet" />
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+<style type="text/css">     
+    select {
+        width: 200px;
+    }
+</style>
 {% endblock %}
 
 {% block body %}
@@ -25,7 +28,7 @@
 						<input type="text" class="form-control" name="key_words" id="kw_choice"  value="{{ key_words }}">
 					</div>
 					
-					<label><strong>Tags</strong></label>
+					<!-- <label><strong>Tags</strong></label>
 					<div class="mb-3">
 						{% for tag in tags %}
 							<input type="checkbox" name="tag_choice" id="tag_choice{{ forloop.counter }}" value="{{tag}}" 
@@ -34,12 +37,31 @@
 							{% endif %}> {{tag_choice}}
 							<label class="badge badge-secondary" for="tag_choice{{ forloop.counter }}">{{ tag.name }}</label> </br>
 						{% endfor %}
+					</div> </br> -->
+
+					<div class="form-group">
+						<label><strong>Tags</strong></label>
+						<div id="tags-group-select-parent" >
+							<select class="form-control select2 narrow wrap" style="width:100px;" multiple name="tag_choice" id="tags-group" >
+								{% for tag in tags %}
+									<option class="form-control" id="tag_choice{{ forloop.counter }}" value="{{tag}}"
+										{% if tag.name in tag_choices %}
+											selected
+										{% endif %}>{{tag.name}}</option>
+								{% endfor %}
+							</select>
+							<script>
+							$(document).ready(function () {
+								$("#tags-group").select2();
+							});
+							</script>
+						</div>
 					</div> </br>
 
 					<div class="mb-3">
 						<input type="checkbox" name="staff_choice" id="staff_choice1" value="staff_choice"
 							{% if staff_choice %} checked {% endif %}>
-						<label for="staff_choice1">Submitted by staff</label> </br>
+						<label for="staff_choice1">Submitted by staff</label>
 					</div>
 				</div>
 
@@ -82,8 +104,10 @@
 				</div>
 			{% endif %}
 		</div>
-	</div>
-
-	<br>
+	</div> </br>
   
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/js/select2.min.js"></script>
+	<script src="https://unpkg.com/bootstrap-table@1.15.4/dist/bootstrap-table.min.js"></script>
+	<script src="{% static "js/viewCase.js" %}"></script>
+
 {% endblock %}

@@ -20,10 +20,10 @@
     {% endif %}
     <div class="theme-container" style="padding: 20px">
         <a class="theme-btn" href="{% if back_url %}{{ back_url }}{% else %}{% url "case_admin:default" %}{% endif %}">
-            &lt; Back
+            <i class="fa fa-angle-left"></i> Back
         </a>
-    <br>
-    <br>
+        <br>
+        <br>
         {% if reviewing %}
             <h1 class="theme-header">{{ review_header }}</h1>
             <h2 class="theme-header-2">{{ review_description }}</h2>
@@ -87,8 +87,13 @@
                                     {% if field.type == "action" %}
                                         {% include field.widget.template %}
                                     {% elif field.widget.template == "w-checkbox.html" %}
-                                        <input type="checkbox" disabled {% if field.value %}checked{% endif %}>
-                                        {{ field.value }}
+                                        <div class="admin-check-container">
+                                            {% if field.value %}
+                                                <i class="fa fa-check-circle admin-check" style="color: green"></i>
+                                            {% else %}
+                                                <i class="fa fa-circle admin-check" style="color:rgba(1,1,1,0.2);"></i>
+                                            {% endif %}
+                                        </div>
                                     {% elif field.type == "foreignkey" %}
                                         {{ field.value }}
                                     {% elif field.type == "foreignkey-multiple" %}

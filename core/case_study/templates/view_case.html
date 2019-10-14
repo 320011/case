@@ -20,10 +20,10 @@
                 <h5 class="mb-2"><strong>Details</strong></h5>
                 <div class="mb-3">
                     <div>Created: {{ case.date_created|date:"M d, Y" }}</div>
-                    {% if user.is_staff %}
+                    {% if user.is_tutor %}
                         <div>Created By: {{ case.created_by }}</div>
                     {% else %}
-                        {% if not case.is_anonymous and case.created_by.is_staff %}
+                        {% if not case.is_anonymous and case.created_by.is_tutor %}
                             <div>Created By: {{ case.created_by }}</div>
                         {% endif %}
                     {% endif %}
@@ -104,14 +104,20 @@
                                 <label for="comment-box">Add Comment</label>
                                 <textarea class="form-control" id="comment-box" rows="3" placeholder="Enter comment here"></textarea>
                             </div>
+                            
                             <div class="form-group form-check">
+                                {% if not request.user.is_tutor %}
                                 <input type="checkbox" class="form-check-input" id="is_anonymous_checkbox">
                                 <label class="form-check-label" for="is_anonymous_checkbox">
                                     <small>Comment as anonymous</small>
                                 </label>
+                                {% endif %}
                                 <a class="theme-btn float-right" style="color: #FFF; cursor: pointer" id="submit_comment">Submit Comment</a>
+                                <br>
                             </div>
+                            
                         </form>
+                        
                         <br>
                         <hr>
                         <div class="mb-3">All Comments</div>
@@ -126,7 +132,11 @@
                                                         {% if comment.is_anon == True %}
                                                             {{ comment.user }} (Anonymous)
                                                         {% else %}
-                                                            {{ comment.user }}
+                                                            {% if request.user.is_tutor %}
+                                                            <a data-toggle="tooltip" title="Tutor"><i class="fa fa-fw fa-graduation-cap" data-toggle="tooltip"></i></a> {{ comment.user }}
+                                                            {% else %}
+                                                                {{ comment.user }}
+                                                            {% endif %}
                                                         {% endif %}
                                                     </small>
                                                     <br class="comment-break d-none">
@@ -136,13 +146,13 @@
                                             </div>
                                         </div>
                                     </div>
-                                {% elif comment.user.is_staff == True %}
+                                {% elif comment.user.is_tutor %}
                                     <div class="row justify-content-start">
                                         <div class="col-8 comment-container">
                                             <div class="alert alert-info " role="alert">
                                                 <div class="d-flex w-100 justify-content-between comment-content">
                                                     <small class="text-muted">
-                                                        {{ comment.user }}
+                                                            <a data-toggle="tooltip" title="Tutor"><i class="fa fa-fw fa-graduation-cap" data-toggle="tooltip"></i></a> {{ comment.user }}
                                                     </small>
                                                     <br class="comment-break d-none">
                                                     <small class="text-muted">{{ comment.comment_date }}</small>

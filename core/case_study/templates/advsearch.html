@@ -3,105 +3,153 @@
 {% load tags %}
 
 {% block title %}
-Advanced Search
+Advanced Search | UWA Pharmacy Case
 {% endblock %}
 
-{% block header %}
-Advanced Search
+{% block head %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/css/select2.min.css" rel="stylesheet" />
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
 {% endblock %}
 
-{% block description %}
-{% endblock %}
 
 {% block body %}
-<style>
-    @media only screen and (max-width: 1026px) {
-        #details {
-            width: 100%
-        }
-
-        #main {
-            margin-left: 0 !important;
-        }
-    }
-
-    #details {
-        flex: 1;
-        align-self: flex-start;
-    }
-
-    #main {
-        flex: 2;
-        margin-left: 10px;
-    }
-</style>
 
 <div class="row" id="row-container">
-    <div class="card col-3 mb-3" id="details">
+    <div class="card col-3 mb-3 theme-container-border theme-container-bg case-side" id="details">
         <div class="card-body">
             <h5 class="mb-2"><strong>Search</strong></h5>
             <form action="{% url 'cases:advsearch'%}" method="GET">
                 <div class="form-group">
-                    <label class="form-check-label" for="kw_choice">Key Words</label>
-                    <input class="form-text-input" type="text" name="key_words" id="kw_choice" value="{{ key_words }}"> 
+                    <div><strong>Key Words</strong></div>
+                    <input class="form-text-input" type="text" name="key_words" id="kw_choice" value="{{ key_words }}">
                 </div>
 
                 <div class="form-group">
-                    <div>MHx</div>
-                    <input class="form-text-input" type="text" name="mhx" id="mhx_choice" value="{{ mhx }}">
+                    <div><strong>Medical History</strong></div>
+                    <div id="mhx-group-select-parent">
+                        <select multiple name="mhx_choice" id="mhx-group">
+                            {% for m in mhxes %}
+                            <option id="mhx_choice{{ forloop.counter }}" value="{{m}}" {% if m.body in mhx_choices %} selected
+                                {% endif %}>{{m}}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <script>
+                            $(document).ready(function () {
+                                $("#mhx-group").select2({
+                                    dropdownParent: $("#mhx-group-select-parent"),
+                                });
+                            });
+                        </script>
+                    </div>
                 </div>
 
                 <div class="form-group">
-                    <div>Medication</div>
-                    <input class="form-text-input" type="text" name="medication" id="medication_choice" value="{{ medication }}">
+                    <div><strong>Medication</strong></div>
+                    <div id="medicines-group-select-parent">
+                        <select data-width="fit" multiple name="medicine_choice" id="medicines-group">
+                            {% for m in medicines %}
+                            <option id="medicine_choice{{ forloop.counter }}" value="{{m}}" {% if m.name in medicine_choices %} selected
+                                {% endif %}>{{m}}</option>
+                            {% endfor %}
+                        </select>
+                        <script>
+                            $(document).ready(function () {
+                                $("#medicines-group").select2({
+                                    dropdownParent: $("#medicines-group-select-parent"),
+                                });
+                            });
+                        </script>
+                    </div>
                 </div>
 
-                <div>Patient Sex</div>
-                <div class="form-group form-check">
-                    {% for a,b in sexes %}
-                    <input class="form-check-input" type="checkbox" name="sex_choice" id="sex_choice{{ forloop.counter }}" value="{{ a }}"
-                        {% if a in sex_choices %} checked {% endif %}>
-                    <label class="form-check-label" for="sex_choice{{ forloop.counter }}">{{ b }}</label>
-                    <br>
-                    {% endfor %}
-                </div>
-
-                <div>Tags</div>
-                <div class="form-group form-check">
-                    {% for tag in tags %}
-                    <input class="form-check-input" type="checkbox" name="tag_choice" id="tag_choice{{ forloop.counter }}" value="{{tag}}"
-                        {% if tag.name in tag_choices %} checked {% endif %}>
-                    {{tag_choice}}
-                    <label class="form-check-label" for="tag_choice{{ forloop.counter }}">{{ tag.name }}</label>
-                    <br>
-                    {% endfor %}
-                </div>
-
-
-                <div>Date Created</div>
                 <div class="form-group">
-                    <input class="form-date-input" type="date" name="before_date" id="before_date_inp" value="{{ before_date }}">
+                    <div><strong>Other</strong></div>
+                    <div id="other-group-select-parent">
+                        <select multiple name="other_choice" id="other-group">
+                            {% for o in others %}
+                            <option id="other_choice{{ forloop.counter }}" value="{{o}}" 
+                            {% if o.other_body in other_choices %} selected {% endif %}>{{o}}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <script>
+                            $(document).ready(function () {
+                                $("#other-group").select2({
+                                    dropdownParent: $("#other-group-select-parent"),
+                                });
+                            });
+                        </script>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div><strong>Patient Sex</strong></div>
+                    <div id="sexes-group-select-parent">
+                    <select multiple name="sex_choice" id="sexes-group">
+                        {% for a,b in sexes %}
+                        <option id="sex_choice{{ forloop.counter }}" value="{{a}}" {% if a in sex_choices %} selected
+                            {% endif %}>{{b}}</option>
+                        {% endfor %}
+                    </select>
+                    <script>
+                        $(document).ready(function () {
+                            $("#sexes-group").select2({
+                                dropdownParent: $("#sexes-group-select-parent"),
+                            });
+                        });
+                    </script>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div><strong>Tags</strong></div>
+                    <div id="tags-group-select-parent">
+                        <select data-width="fit" multiple name="tag_choice" id="tags-group">
+                            {% for tag in tags %}
+                            <option id="tag_choice{{ forloop.counter }}" value="{{tag}}"
+                                {% if tag.name in tag_choices %} selected {% endif %}>{{tag}}</option>
+                            {% endfor %}
+                        </select>
+                        <script>
+                            $(document).ready(function () {
+                                $("#tags-group").select2({
+                                    dropdownParent: $("#tags-group-select-parent"),
+                                });
+                            });
+                        </script>
+                    </div>
+                </div>
+
+
+                <div><strong>Date Created</strong></div>
+                <div class="form-group">
+                    <input class="form-date-input" type="date" name="before_date" id="before_date_inp"
+                        value="{{ before_date }}">
                     <br>
                     <label for="before_date_inp">Before:</label>
                     <br>
                 </div>
                 <div class="form-group">
-                    <input class="form-date-input" type="date" name="after_date" id="after_date_inp" value="{{ after_date }}">
+                    <input class="form-date-input" type="date" name="after_date" id="after_date_inp"
+                        value="{{ after_date }}">
                     <br>
                     <label for="after_date_inp">After:</label>
                     <br>
                 </div>
 
 
-                <div>Age</div>
+                <div><strong>Patient Age</strong></div>
                 <div class="form-group">
-                    <input class="form-number-input" type="number" name="min_age" id="min_age_inp"  value="{{ min_age }}">
+                    <input class="form-number-input" type="number" name="min_age" id="min_age_inp"
+                        value="{{ min_age }}">
                     <label for="min_age_inp">Minimum Age:</label>
                     <br>
                 </div>
-                
+
                 <div class="form-group">
-                    <input class="form-number-input" type="number" name="max_age" id="max_age_inp" value="{{ max_age }}">
+                    <input class="form-number-input" type="number" name="max_age" id="max_age_inp"
+                        value="{{ max_age }}">
                     <label for="max_age_inp">Maximum Age:</label>
                     <br>
                 </div>
@@ -109,7 +157,7 @@ Advanced Search
 
                 <br>
                 <div class="form-group">
-                    <input class="form-check-input" type="checkbox" name="staff_choice" id="staff_choice1" value="staff_choice"
+                    <input type="checkbox" name="staff_choice" id="staff_choice1" value="staff_choice"
                         {% if staff_choice %} checked {% endif %}>
 
                     <label class="form-check-label" for="staff_choice1">Only Public Staff Cases?</label>
@@ -120,19 +168,19 @@ Advanced Search
         <div class="card-body border-top">
             <a href="{% url "cases:search" %}">Basic Search</a>
             <div class="float-right">
-                <input type="submit" value="Search">
+                <input type="submit" class="btn btn-primary btn-sm brand-green-bg brand-green-bg-hover" value="Submit">
             </div>
         </div>
         </form>
     </div>
 
-    <div class="card d-inline-block h-25 col" id="main">
+    <div class="case-content" id="main">
         {% if cases %}
         {% for case in cases %}
-        <div class="card-body card my-3">
+        <div class="theme-container-border theme-container-bg theme-container-padding">
             <div>
                 <a class="action-link text-decoration-none" href="{% url "cases:view-case" case_study_id=case.id %}">
-                    <h5 class="text-center"><strong>Case <span id="case_id">{{ case.id }}</span></strong></h5>
+                    <h3 class="text-center"><strong>Case <span id="case_id">{{ case.id }}</span></strong></h5>
                 </a>
                 <div class="float-right">
                     {% for tag in case.tags %}
@@ -152,12 +200,16 @@ Advanced Search
         </div>
         {% endfor %}
         {% else %}
-        <div class="card-body card my-3">
+        <div class="theme-container-border theme-container-bg theme-container-padding">
             <h5 class="text-center"><strong>No results found.</strong></h5>
         </div>
         {% endif %}
     </div>
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/js/select2.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.15.4/dist/bootstrap-table.min.js"></script>
+<script src="{% static "js/viewCase.js" %}"></script>
 
 <br>
 

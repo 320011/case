@@ -3,10 +3,6 @@
   margin-bottom: 0;
 }
 
-.review-header {
-
-}
-
 #action-admin-users {
   $c: #47bfa3;
   background-image: url("/static/img/admin_users.png");
@@ -136,10 +132,15 @@ input.admin-input, textarea.admin-input {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  width: 99%;
 }
 
 // when the screen is wide
 @media only screen and (min-width: 600px) {
+
+  .admin-check-container {
+    text-align: center;
+  }
 
   .admin-table-narrow-header {
     display: none;
@@ -169,6 +170,11 @@ input.admin-input, textarea.admin-input {
 
 // when the screen is narrow
 @media only screen and (max-width: 600px) {
+
+  .admin-check-container {
+    text-align: left;
+    padding-left: 5px;
+  }
 
   .admin-input, .select2-container, .select2-selection__rendered, .select2-selection.select2-selection--multiple {
     width: 180px;
