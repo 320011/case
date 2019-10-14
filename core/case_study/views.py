@@ -274,23 +274,25 @@ def submit_comment(request, case_study_id):
 
 @login_required
 def search(request):
-    get=request.GET
-    cases = CaseStudy.objects
-    cases = cases.filter(is_submitted=True)
+    get = request.GET
+    cases = CaseStudy.objects.filter(is_submitted=True, is_deleted=False)
 
-    keywords=get.get("key_words")
-    if keywords is not None and len(keywords) !=0:
+    keywords = get.get("key_words")
+    key_cases = CaseStudy.objects.none()
+    if keywords is not None and len(keywords) !=0: 
         kw_list=keywords.split()
         for k in kw_list:
-            cases=cases.filter(description__icontains=k)
+            # Questions, mhxs, meds
+            keyword_cases = cases.filter(Q(description__icontains=k) | Q(height__icontains=k) |
+                Q(weight__icontains=k) | Q(scr__icontains=k) | Q(age_type__icontains=k) |
+                Q(age__icontains=k) | Q(answer_a__icontains=k) | Q(answer_b__icontains=k) |
+                Q(answer_c__icontains=k) | Q(answer_d__icontains=k))
+            key_cases = key_cases.union(keyword_cases)
     else:
-        keywords=''
-
-
-    
-    
+        keywords = ''
     
     tag_list=get.getlist('tag_choice')
+    tag_cases = CaseStudy.objects.none()
     if len(tag_list) != 0:
         filter_ids = []
         for case in cases:
@@ -298,23 +300,31 @@ def search(request):
             for tag in case_tags:
                 if tag.tag.name in tag_list:
                     filter_ids.append(case.id)   
-        cases = cases.filter(id__in=[item for item in filter_ids])
+        tag_cases = cases.filter(id__in=[item for item in filter_ids])
 
-
-    if get.get("staff_choice") is not None:    
-        cases = cases.filter(is_anonymous=False)
-
-    for case in cases:
-        case_tags = TagRelationship.objects.filter(case_study=case)
-        case.tags=case_tags
-
+    anon_cases = CaseStudy.objects.none()
+    if get.get("staff_choice") is not None:
+        anon_cases = cases.filter(created_by__is_staff=True)
 
     #all tags
     tags = Tag.objects.filter()
-    sexes =CaseStudy.SEX_CHOICES
+    sexes = CaseStudy.SEX_CHOICES
 
+    # find the intersections of the filters that were used
+    filters = {}
+    filters[key_cases] = len(key_cases)
+    filters[tag_cases] = len(tag_cases)
+    filters[anon_cases] = len(anon_cases)
+    for each_filter in filters.keys():
+        if filters[each_filter] != 0:
+            cases = cases.intersection(each_filter)
 
-    c={
+    # attach respective tags to the case studies
+    for case in cases:
+        case_tags = TagRelationship.objects.filter(case_study=case)
+        case.tags = case_tags
+
+    c = {
         "tags": tags,
         "sexes": sexes,
         "get":get,
@@ -323,7 +333,7 @@ def search(request):
 
         "key_words": keywords,
         "tag_choices": get.getlist('tag_choice'),
-        "staff_choice":get.get("staff_choice")
+        "staff_choice": get.get("staff_choice")
     }
 
     return render(request,"search.html",c)
