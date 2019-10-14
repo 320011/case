@@ -1,11 +1,48 @@
-{% extends 'base.html' %}
-{% load staticfiles %}
-{% load tags %}
+{% extends "base.html" %}
 
 {% block title %}
     Analytics | UWA Pharmacy Case
 {% endblock %}
 
 {% block body %}
-
+    <div class="theme-container theme-container-sm">
+        <h1 class="theme-header">Analytics: Data Export</h1>
+        <p>Select a database table to download it as a csv file.</p>
+        <div class="">
+            <a href="{% url "analytics:question" %}">Question</a>
+        </div>
+        <div class="">
+            <a href="{% url "analytics:tag" %}">Tag</a>
+        </div>
+        <div class="">
+            <a href="{% url "analytics:medicalhistory" %}">MedicalHistory</a>
+        </div>
+        <div class="">
+            <a href="{% url "analytics:comment" %}">Comment</a>
+        </div>
+        <div class="">
+            <a href="{% url "analytics:casestudy" %}">CaseStudy</a>
+        </div>
+        <div class="">
+            <a href="{% url "analytics:medication" %}">Medication</a>
+        </div>
+        <div class="">
+            <a href="{% url "analytics:commentvote" %}">CommentVote</a>
+        </div>
+        <div class="">
+            <a href="{% url "analytics:tagrelationship" %}">TagRelationship</a>
+        </div>
+        <div class="">
+            <a href="{% url "analytics:other" %}">Other</a>
+        </div>
+        <div class="">
+            <a href="{% url "analytics:commentreport" %}">CommentReport</a>
+        </div>
+        <div class="">
+            <a href="{% url "analytics:attempt" %}">Attempt</a>
+        </div>
+        <div class="">
+            <a href="{% url "analytics:user" %}">User</a>
+        </div>
+    </div>
 {% endblock %}
