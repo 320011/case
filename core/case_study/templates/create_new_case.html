@@ -17,6 +17,7 @@
 
 {% block body %}
     <div class="theme-container theme-container-md">
+        <p hidden id="case_id">{{ case_study.id }}</p>
         <div class='card-body' style="padding: 0 0 35px 0;">
             {% if message.type and message.content %}
                 <div class="alert alert-{{ message.type }}">{{ message.content }}</div>
@@ -65,14 +66,16 @@
                 <hr>
                 <br>
                 <!-- Medical history -->
-                <label>Patient Medical History*: </label>
-                {{ medical_history_form.body }}
+                <div class="form-group">
+                    <label for="medical-history-box">Patient Medical History*:</label>
+                    <textarea class="form-control" id="medical-history-box" rows="1" placeholder="Enter medical history here"></textarea>
+                </div>
                 <div class="mt-3">
                     <a class="btn btn-primary float-right" style="color: #fff" id="add_medical_history">Add Medical History</a>
                 </div>
                 <br>
                 <input type="hidden" name="remove_medical_history" value="false">
-                <div class="list-group mt-4">
+                <div class="list-group mt-4" id="medical-history-container">
                     {% for medical_history in medical_histories %}
                         <li class="list-group-item">{{ medical_history.body }}</li>
                     {% endfor %}
@@ -81,14 +84,16 @@
                 <hr>
                 <br>
                 <!-- Medication -->
-                <label>Patient Medication*: </label>
-                {{ medication_form.name }}
+                <div class="form-group">
+                    <label for="medication-box">Medication*:</label>
+                    <textarea class="form-control" id="medication-box" rows="1" placeholder="Enter medication here"></textarea>
+                </div>
                 <div class="mt-3">
                     <a class="btn btn-primary float-right" style="color: #fff" id="add_medication">Add Medication</a>
                 </div>
                 <br>
-                <input type="hidden" name="remove_medical_history" value="false">
-                <ul class="list-group mt-4">
+                <input type="hidden" name="remove_medication" value="false">
+                <ul class="list-group mt-4" id="medication-container">
                     {% for medication in medications %}
                         <li class="list-group-item">{{ medication.name }}</li>
                     {% endfor %}
@@ -97,14 +102,16 @@
                 <hr>
                 <br>
                 <!-- Other  -->
-                <label>Other: </label>
-                {{ other_form.other_body }}
+                <div class="form-group">
+                    <label for="other-box">Other:</label>
+                    <textarea class="form-control" id="other-box" rows="1" placeholder="Enter other here"></textarea>
+                </div>
                 <div class="mt-3">
                     <a class="btn btn-primary float-right" style="color: #fff" id="add_other">Add Other</a>
                 </div>
                 <br>
                 <input type="hidden" name="remove_other" value="false">
-                <ul class="list-group mt-4">
+                <ul class="list-group mt-4" id="other-container">
                     {% for other in others %}
                         <li class="list-group-item">{{ other.other_body }}</li>
                     {% endfor %}
@@ -150,16 +157,20 @@
                 <hr>
                 <br>
                 <!-- Case Study Tags -->
-                <label>Tags:</label>
-                <div class="input-group mb-2">
-                    {{ case_study_tag_form.tag_choice }}
-                    <div class="input-group-append">
-                        <a class="btn btn-primary" style="color: #fff" id="add_tag">Add Tag</a>
-                    </div>
+                <div class="form-group" id="tag-group">
+                    <label for="tag-select">Tags:</label>
+                    <select class="form-control" id="tag-select"> 
+                        <option selected="true" disabled="disabled">Select Tag</option>
+                        {% for tag in list_tags %}
+                            <option id="{{ tag.id }}">{{ tag.name }}</option>
+                        {% endfor %}
+                    </select>   
                 </div>
-                {#        {{ case_study_tag_form.tag_choice }}#}
-                {#        <div><a class="btn btn-primary float-right mt-3" style="color: #fff" id="add_tag">Add Tag</a></div>#}
-                <div style="font-size: 25px" class="mt-2">
+                <div class="mt-3">
+                    <a class="btn btn-primary float-right" style="color: #fff" id="add_tag">Add Tag</a>
+                </div>
+                <br>
+                <div style="font-size: 25px" class="mt-2" id="tag-container">
                     <input type="hidden" name="remove_tag" value="false">
                     {% for tag in tags %}
                         <input type="hidden" name="tag_choices" value="{{ tag.id }}">
