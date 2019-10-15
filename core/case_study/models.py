@@ -21,6 +21,19 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
 
+    def get_average_score(self):
+        total_sum = 0
+        attempt_count = 0
+        instances = TagRelationship.objects.filter(tag_id=self.id)
+        if instances:
+            for instance in instances:
+                case = instance.case_study
+                if case.get_average_score():
+                    total_sum += case.get_average_score()
+                attempt_count += Attempt.objects.filter(case_study_id=case.id).count()
+            return {"score": total_sum/instances.count(), "attempts": attempt_count}
+        return None
+
 
 class CaseStudy(models.Model):
     YEARS = "Y"
@@ -116,7 +129,7 @@ class CaseStudy(models.Model):
         else:
             weight = None
         if self.scr:
-            scr = str(self.scr) + 'μmol/L'
+            scr = str(self.scr) + 'μmol/L SCr'
         else:
             scr = None
         optional_array = [height, weight, scr]
@@ -180,11 +193,13 @@ class Medication(models.Model):
     def __str__(self):
         return self.name
 
+
 class Other(models.Model):
     other_body = models.TextField(null=True, blank=True)
     case_study = models.ForeignKey(CaseStudy, on_delete=models.CASCADE)
     def __str__(self):
         return self.other_body
+
 
 class Attempt(models.Model):
     user_answer = models.CharField(max_length=1, null=True)
@@ -192,15 +207,18 @@ class Attempt(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     attempt_date = models.DateTimeField(null=True)
 
+
 class Comment(models.Model):
     comment = models.TextField(null=True, blank=True)
     case_study = models.ForeignKey(CaseStudy, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    is_anon = models.BooleanField(null=True)
+    is_anon = models.BooleanField(null=False, default=False)
+    is_deleted = models.BooleanField(null=False, default=False)
     comment_date = models.DateTimeField(null=True)
 
     def __str__(self):
         return self.comment
+
 
 class CommentVote(models.Model):
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
@@ -209,3 +227,14 @@ class CommentVote(models.Model):
     def get_vote_score(self, comment):
         vote_object_count = CommentVote.objects.filter(comment=comment).count()
         return vote_object_count
+
+
+class CommentReport(models.Model):
+    comment = models.ForeignKey(Comment, on_delete=models.DO_NOTHING, related_name="report_comment")  # dont let people delete comments to hide from admins
+    comment_author = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="report_comment_author")
+    report_author = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="report_author")
+    comment_body = models.TextField(null=False, blank=False)  # save a copy of the comment body at the time of the report so user cannot edit to hide
+    comment_date = models.DateTimeField(null=False)
+    report_date = models.DateTimeField(null=False)
+    reason = models.TextField(null=False, blank=False)
+    report_reviewed = models.BooleanField(null=False, default=False)

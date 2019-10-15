@@ -39,6 +39,7 @@ def render_tag_view(request, message=None, message_type=None):
         "schema": schema_tag,
         "admin_message": message,
         "admin_message_type": message_type,
+        "hard_delete_only": True,
     }
     return render(request, "case-admin.html", c)
 
@@ -187,18 +188,7 @@ def api_admin_tag_import(request):
 @staff_required
 def view_admin_tag(request):
     if request.method == "GET":
-        data = populate_data(schema_tag, Tag.objects.all())
-        c = {
-            "title": "Tag Admin",
-            "model_name": "Tag",
-            "toolbar_new": True,
-            "toolbar_import": True,
-            "data": data,
-            "import_form": TagImportForm(),
-            "import_endpoint": "/caseadmin/tags/import",
-            "schema": schema_tag,
-        }
-        return render(request, "case-admin.html", c)
+        return render_tag_view(request, "", "")
     elif request.method == "POST":
         try:
             body = json.loads(request.body)

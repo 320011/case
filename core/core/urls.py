@@ -24,6 +24,7 @@ urlpatterns = [
     path('user/', include('accounts.urls', namespace='accounts')),
     path('admin/', admin.site.urls),
     path('caseadmin/', include('case_admin.urls', namespace='case_admin')),
+    path('analytics/', include('analytics.urls', namespace='analytics')),
 
     path('password/change', auth_views.PasswordChangeView.as_view(template_name='password_change.html'), name='password_change'),
     path('password/change/done', auth_views.PasswordChangeDoneView.as_view(

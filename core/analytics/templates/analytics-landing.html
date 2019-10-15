@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Analytics | UWA Pharmacy Case
+{% endblock %}
+
+{% block body %}
+    <div class="theme-container theme-container-sm mb-5">
+        <h1 class="theme-header">Tag Performance</h1>
+        <p class="text-center">Select a tag to view the average performance.<br>Only valid tag choices are displayed.</p>
+        {{ form.field }}
+        <div class="card mt-3">
+          <div class="card-body row p-3">
+            <div class="col">
+              <span style="color: #636363">Score:</span> <span id="score"></span>
+            </div>
+            <div class="col">
+              <span style="color: #636363">Attempts:</span> <span id="attempts"></span>
+            </div>
+          </div>
+        </div>
+    </div>
+    <div class="theme-container theme-container-sm">
+        <h1 class="theme-header">Data Export</h1>
+        <p>Select a database table to download it as a csv file.</p>
+        <div class="">
+            <a href="{% url "analytics:question" %}">Question</a>
+        </div>
+        <div class="">
+            <a href="{% url "analytics:tag" %}">Tag</a>
+        </div>
+        <div class="">
+            <a href="{% url "analytics:medicalhistory" %}">MedicalHistory</a>
+        </div>
+        <div class="">
+            <a href="{% url "analytics:comment" %}">Comment</a>
+        </div>
+        <div class="">
+            <a href="{% url "analytics:casestudy" %}">CaseStudy</a>
+        </div>
+        <div class="">
+            <a href="{% url "analytics:medication" %}">Medication</a>
+        </div>
+        <div class="">
+            <a href="{% url "analytics:commentvote" %}">CommentVote</a>
+        </div>
+        <div class="">
+            <a href="{% url "analytics:tagrelationship" %}">TagRelationship</a>
+        </div>
+        <div class="">
+            <a href="{% url "analytics:other" %}">Other</a>
+        </div>
+        <div class="">
+            <a href="{% url "analytics:commentreport" %}">CommentReport</a>
+        </div>
+        <div class="">
+            <a href="{% url "analytics:attempt" %}">Attempt</a>
+        </div>
+        <div class="">
+            <a href="{% url "analytics:user" %}">User</a>
+        </div>
+    </div>
+
+  <script>
+  $('#id_field').change(function() {
+    if($('#id_field').val()){
+      $.ajax({
+        type:"GET",
+        url : "/analytics/api/v1/tag_performance",
+        data : {
+          "tag_id" : $(this).val()
+        },
+        success : function(resp) {
+          if (resp.success) {
+            document.getElementById("score").innerText = resp.data.score;
+            document.getElementById("attempts").innerText = resp.data.attempts;
+          } else {
+            alert(resp.message)
+          }
+        }
+      });
+    }else{
+      document.getElementById("score").innerText = "";
+      document.getElementById("attempts").innerText = "";
+    }
+  })
+  </script>
+{% endblock %}
