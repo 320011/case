@@ -1,3 +1,7 @@
+$(document).ready(function(){
+  $('[data-toggle="tooltip"]').tooltip();   
+});
+
 $(".report").click(function(){
 	var reasons = window.prompt('What is the report reason?');
 	var success_message = "Thanks for your report!";
@@ -36,12 +40,6 @@ $(".report").click(function(){
     }
 
 });
-
-
-
-
-
-
 
 
 
