@@ -41,8 +41,8 @@ Search | UWA Pharmacy Case
 
 					<div class="form-group">
 						<label><strong>Tags</strong></label>
-						<div id="tags-group-select-parent" >
-							<select class="form-control select2 narrow wrap" style="width:100px;" multiple name="tag_choice" id="tags-group" >
+						<div>
+							<select class="form-control" data-width="fit" multiple name="tag_choice" id="tags-group" >
 								{% for tag in tags %}
 									<option class="form-control" id="tag_choice{{ forloop.counter }}" value="{{tag}}"
 										{% if tag.name in tag_choices %}
@@ -58,7 +58,7 @@ Search | UWA Pharmacy Case
 						</div>
 					</div> </br>
 
-					<div class="mb-3">
+					<div class="mb-1">
 						<input type="checkbox" name="staff_choice" id="staff_choice1" value="staff_choice"
 							{% if staff_choice %} checked {% endif %}>
 						<label for="staff_choice1">Submitted by staff</label>

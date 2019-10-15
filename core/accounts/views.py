@@ -74,13 +74,22 @@ def view_profile(request):
     # if the user filters the cases by tags or time, then the view needs to be updated
     if request.POST.get("filter_tag") and request.POST['filter_tag'] == 'All':
         pass
-    elif request.POST.get("start_time") and request.POST.get("end_time"):
+    elif request.POST.get("start_time") and request.POST.get("end_time"): # filter by both start and end dates
         start = request.POST['start_time']
         end = request.POST['end_time']
         # A day is added to the end date as the dates are not inclusive in __range
         end_date = datetime.strptime(end, "%Y-%m-%d")
         end_inclusive = end_date + timedelta(days=1) - timedelta(seconds=1)
         cases = CaseStudy.objects.filter(date_submitted__range=(start, end_inclusive))
+    elif request.POST.get("start_time") and not request.POST.get("end_time"): # filter by only start date
+        start = request.POST['start_time']
+        cases = CaseStudy.objects.filter(date_submitted__gte=start)
+    elif not request.POST.get("start_time") and request.POST.get("end_time"): # filter by only end date
+        end = request.POST['end_time']
+        # A day is added to make the selected end date inclusive
+        end_date = datetime.strptime(end, "%Y-%m-%d")
+        end_inclusive = end_date + timedelta(days=1) - timedelta(seconds=1)
+        cases = CaseStudy.objects.filter(date_submitted__lte=end_inclusive)
     elif request.POST.get("filter_tag"):
         tag_filter = (request.POST['filter_tag']).replace('_', ' ').strip()
         filter_ids = []
