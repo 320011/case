@@ -147,19 +147,15 @@ Advanced Search | UWA Pharmacy Case
                     <div class="form-group">
                         <label><strong>Patient Sex</strong></label>
                         <div>
-                            <select class="form-control" data-width="fit" multiple name="sex_choice" id="sexes-group">
-                                {% for a,b in sexes %}
-                                <option id="sex_choice{{ forloop.counter }}" value="{{a}}"
-                                    {% if a in sex_choices %}
+                            <select class="form-control" data-width="fit" name="sex_choice" id="sexes-group">
+                                <option disabled selected value> -- Select -- </option>
+                                {% for s in sexes %}
+                                <option id="sex_choice" value="{{s}}"
+                                    {% if s in sex_choices %}
                                         selected
-                                    {% endif %}>{{b}}</option>
+                                    {% endif %}>{{s}}</option>
                                 {% endfor %}
                             </select>
-                            <script>
-                                $(document).ready(function () {
-                                    $("#sexes-group").select2();
-                                });
-                            </script>
                         </div>
                     </div>
 

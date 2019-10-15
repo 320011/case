@@ -527,8 +527,12 @@ def advsearch(request):
     sex_cases = None
     sex_choices = get.getlist('sex_choice')
     if len(sex_choices) != 0:
-        # sex_choices = sex_choices
-        sex_cases = cases.filter(sex__in=[s for s in sex_choices])
+        if sex_choices[0] == 'Male':
+            sex_cases = cases.filter(sex='M')
+        elif sex_choices[0] == 'Female':
+            sex_cases = cases.filter(sex='F')
+        elif sex_choices[0] == 'Both':
+            sex_cases = cases
     
 
     # Height
@@ -588,7 +592,6 @@ def advsearch(request):
     # Questions
     question_cases = None
     question_list=get.getlist('question_choice')
-    print(question_list)
     if len(question_list) != 0:
         filter_ids = []
         for case in cases:
@@ -604,9 +607,8 @@ def advsearch(request):
         anon_cases = cases.filter(created_by__is_staff=True)
 
 
-    #all distinct tags, sexes, medications, medical histories
     tags = Tag.objects.filter()
-    sexes = CaseStudy.SEX_CHOICES
+    sexes = ['Both', 'Male', 'Female']
 
     mhxes = MedicalHistory.objects.filter()
     mhxes_list = []
