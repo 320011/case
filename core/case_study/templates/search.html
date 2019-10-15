@@ -9,10 +9,18 @@ Search | UWA Pharmacy Case
 {% block head %}
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/css/select2.min.css" rel="stylesheet" />
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
-<style type="text/css">     
-    select {
-        width: 200px;
-    }
+<style type="text/css">
+	@media only screen and (min-width: 1025px) {
+		.select2-container, .select2-selection__rendered, .select2-selection.select2-selection--multiple {
+			width: 215px;
+		}
+	}
+
+	@media only screen and (max-width: 1025px) {
+		.select2-container, .select2-selection__rendered, .select2-selection.select2-selection--multiple {
+			width: 100%;
+		}
+	}
 </style>
 {% endblock %}
 
@@ -33,7 +41,7 @@ Search | UWA Pharmacy Case
 						<div>
 							<select class="form-control" data-width="fit" multiple name="tag_choice" id="tags-group" >
 								{% for tag in tags %}
-									<option class="form-control" id="tag_choice{{ forloop.counter }}" value="{{tag}}"
+									<option id="tag_choice{{ forloop.counter }}" value="{{tag}}"
 										{% if tag.name in tag_choices %}
 											selected
 										{% endif %}>{{tag.name}}</option>

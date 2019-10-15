@@ -9,6 +9,19 @@ Advanced Search | UWA Pharmacy Case
 {% block head %}
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/css/select2.min.css" rel="stylesheet" />
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+<style type="text/css">
+	@media only screen and (min-width: 1025px) {
+		.select2-container, .select2-selection__rendered, .select2-selection.select2-selection--multiple {
+			width: 215px;
+		}
+	}
+
+	@media only screen and (max-width: 1025px) {
+		.select2-container, .select2-selection__rendered, .select2-selection.select2-selection--multiple {
+			width: 100%;
+		}
+	}
+</style>
 {% endblock %}
 
 
@@ -30,7 +43,7 @@ Advanced Search | UWA Pharmacy Case
 						<div>
 							<select class="form-control" data-width="fit" multiple name="tag_choice" id="select-group" >
 								{% for tag in tags %}
-									<option class="form-control" id="tag_choice{{ forloop.counter }}" value="{{tag}}"
+									<option id="tag_choice{{ forloop.counter }}" value="{{tag}}"
 										{% if tag.name in tag_choices %}
 											selected
 										{% endif %}>{{tag.name}}</option>
@@ -49,7 +62,7 @@ Advanced Search | UWA Pharmacy Case
                         <div>
                             <select class="form-control" data-width="fit" multiple name="mhx_choice" id="mhx-group">
                                 {% for m in mhxes %}
-                                    <option class="form-control" id="mhx_choice{{ forloop.counter }}" value="{{m}}"
+                                    <option id="mhx_choice{{ forloop.counter }}" value="{{m}}"
                                         {% if m in mhx_choices %}
                                             selected
                                         {% endif %}>{{m}}</option>
@@ -68,7 +81,7 @@ Advanced Search | UWA Pharmacy Case
                         <div>
                             <select class="form-control" data-width="fit" multiple name="medicine_choice" id="medicines-group">
                                 {% for m in medicines %}
-                                    <option class="form-control" id="medicine_choice{{ forloop.counter }}" value="{{m}}"
+                                    <option id="medicine_choice{{ forloop.counter }}" value="{{m}}"
                                         {% if m in medicine_choices %}
                                             selected
                                         {% endif %}>{{m}}</option>
@@ -87,7 +100,7 @@ Advanced Search | UWA Pharmacy Case
                         <div>
                             <select class="form-control" data-width="fit" multiple name="other_choice" id="other-group">
                                 {% for o in others %}
-                                    <option class="form-control" id="other_choice{{ forloop.counter }}" value="{{o}}" 
+                                    <option id="other_choice{{ forloop.counter }}" value="{{o}}" 
                                     {% if o.other_body in other_choices %}
                                         selected
                                     {% endif %}>{{o}}</option>
