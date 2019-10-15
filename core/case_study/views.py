@@ -341,13 +341,14 @@ def search(request):
     tag_cases = None
     tag_list=get.getlist('tag_choice')
     if len(tag_list) != 0:
-        tag_cases = CaseStudy.objects.none()
         filter_ids = []
         for case in cases:
             case_tags = TagRelationship.objects.filter(case_study=case)
+            case_tags_list = []
             for tag in case_tags:
-                if tag.tag.name in tag_list:
-                    filter_ids.append(case.id)   
+                case_tags_list.append(tag.tag.name)
+            if(set(tag_list).issubset(set(case_tags_list))):
+                filter_ids.append(case.id)
         tag_cases = cases.filter(id__in=[item for item in filter_ids])
 
     # Staff only
@@ -413,9 +414,11 @@ def advsearch(request):
         filter_ids = []
         for case in cases:
             case_tags = TagRelationship.objects.filter(case_study=case)
+            case_tags_list = []
             for tag in case_tags:
-                if tag.tag.name in tag_list:
-                    filter_ids.append(case.id)
+                case_tags_list.append(tag.tag.name)
+            if(set(tag_list).issubset(set(case_tags_list))):
+                filter_ids.append(case.id)
         tag_cases = cases.filter(id__in=[item for item in filter_ids])
 
     # Medical Histories
@@ -425,9 +428,11 @@ def advsearch(request):
         filter_ids = []
         for case in cases:
             case_mhxs = MedicalHistory.objects.filter(case_study=case)
+            case_mhxs_list = []
             for mhx in case_mhxs:
-                if mhx.body in mhx_list:
-                    filter_ids.append(case.id)
+                case_mhxs_list.append(mhx.body)
+            if(set(mhx_list).issubset(set(case_mhxs_list))):
+                filter_ids.append(case.id)
         mhx_cases = cases.filter(id__in=[item for item in filter_ids])
 
     # Medicines
@@ -437,9 +442,12 @@ def advsearch(request):
         filter_ids = []
         for case in cases:
             case_medicines = Medication.objects.filter(case_study=case)
+            case_medicines_list = []
             for medicine in case_medicines:
-                if medicine.name in medicine_list:
-                    filter_ids.append(case.id)
+                case_medicines_list.append(medicine.name)
+                # if medicine.name in medicine_list:
+            if(set(medicine_list).issubset(set(case_medicines_list))):
+                filter_ids.append(case.id)
         medicine_cases = cases.filter(id__in=[item for item in filter_ids])
 
     # Others
@@ -449,9 +457,11 @@ def advsearch(request):
         filter_ids = []
         for case in cases:
             case_others = Other.objects.filter(case_study=case)
+            case_others_list = []
             for other in case_others:
-                if other.other_body in other_list:
-                    filter_ids.append(case.id)
+                case_others_list.append(other.other_body)
+            if(set(other_list).issubset(set(case_others_list))):
+                filter_ids.append(case.id)
         other_cases = cases.filter(id__in=[item for item in filter_ids])
 
     
