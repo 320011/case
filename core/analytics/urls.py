@@ -18,4 +18,5 @@ urlpatterns = [
     path("commentreport", views.view_commentreport, name='commentreport'),
     path("attempt", views.view_attempt, name='attempt'),
     path("user", views.view_user, name='user'),
+    path("api/v1/tag_performance", views.tag_performance, name='tag_performance'),
 ]

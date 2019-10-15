@@ -1,12 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 import csv
-from django.http import HttpResponse
-
+from django.http import HttpResponse, JsonResponse
 from case_study.models import Question, \
     Tag, CaseStudy, TagRelationship, \
     MedicalHistory, Medication, Other, Attempt, \
     Comment, CommentVote, CommentReport
 from accounts.models import User
+from .forms import TagForm
 
 
 def export_queryset_csv(qs, filename):
@@ -35,8 +35,20 @@ def export_queryset_csv(qs, filename):
 
 
 def view_landing(request):
-    c = {}
+    c = {"form": TagForm }
     return render(request, "analytics-landing.html", c)
+
+def tag_performance(request):
+    tag_id = request.GET.get('tag_id', None)
+    tag = get_object_or_404(Tag, pk=tag_id)
+    data = {}
+    if tag.get_average_score():
+        data = {
+            'score': tag.get_average_score()["score"],
+            'attempts': tag.get_average_score()["attempts"]
+        }
+    return JsonResponse(data)
+
 
 
 def view_question(request):
