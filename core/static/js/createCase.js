@@ -1,8 +1,23 @@
-$("#medical-history-box").select2({
-  placeholder: 'Enter medical history here',
-  tags: true,
-  tokenSeparators: [',', ' ']
-})
+$(document).ready(function () {
+  $("#medical-history-box").select2({
+    placeholder: 'Enter medical history here',
+    tags: true,
+    tokenSeparators: [',', ' ']
+  })
+  
+  $("#medication-box").select2({
+    placeholder: 'Enter medication here',
+    tags: true,
+    tokenSeparators: [',', ' ']
+  })
+  
+  $("#other-box").select2({
+    placeholder: 'Enter other here',
+    tags: true,
+    tokenSeparators: [',', ' ']
+  })
+});
+
 
 $('#add_medical_history').click(function () {
   let medical_history_body = document.getElementById('medical-history-box').value;
