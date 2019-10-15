@@ -165,6 +165,7 @@ class TagRelationship(models.Model):
         return "Tags {} as {}".format(str(self.case_study), str(self.tag))
 
 
+
 class MedicalHistory(models.Model):
     body = models.TextField(null=True, blank=True)
     case_study = models.ForeignKey(CaseStudy, on_delete=models.CASCADE)

@@ -35,56 +35,67 @@ def create_new_case(request, case_study_id):
         request.POST = request.POST.copy()
         # obtain forms with fields populated from POST request
         case_study_form = CaseStudyForm(request.POST, instance=case_study)
+        # -- Medical history -- 
+        medical_histories = list(MedicalHistory.objects.filter(case_study=case_study).values_list("body",flat=True))
+        medical_history_list = request.POST.getlist("medical-history-list")
+        # Create new ones 
+        for medical_history in medical_history_list:
+            if medical_history not in medical_histories:
+                MedicalHistory.objects.create(body=medical_history, case_study=case_study)
+        medical_histories = list(MedicalHistory.objects.filter(case_study=case_study).values_list("body",flat=True))
+        # Delete ones that are removed 
+        for medical_history in medical_histories:
+            if medical_history not in medical_history_list:
+                MedicalHistory.objects.filter(body=medical_history, case_study=case_study).delete()
+        # Obtain updated list of medical histories
+        medical_histories = MedicalHistory.objects.filter(case_study=case_study)
+
+        # -- Medication -- 
+        medications = list(Medication.objects.filter(case_study=case_study).values_list("name",flat=True))
+        medication_list = request.POST.getlist("medication-list")
+        # Create new ones 
+        for medication in medication_list:
+            if medication not in medications:
+                Medication.objects.create(name=medication, case_study=case_study)
+        medications = list(Medication.objects.filter(case_study=case_study).values_list("name",flat=True))
+        # Delete ones that are removed 
+        for medication in medications:
+            if medication not in medication_list:
+                Medication.objects.filter(name=medication, case_study=case_study).delete()
+        # Obtain updated list of medical histories
+        medications = Medication.objects.filter(case_study=case_study)
+
+        # -- Other -- 
+        others = list(Other.objects.filter(case_study=case_study).values_list("other_body",flat=True))
+        other_list = request.POST.getlist("other-list")
+        # Create new ones 
+        for other in other_list:
+            if other not in others:
+                Other.objects.create(other_body=other, case_study=case_study)
+        others = list(Other.objects.filter(case_study=case_study).values_list("other_body",flat=True))
+        # Delete ones that are removed 
+        for other in others:
+            if other not in other_list:
+                Other.objects.filter(other_body=other, case_study=case_study).delete()
+        # Obtain updated list of medical histories
+        others = Other.objects.filter(case_study=case_study)
+
+        # -- Tag -- 
+        relevant_tags = TagRelationship.objects.filter(case_study=case_study)
+        tag_list = request.POST.getlist("tag-list")
+        # Create new ones 
+        for tag in tag_list:
+            tag_object = get_object_or_404(Tag, pk=tag) 
+            if TagRelationship.objects.filter(tag=tag_object, case_study=case_study).exists() == False:
+                TagRelationship.objects.create(tag=tag_object, case_study=case_study)
+        relevant_tag_ids = TagRelationship.objects.filter(case_study=case_study).values_list("tag",flat=True)
+        relevant_tags = []
+        for relevant_tag in relevant_tag_ids:
+            relevant_tags.append(relevant_tag)
 
         if request.POST["submission_type"] == "save":
-            print(request.POST)
             
-            
-            # -- Medical history -- 
-            medical_histories = list(MedicalHistory.objects.filter(case_study=case_study).values_list("body",flat=True))
-            medical_history_list = request.POST.getlist("medical-history-list")
-            # Create new ones 
-            for medical_history in medical_history_list:
-                if medical_history not in medical_histories:
-                    MedicalHistory.objects.create(body=medical_history, case_study=case_study)
-            medical_histories = list(MedicalHistory.objects.filter(case_study=case_study).values_list("body",flat=True))
-            # Delete ones that are removed 
-            for medical_history in medical_histories:
-                if medical_history not in medical_history_list:
-                    MedicalHistory.objects.filter(body=medical_history, case_study=case_study).delete()
-            # Obtain updated list of medical histories
-            medical_histories = MedicalHistory.objects.filter(case_study=case_study)
 
-            # -- Medication -- 
-            medications = list(Medication.objects.filter(case_study=case_study).values_list("name",flat=True))
-            medication_list = request.POST.getlist("medication-list")
-            # Create new ones 
-            for medication in medication_list:
-                if medication not in medications:
-                    Medication.objects.create(name=medication, case_study=case_study)
-            medications = list(Medication.objects.filter(case_study=case_study).values_list("name",flat=True))
-            # Delete ones that are removed 
-            for medication in medications:
-                if medication not in medication_list:
-                    Medication.objects.filter(name=medication, case_study=case_study).delete()
-            # Obtain updated list of medical histories
-            medications = Medication.objects.filter(case_study=case_study)
-
-            # -- Other -- 
-            others = list(Other.objects.filter(case_study=case_study).values_list("other_body",flat=True))
-            other_list = request.POST.getlist("other-list")
-            # Create new ones 
-            for other in other_list:
-                if other not in others:
-                    Other.objects.create(other_body=other, case_study=case_study)
-            others = list(Other.objects.filter(case_study=case_study).values_list("other_body",flat=True))
-            # Delete ones that are removed 
-            for other in others:
-                if other not in other_list:
-                    Other.objects.filter(other_body=other, case_study=case_study).delete()
-            # Obtain updated list of medical histories
-            others = Other.objects.filter(case_study=case_study)
-            
             # Checking for the type on submission, if years, store the value as months
             if request.POST['age_type'] == 'Y':
                 request.POST['age'] = int(request.POST['age']) * 12
@@ -98,8 +109,8 @@ def create_new_case(request, case_study_id):
                 return render(request, "create_new_case.html",
                               {
                                   "case_study_form": case_study_form,
-                                  "tags": relevant_tags,
-                                  "list_tags": all_tags, 
+                                  "relevant_tags": relevant_tags,
+                                  "all_tags": all_tags, 
                                   "medical_histories": medical_histories,
                                   "medications": medications,
                                   "others": others,
@@ -121,8 +132,8 @@ def create_new_case(request, case_study_id):
                 return render(request, "create_new_case.html",
                               {
                                   "case_study_form": case_study_form,
-                                  "tags": relevant_tags,
-                                  "list_tags": all_tags, 
+                                  "relevant_tags": relevant_tags,
+                                  "all_tags": all_tags, 
                                   "medical_histories": medical_histories,
                                   "medications": medications,
                                   "others": others,
@@ -132,8 +143,8 @@ def create_new_case(request, case_study_id):
             return render(request, "create_new_case.html",
                           {
                               "case_study_form": case_study_form,
-                              "tags": relevant_tags,
-                              "list_tags": all_tags, 
+                              "relevant_tags": relevant_tags,
+                              "all_tags": all_tags, 
                               "medical_histories": medical_histories,
                               "medications": medications,
                               "others": others,
@@ -144,8 +155,8 @@ def create_new_case(request, case_study_id):
     return render(request, "create_new_case.html",
                   {
                       "case_study_form": case_study_form,
-                      "tags": relevant_tags,
-                      "list_tags": all_tags, 
+                      "relevant_tags": relevant_tags,
+                      "all_tags": all_tags, 
                       "medical_histories": medical_histories,
                       "medications": medications,
                       "others": others,
