@@ -8,6 +8,18 @@
 {% block head %}
     Create New Case
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/css/select2.min.css" rel="stylesheet" />
+    <style type="text/css">
+        @media only screen and (min-width: 1025px) {
+            .select2-container, .select2-selection__rendered, .select2-selection.select2-selection--multiple {
+                width: 100%;
+            }
+        }
+        @media only screen and (max-width: 1025px) {
+        .select2-container, .select2-selection__rendered, .select2-selection.select2-selection--multiple {
+            width: 100%;
+        }
+    }
+    </style>
 {% endblock %}
 
 {% block description %}
@@ -70,7 +82,7 @@
                 <!-- Medical history -->
                 <div class="form-group">
                     <label for="medical-history-box">Patient Medical History*:</label>
-                    <select class="form-control" style="width:100%" multiple="multiple" id="medical-history-box">
+                    <select class="form-control" multiple="multiple" id="medical-history-box">
                         {% for medical_history in medical_histories %}
                             <option>{{ medical_history.body }}</option>
                         {% endfor %}

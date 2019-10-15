@@ -1,8 +1,7 @@
 $("#medical-history-box").select2({
   placeholder: 'Enter medical history here',
   tags: true,
-  tokenSeparators: [',', ' '], 
-  width: 'resolve'
+  tokenSeparators: [',', ' ']
 })
 
 $('#add_medical_history').click(function () {
