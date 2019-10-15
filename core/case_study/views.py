@@ -8,7 +8,7 @@ from django.utils import timezone
 from datetime import datetime, timedelta
 
 from .forms import CaseStudyForm, CaseStudyTagForm, MedicalHistoryForm, MedicationForm, OtherForm  # , CaseTagForm
-from .models import Tag, TagRelationship, CaseStudy, MedicalHistory, Medication, Attempt, Comment, Other
+from .models import Tag, TagRelationship, CaseStudy, MedicalHistory, Medication, Attempt, Comment, Other, Question
 
 from django.db.models import Q
 
@@ -585,6 +585,19 @@ def advsearch(request):
         max_scr=''
 
 
+    # Questions
+    question_cases = None
+    question_list=get.getlist('question_choice')
+    print(question_list)
+    if len(question_list) != 0:
+        filter_ids = []
+        for case in cases:
+            question = case.question.body
+            if question in question_list:
+                filter_ids.append(case.id)
+        question_cases = cases.filter(id__in=[item for item in filter_ids])
+
+
     # Staff only
     anon_cases = None
     if get.get("staff_choice") is not None:
@@ -610,12 +623,18 @@ def advsearch(request):
     others = Other.objects.filter()
     others_list = []
     for each in others:
-        others_list.append(each.body)
+        others_list.append(each.other_body)
     distinct_others = set(others_list)
+
+    questions = Question.objects.filter()
+    questions_list = []
+    for each in questions:
+        questions_list.append(each.body)
+    distinct_questions = set(questions_list)
 
     # find the intersections of the filters that were used
     filters = [key_cases, tag_cases, mhx_cases, medicine_cases, other_cases, sex_cases, date_cases,
-                score_cases, age_cases, height_cases, weight_cases, scr_cases, anon_cases]
+                score_cases, age_cases, height_cases, weight_cases, scr_cases, question_cases, anon_cases]
     for each_filter in filters:
         if each_filter is not None:
             cases = cases.intersection(each_filter)
@@ -634,6 +653,7 @@ def advsearch(request):
         "mhxes": distinct_mhxes,
         "medicines": distinct_medicines,
         "others": distinct_others,
+        "questions": distinct_questions,
     
         "get": get,
         "cases": cases,
@@ -643,6 +663,7 @@ def advsearch(request):
         "mhx_choices": get.getlist('mhx_choice'),
         "medicine_choices": get.getlist('medicine_choice'),
         "other_choices": get.getlist('other_choice'),
+        "question_choices": get.getlist('question_choice'),
 
         "before_date": start_date,
         "after_date": end_date,

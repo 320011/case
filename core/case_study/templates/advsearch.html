@@ -77,7 +77,7 @@ Advanced Search | UWA Pharmacy Case
                     </div>
 
                     <div class="form-group">
-                        <label><strong>Medication</strong></label>
+                        <label><strong>Medications</strong></label>
                         <div>
                             <select class="form-control" data-width="fit" multiple name="medicine_choice" id="medicines-group">
                                 {% for m in medicines %}
@@ -96,12 +96,12 @@ Advanced Search | UWA Pharmacy Case
                     </div>
 
                     <div class="form-group">
-                        <label><strong>Other</strong></label>
+                        <label><strong>Others</strong></label>
                         <div>
                             <select class="form-control" data-width="fit" multiple name="other_choice" id="other-group">
                                 {% for o in others %}
                                     <option id="other_choice{{ forloop.counter }}" value="{{o}}" 
-                                    {% if o.other_body in other_choices %}
+                                    {% if o in other_choices %}
                                         selected
                                     {% endif %}>{{o}}</option>
                                 {% endfor %}
@@ -191,6 +191,25 @@ Advanced Search | UWA Pharmacy Case
                         
                         <label for="max_scr_inp">Maximum SCr:</label>
                         <input class="form-control" type="number" step="0.1" name="max_scr" id="max_scr_inp" value="{{ max_scr }}"></input>
+                    </div>
+
+                    <div class="form-group">
+                        <label><strong>Questions</strong></label>
+                        <div>
+                            <select class="form-control" data-width="fit" multiple name="question_choice" id="question-group">
+                                {% for q in questions %}
+                                    <option id="question_choice{{ forloop.counter }}" value="{{q}}" 
+                                    {% if q in question_choices %}
+                                        selected
+                                    {% endif %}>{{q}}</option>
+                                {% endfor %}
+                            </select>
+                            <script>
+                                $(document).ready(function () {
+                                    $("#question-group").select2();
+                                });
+                            </script>
+                        </div>
                     </div>
 
                     <div class="mb-1"> </br>
