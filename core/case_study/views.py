@@ -410,7 +410,6 @@ def advsearch(request):
     tag_cases = None
     tag_list=get.getlist('tag_choice')
     if len(tag_list) != 0:
-        # tag_cases = CaseStudy.objects.none()
         filter_ids = []
         for case in cases:
             case_tags = TagRelationship.objects.filter(case_study=case)
@@ -423,7 +422,6 @@ def advsearch(request):
     mhx_cases = None
     mhx_list = get.getlist('mhx_choice')
     if len(mhx_list) != 0:
-        # mhx_cases = CaseStudy.objects.none()
         filter_ids = []
         for case in cases:
             case_mhxs = MedicalHistory.objects.filter(case_study=case)
@@ -436,7 +434,6 @@ def advsearch(request):
     medicine_cases = None
     medicine_list = get.getlist('medicine_choice')
     if len(medicine_list) != 0:
-        # medicine_cases = CaseStudy.objects.none()
         filter_ids = []
         for case in cases:
             case_medicines = Medication.objects.filter(case_study=case)
@@ -449,7 +446,6 @@ def advsearch(request):
     other_cases = None
     other_list = get.getlist('other_choice')
     if len(other_list) != 0:
-        # other_cases = CaseStudy.objects.none()
         filter_ids = []
         for case in cases:
             case_others = Other.objects.filter(case_study=case)
@@ -484,7 +480,6 @@ def advsearch(request):
     score_cases = None
     min_score = get.get("min_score")
     if min_score is not None and min_score is not '':
-        # score_cases = cases.filter(score__gte=12*int(get.get("min_score")))
         min_score_ids = []
         for case in cases:
             if case.get_average_score() >= float(min_score):
@@ -619,8 +614,8 @@ def advsearch(request):
     distinct_others = set(others_list)
 
     # find the intersections of the filters that were used
-    filters = [key_cases, tag_cases, mhx_cases, medicine_cases, other_cases, sex_cases,
-                date_cases, score_cases, age_cases, height_cases, weight_cases, scr_cases]
+    filters = [key_cases, tag_cases, mhx_cases, medicine_cases, other_cases, sex_cases, date_cases,
+                score_cases, age_cases, height_cases, weight_cases, scr_cases, anon_cases]
     for each_filter in filters:
         if each_filter is not None:
             cases = cases.intersection(each_filter)
