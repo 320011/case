@@ -96,7 +96,6 @@ def create_new_case(request, case_study_id):
             relevant_tags.append(relevant_tag)
 
         if request.POST["submission_type"] == "save":
-            
 
             # Checking for the type on submission, if years, store the value as months
             if request.POST['age_type'] == 'Y':
@@ -164,68 +163,6 @@ def create_new_case(request, case_study_id):
                       "others": others,
                       "case_study":case_study,
                   })
-
-
-@login_required
-def add_medical_history(request, case_study_id):
-    case = get_object_or_404(CaseStudy, pk=case_study_id)
-    body = request.GET.get('body', None)
-    # Create medical history  
-    medical_history = MedicalHistory.objects.create(body=body, case_study=case)
-    data = {
-        'medical_history': {
-            'body': body
-        }
-    }
-    return JsonResponse(data)
-
-@login_required
-def add_medication(request, case_study_id):
-    case = get_object_or_404(CaseStudy, pk=case_study_id)
-    name = request.GET.get('name', None)
-    # Create medication 
-    medication = Medication.objects.create(name=name, case_study=case)
-    data = {
-        'medication': {
-            'name': name
-        }
-    }
-    return JsonResponse(data)
-
-@login_required
-def add_other(request, case_study_id):
-    case = get_object_or_404(CaseStudy, pk=case_study_id)
-    body = request.GET.get('body', None)
-    # Create other 
-    other = Other.objects.create(other_body=body, case_study=case)
-    data = {
-        'other': {
-            'body': body
-        }
-    }
-    return JsonResponse(data)
-
-@login_required
-def add_tag(request, case_study_id):
-    case = get_object_or_404(CaseStudy, pk=case_study_id)
-    tag_id = request.GET.get('tag_id', None)
-    tag_name = request.GET.get('tag_name', None)
-    tag_object = get_object_or_404(Tag, pk=tag_id) 
-    success = False
-    # Create tag  
-    if TagRelationship.objects.filter(tag=tag_object, case_study=case).exists() == False:
-        tag = TagRelationship.objects.create(tag=tag_object, case_study=case)
-        success = True
-        # Get updated tag id 
-        tag_id = tag.id
-    data = {
-        'tag': {
-            'id': tag_id, 
-            'name': tag_name
-        },
-        'success': success
-    }
-    return JsonResponse(data)
 
 @login_required
 def view_case(request, case_study_id):

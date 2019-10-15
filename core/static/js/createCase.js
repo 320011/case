@@ -2,7 +2,8 @@ $(document).ready(function () {
   $("#medical-history-box").select2({
     placeholder: 'Enter medical history here',
     tags: true,
-    tokenSeparators: [',', ' ']
+    tokenSeparators: [',', ' '],
+    
   })
   
   $("#medication-box").select2({
@@ -19,117 +20,9 @@ $(document).ready(function () {
 
   $("#tag-box").select2({
     placeholder: 'Choose tags',
-    tokenSeparators: [',', ' '],
-    id: function(tag) {
-      return tag.id;
-    } 
+    tokenSeparators: [',', ' ']
   })
-  // $("#tag-box").select2().find(":selected").data("id");
 });
-
-
-// $('#add_medical_history').click(function () {
-//   let medical_history_body = document.getElementById('medical-history-box').value;
-//   let id = document.getElementById('case_id').innerText;
-//   // if there is content 
-//   if (medical_history_body) {
-//     $.ajax({
-//       url: '/cases/api/v1/add_medical_history/' + id,
-//       dataType: 'json',
-//       data: {
-//         'body': medical_history_body
-//       },
-//       success: function (data) {
-//         $('#medical-history-box').val('');
-//         htmlstring =
-//           `<li class="list-group-item">\
-//           ${data.medical_history.body}\
-//           </li>`;
-//         $("#medical-history-container").append($(htmlstring).hide().delay(500).show('slow'));
-//       }
-//     });
-//   }
-// });
-
-// $('#add_medication').click(function () {
-//   let medication_name = document.getElementById('medication-box').value;
-//   let id = document.getElementById('case_id').innerText;
-//   // if there is content 
-//   if (medication_name) {
-//     $.ajax({
-//       url: '/cases/api/v1/add_medication/' + id,
-//       dataType: 'json',
-//       data: {
-//         'name': medication_name
-//       },
-//       success: function (data) {
-//         $('#medication-box').val('');
-//         htmlstring =
-//           `<li class="list-group-item">\
-//           ${data.medication.name}\
-//           </li>`;
-//         $("#medication-container").append($(htmlstring).hide().delay(500).show('slow'));
-//       }
-//     });
-//   }
-// });
-
-// $('#add_other').click(function () {
-//   let other_body = document.getElementById('other-box').value;
-//   let id = document.getElementById('case_id').innerText;
-//   // if there is content
-//   if (other_body) {
-//     $.ajax({
-//       url: '/cases/api/v1/add_other/' + id,
-//       dataType: 'json',
-//       data: {
-//         'body': other_body
-//       },
-//       success: function (data) {
-//         $('#other-box').val('');
-//         htmlstring =
-//           `<li class="list-group-item">\
-//           ${data.other.body}\
-//           </li>`;
-//         $("#other-container").append($(htmlstring).hide().delay(500).show('slow'));
-//       }
-//     });
-//   }
-// });
-
-// $('#add_tag').click(function () {
-//   let tag_name = $('#tag-select').children("option:selected").val();
-//   let tag_id = $('#tag-select').children("option:selected").attr("id");
-//   let id = document.getElementById('case_id').innerText;
-//   // if there is content
-//   if (tag_id) {
-//     $.ajax({
-//       url: '/cases/api/v1/add_tag/' + id,
-//       dataType: 'json',
-//       data: {
-//         'tag_id': tag_id,
-//         'tag_name': tag_name 
-//       },
-//       success: function (data) {
-//         // $('#tag-select').val('Select Tag');
-//         if ( data.success ) {
-//           htmlstring =
-//           `<input type="hidden" name="tag_choices" value="${data.tag.id}">\
-//           <span class="badge badge-secondary">\
-//           ${data.tag.name}\
-//           </span>`;
-//           $("#tag-container").append($(htmlstring).hide().delay(500).show('slow'));
-//         } else {
-//           htmlstring = 
-//           `<div class="alert alert-danger" role="alert">\
-//           Tag has already been added.\
-//           </div>`; 
-//           $("#tag-group").prepend($(htmlstring).hide().delay(50).show('slow'));
-//         }
-//       }
-//     });
-//   }
-// });
 
 
 $('#save').click(function () {
