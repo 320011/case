@@ -28,7 +28,8 @@ class Tag(models.Model):
         if instances:
             for instance in instances:
                 case = instance.case_study
-                total_sum += case.get_average_score()
+                if case.get_average_score():
+                    total_sum += case.get_average_score()
                 attempt_count += Attempt.objects.filter(case_study_id=case.id).count()
             return {"score": total_sum/instances.count(), "attempts": attempt_count}
         return None

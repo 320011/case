@@ -63,17 +63,19 @@
 
   <script>
   $('#id_field').change(function() {
-    $.ajax({
-      type:"GET",
-      url : "/analytics/api/v1/tag_performance",
-      data : {
-        "tag_id" : $(this).val()
-      },
-      success : function(data) {
-        document.getElementById("score").innerText = data.score;
-        document.getElementById("attempts").innerText = data.attempts;
-      }
-    });
+    if($('#id_field').val()){
+      $.ajax({
+        type:"GET",
+        url : "/analytics/api/v1/tag_performance",
+        data : {
+          "tag_id" : $(this).val()
+        },
+        success : function(data) {
+          document.getElementById("score").innerText = data.score;
+          document.getElementById("attempts").innerText = data.attempts;
+        }
+      });
+    }
   })
   </script>
 {% endblock %}
