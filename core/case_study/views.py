@@ -21,6 +21,8 @@ def start_new_case(request):
 def create_new_case(request, case_study_id):
     # returns object (case_study), and boolean specifying whether an object was created
     case_study, created = CaseStudy.objects.get_or_create(pk=case_study_id)
+    if (case_study.is_submitted):
+        return HttpResponseRedirect(reverse('cases:view-case', args=[case_study.id]))
     relevant_tags = TagRelationship.objects.filter(case_study=case_study)  # return Tags for that case_study
     all_tags = Tag.objects.all()
     medical_histories = MedicalHistory.objects.filter(case_study=case_study)
