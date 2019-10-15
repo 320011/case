@@ -1,3 +1,10 @@
+$("#medical-history-box").select2({
+  placeholder: 'Enter medical history here',
+  tags: true,
+  tokenSeparators: [',', ' '], 
+  width: 'resolve'
+})
+
 $('#add_medical_history').click(function () {
   let medical_history_body = document.getElementById('medical-history-box').value;
   let id = document.getElementById('case_id').innerText;
