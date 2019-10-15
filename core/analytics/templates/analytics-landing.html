@@ -70,9 +70,13 @@
         data : {
           "tag_id" : $(this).val()
         },
-        success : function(data) {
-          document.getElementById("score").innerText = data.score;
-          document.getElementById("attempts").innerText = data.attempts;
+        success : function(resp) {
+          if (resp.success) {
+            document.getElementById("score").innerText = resp.data.score;
+            document.getElementById("attempts").innerText = resp.data.attempts;
+          } else {
+            alert(resp.message)
+          }
         }
       });
     }

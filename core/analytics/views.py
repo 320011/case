@@ -41,13 +41,16 @@ def view_landing(request):
 def tag_performance(request):
     tag_id = request.GET.get('tag_id', None)
     tag = get_object_or_404(Tag, pk=tag_id)
-    data = {}
-    if tag.get_average_score():
-        data = {
-            'score': tag.get_average_score()["score"],
-            'attempts': tag.get_average_score()["attempts"]
-        }
-    return JsonResponse(data)
+    data = tag.get_average_score()
+    if data:
+        return JsonResponse({
+            "success": True,
+            "data": data
+        })
+    return JsonResponse({
+        "success": False,
+        "message": "Failed to fetch tag performance"
+    })
 
 
 
