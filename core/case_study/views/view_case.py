@@ -76,6 +76,33 @@ def validate_answer(request, case_study_id):
 
 
 @login_required
+def submit_comment(request, case_study_id):
+    case = get_object_or_404(CaseStudy, pk=case_study_id)
+    body = request.GET.get('body', None)
+    is_anon = request.GET.get('is_anon', None).capitalize()
+    # Create comment
+    if request.user.is_tutor:
+        comment = Comment.objects.create(comment=body, case_study=case, user=request.user, is_anon=False,
+                                        comment_date=timezone.now())
+    else:
+        comment = Comment.objects.create(comment=body, case_study=case, user=request.user, is_anon=is_anon,
+                                        comment_date=timezone.now())
+    data = {
+        'comment': {
+            'body': body,
+            'date': timezone.now(),
+            'is_anon': comment.is_anon == 'True'
+        },
+        'user': {
+            'name': request.user.get_full_name(),
+            'is_staff': request.user.is_staff,
+            'is_tutor': request.user.is_tutor
+        }
+    }
+    return JsonResponse(data)
+
+
+@login_required
 def submit_report(request, comment_id):
     comment = get_object_or_404(Comment, pk=comment_id)
     reasons = request.POST.get('report_reason', None)

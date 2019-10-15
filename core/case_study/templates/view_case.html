@@ -123,6 +123,7 @@
                         <div class="mb-3">All Comments</div>
                         <div id="comment-container">
                             {% for comment in comments %}
+                                {% if comment.comment_appropriate == True %}
                                 {% if comment.user == request.user %}
                                     <div class="row justify-content-end">
                                         <div class="col-8 comment-container">
@@ -145,16 +146,17 @@
 
                                             <small class="text-muted" id="comment_date">{{ comment.comment_date }}</small>
 
-                                    <small class="float-right report" >report</small>
+                                    <small class="float-right report" id= "{{comment.id}}" > 
+                                    report</small>
                                                 <br>
 
-                                                  <small class="float-right delete" >delete</small> 
+                                    <small class="float-right delete" id= "{{comment.id}}" >delete</small> 
                                                 
                                                 </div>
-
+                                
                                   
 
-                            <p class="mb-1" id="comment_body">{{ comment.comment }}</p>
+                            <p class="mb-1 ">{{ comment.comment }}</p>
 
                                             </div>
 
@@ -201,6 +203,8 @@
                                         </div>
                                     </div>
                                 {% endif %}
+
+                                {% endif %}
                             {% endfor %}
                         </div>
                     </div>
@@ -213,5 +217,7 @@
     <br>
     <script src="{% static "js/viewCase.js" %}"></script>
     <script src="{% static "js/report.js" %}"></script>
-
+<script>
+    var csrftoken = '{{ csrf_token }}';
+</script>
 {% endblock %}

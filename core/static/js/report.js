@@ -5,37 +5,23 @@ $(".report").click(function(){
 
 	if(reasons != null && reasons != '') 
     {
+      var id = $(this).attr('id'); //get the id of the comment
+
+  	$.ajax({
+  		type: 'POST',
+  		url: '/cases/api/v1/submit_report/' + id + '/' ,
+      dataType: 'json',
+      data:{
+            'comment_id': id,
+            'report_reason': reasons
+          },
+
+    success: function(){
       alert(success_message);
-      console.log(reasons);
 
-      let comment_body = document.getElementById('comment_body').innerText;;
-   	  let case_id = document.getElementById('case_id').innerText;
-      let comment_date = document.getElementById('comment_date').innerText;
-      console.log(comment_body);
-      console.log(comment_date);
+      }
 
-
-  	// $.ajax({
-  	// 	type: 'POST',
-  	// 	url: 'api/v1/submit_report/' + case_id + '/' + report_id
-    //  data:{
-    // comment 
-    // comment_author 
-    // report_author 
-    // comment_body x
-    // comment_date x
-    // report_date 
-    // reason x
-    // report_reviewed
-
-    //},
-
-
-    //success: function(){
-
-      //}
-
-  	// });
+  	});
 
 
     }
@@ -59,4 +45,30 @@ $(".report").click(function(){
 
 
 
+$(".delete").click(function(){
+  confirmation = window.confirm('Is it okay to delete this comment?');
+  success_message = "You have deleted a comment(softly).";
 
+  if(confirmation){
+      var id = $(this).attr('id'); //get the id of the comment\
+
+    $.ajax({
+      type: 'POST',
+      url: '/cases/api/v1/delete_comment/' + id + '/' ,
+      dataType: 'json',
+      data:{
+            'comment_id': id
+          },
+
+    success: function(){
+      alert(success_message);
+      }
+  });
+
+  if(!confirmation)
+  {
+    return;
+  }
+
+};
+});
