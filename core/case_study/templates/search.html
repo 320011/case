@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load tags %}
+
+{% block title %}
+Search | UWA Pharmacy Case
+{% endblock %}
+
+{% block head %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/css/select2.min.css" rel="stylesheet" />
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+<style type="text/css">
+	@media only screen and (min-width: 1025px) {
+		.select2-container, .select2-selection__rendered, .select2-selection.select2-selection--multiple {
+			width: 215px;
+		}
+	}
+
+	@media only screen and (max-width: 1025px) {
+		.select2-container, .select2-selection__rendered, .select2-selection.select2-selection--multiple {
+			width: 100%;
+		}
+	}
+</style>
+{% endblock %}
+
+{% block body %}
+	<div class="row" id="row-container">
+		<div class="card col-3 mb-3 theme-container-border theme-container-bg case-side" id="details">
+			<form action="{% url 'cases:search'%}" method="GET">
+				<div class="card-body">
+					<h5 class="mb-2"><strong>Search</strong></h5>
+					
+					<label><strong>Keywords</strong></label>
+					<div class="mb-3">
+						<input type="text" class="form-control" name="key_words" id="kw_choice"  value="{{ key_words }}">
+					</div>
+
+					<div class="form-group">
+						<label><strong>Tags</strong></label>
+						<div>
+							<select class="form-control" data-width="fit" multiple name="tag_choice" id="tags-group" >
+								{% for tag in tags %}
+									<option id="tag_choice{{ forloop.counter }}" value="{{tag}}"
+										{% if tag.name in tag_choices %}
+											selected
+										{% endif %}>{{tag.name}}</option>
+								{% endfor %}
+							</select>
+							<script>
+							$(document).ready(function () {
+								$("#tags-group").select2();
+							});
+							</script>
+						</div>
+					</div> </br>
+
+					<div class="mb-1">
+						<input type="checkbox" name="staff_choice" id="staff_choice1" value="staff_choice"
+							{% if staff_choice %} checked {% endif %}>
+						<label for="staff_choice1">Submitted by staff</label>
+					</div>
+				</div>
+
+				<div class="card-body border-top">
+					<a class="align-middle" href="{% url "cases:advsearch" %}">Advanced Search</a>
+					<div class="float-right">
+						<button type="submit" class="btn btn-primary btn-sm brand-green-bg brand-green-bg-hover"> Submit </button>
+					</div>
+				</div>
+			</form>
+		</div>
+
+
+		<div class="case-content" id="main">
+			{% if cases %}
+				{% for case in cases %}
+					<div class="theme-container-border theme-container-bg theme-container-padding" id="main" style="margin:0 0 20px 0;">
+						<div>
+							<a class="action-link text-decoration-none" href="{% url "cases:view-case" case_study_id=case.id %}">
+								<h3 class="text-center"><strong>Case <span id="case_id">{{ case.id }}</span></strong></h3>
+							</a>
+							<div class="float-right">
+								{% for tag in case.tags %}
+									<span class="badge badge-secondary">{{ tag.tag.name }}</span>
+								{% endfor %}
+							</div> </br>
+							<div class="card mt-2 mb-3 bg-light">
+								<div class="card-body">
+									{{ case.get_age_in_words|an|title }} {{ case.get_age_string }} {{ case.get_sex }} {{ case.get_optionals }}
+									presents to your
+									pharmacy {{ case.description }}
+								</div>
+							</div>
+						</div>
+					</div>
+				{% endfor %}
+			{% else %}
+				<div class="theme-container-border theme-container-bg theme-container-padding">
+					<h5 class="theme-header">Oops! No results found.</h5>
+				</div>
+			{% endif %}
+		</div>
+	</div> </br>
+  
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/js/select2.min.js"></script>
+	<script src="https://unpkg.com/bootstrap-table@1.15.4/dist/bootstrap-table.min.js"></script>
+	<script src="{% static "js/viewCase.js" %}"></script>
+
+{% endblock %}

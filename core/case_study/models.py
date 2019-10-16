@@ -21,6 +21,19 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
 
+    def get_average_score(self):
+        total_sum = 0
+        attempt_count = 0
+        instances = TagRelationship.objects.filter(tag_id=self.id)
+        if instances:
+            for instance in instances:
+                case = instance.case_study
+                if case.get_average_score():
+                    total_sum += case.get_average_score()
+                attempt_count += Attempt.objects.filter(case_study_id=case.id).count()
+            return {"score": total_sum/instances.count(), "attempts": attempt_count}
+        return None
+
 
 class CaseStudy(models.Model):
     YEARS = "Y"

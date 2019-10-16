@@ -4,7 +4,7 @@
     <div class="action-list-container theme-container theme-contaienr-med">
         <div class="action-list theme-form">
             <div class="action-container">
-                <a class="action-link" href="{% url "default" %}">
+                <a class="action-link" href="{% url "cases:search" %}">
                     <div class="action-card" id="action-discover">
                         <p class="action-title">View Existing Cases</p>
                     </div>
@@ -13,6 +13,11 @@
             <div class="action-container">
                 <a class="action-link" href="{% url "cases:start-new-case" %}">
                     <div class="action-card" id="action-create">
+                        {% if badge_count_new_case > 0 %}
+                            <span class="notification-badge">
+                            {{ badge_count_new_case }}
+                        </span>
+                        {% endif %}
                         <p class="action-title">Submit New Case</p>
                     </div>
                 </a>
@@ -31,7 +36,7 @@
                     </a>
                 </div>
                 <div class="action-container">
-                    <a class="action-link" href="{% url "default" %}">
+                    <a class="action-link" href="{% url "analytics:default" %}">
                         <div class="action-card" id="action-analytics">
                             <p class="action-title">Analytics</p>
                         </div>

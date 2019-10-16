@@ -48,6 +48,14 @@ schema_case = {
             "write": True,
         },
         {
+            "title": "Is Draft",
+            "key": "is_draft",
+            "widget": {
+                "template": "w-checkbox.html",
+            },
+            "write": True,
+        },
+        {
             "title": "Is Anonymous",
             "key": "is_anonymous",
             "hide_in_table": True,

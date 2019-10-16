@@ -1,0 +1,271 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load tags %}
+
+{% block title %}
+Advanced Search | UWA Pharmacy Case
+{% endblock %}
+
+{% block head %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/css/select2.min.css" rel="stylesheet" />
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+<style type="text/css">
+	@media only screen and (min-width: 1025px) {
+		.select2-container, .select2-selection__rendered, .select2-selection.select2-selection--multiple {
+			width: 215px;
+		}
+	}
+
+	@media only screen and (max-width: 1025px) {
+		.select2-container, .select2-selection__rendered, .select2-selection.select2-selection--multiple {
+			width: 100%;
+		}
+	}
+</style>
+{% endblock %}
+
+
+{% block body %}
+
+    <div class="row" id="row-container">
+        <div class="card col-3 mb-3 theme-container-border theme-container-bg case-side" id="details">
+            <form action="{% url 'cases:advsearch'%}" method="GET">
+                <div class="card-body">
+                    <h5 class="mb-2"><strong>Search</strong></h5>
+                    
+                    <label><strong>Keywords</strong></label>
+					<div class="mb-3">
+						<input type="text" class="form-control" name="key_words" id="kw_choice"  value="{{ key_words }}">
+                    </div>
+                    
+                    <div class="form-group">
+						<label><strong>Tags</strong></label>
+						<div>
+							<select class="form-control" data-width="fit" multiple name="tag_choice" id="select-group" >
+								{% for tag in tags %}
+									<option id="tag_choice{{ forloop.counter }}" value="{{tag}}"
+										{% if tag.name in tag_choices %}
+											selected
+										{% endif %}>{{tag.name}}</option>
+								{% endfor %}
+							</select>
+							<script>
+							$(document).ready(function () {
+								$("#select-group").select2();
+							});
+							</script>
+						</div>
+					</div>
+
+                    <div class="form-group">
+                        <label><strong>Medical History</strong></label>
+                        <div>
+                            <select class="form-control" data-width="fit" multiple name="mhx_choice" id="mhx-group">
+                                {% for m in mhxes %}
+                                    <option id="mhx_choice{{ forloop.counter }}" value="{{m}}"
+                                        {% if m in mhx_choices %}
+                                            selected
+                                        {% endif %}>{{m}}</option>
+                                {% endfor %}
+                            </select>
+                            <script>
+                                $(document).ready(function () {
+                                    $("#mhx-group").select2();
+                                });
+                            </script>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label><strong>Medications</strong></label>
+                        <div>
+                            <select class="form-control" data-width="fit" multiple name="medicine_choice" id="medicines-group">
+                                {% for m in medicines %}
+                                    <option id="medicine_choice{{ forloop.counter }}" value="{{m}}"
+                                        {% if m in medicine_choices %}
+                                            selected
+                                        {% endif %}>{{m}}</option>
+                                {% endfor %}
+                            </select>
+                            <script>
+                                $(document).ready(function () {
+                                    $("#medicines-group").select2();
+                                });
+                            </script>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label><strong>Others</strong></label>
+                        <div>
+                            <select class="form-control" data-width="fit" multiple name="other_choice" id="other-group">
+                                {% for o in others %}
+                                    <option id="other_choice{{ forloop.counter }}" value="{{o}}" 
+                                    {% if o in other_choices %}
+                                        selected
+                                    {% endif %}>{{o}}</option>
+                                {% endfor %}
+                            </select>
+                            <script>
+                                $(document).ready(function () {
+                                    $("#other-group").select2();
+                                });
+                            </script>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <strong> Date Submitted </strong> </br>
+                        
+                        <label for="start"> Start date: </label>
+                        <input onclick="maxTime()" class="form-control" type="date" id="start_time" name="before_date" value="{{ before_date }}"></input>
+                        
+                        <label class="mt-2" for="end"> End date: </label>
+                        <input onclick="maxTime(); endMinTime();" class="form-control" type="date" id="end_time" name="after_date" value="{{ after_date }}"></input>
+                    </div>
+
+                    <div class="form-group">
+                        <strong>Case Difficulty</strong> </br>
+                        
+                        <label for="min_score_inp">Minimum Score:</label>
+                        <input class="form-control mb-1" type="number" step="0.1" name="min_score" id="min_score_inp" value="{{ min_score }}"></input>
+                        
+                        <label for="max_score_inp">Maximum Score:</label>
+                        <input class="form-control" type="number" step="0.1" name="max_score" id="max_score_inp" value="{{ max_score }}"></input>
+                    </div>
+
+                    <div class="form-group">
+                        <strong>Patient Age (Years)</strong> </br>
+                        
+                        <label for="min_age_inp">Minimum Age:</label>
+                        <input class="form-control mb-1" type="number" name="min_age" id="min_age_inp" value="{{ min_age }}"></input>
+                        
+                        <label for="max_age_inp">Maximum Age:</label>
+                        <input class="form-control" type="number" name="max_age" id="max_age_inp" value="{{ max_age }}"></input>
+                    </div>
+
+                    <div class="form-group">
+                        <label><strong>Patient Sex</strong></label>
+                        <div>
+                            <select class="form-control" data-width="fit" name="sex_choice" id="sexes-group">
+                                <option disabled selected value> -- Select -- </option>
+                                {% for s in sexes %}
+                                <option id="sex_choice" value="{{s}}"
+                                    {% if s in sex_choices %}
+                                        selected
+                                    {% endif %}>{{s}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <strong>Patient Height <small>(cm)</small></strong> </br>
+                        
+                        <label for="min_height_inp">Minimum Height:</label>
+                        <input class="form-control mb-1" type="number" name="min_height" id="min_height_inp" value="{{ min_height }}"></input>
+                        
+                        <label for="max_height_inp">Maximum Height:</label>
+                        <input class="form-control" type="number" name="max_height" id="max_height_inp" value="{{ max_height }}"></input>
+                    </div>
+
+                    <div class="form-group">
+                        <strong>Patient Weight <small>(kg)</small></strong> </br>
+                        
+                        <label for="min_weight_inp">Minimum Weight:</label>
+                        <input class="form-control mb-1" type="number" step="0.1" name="min_weight" id="min_weight_inp" value="{{ min_weight }}"></input>
+                        
+                        <label for="max_weight_inp">Maximum Weight:</label>
+                        <input class="form-control" type="number" step="0.1" name="max_weight" id="max_weight_inp" value="{{ max_weight }}"></input>
+                    </div>
+
+                    <div class="form-group">
+                        <strong>Patient SCr <small>(μmol/L)</small></strong> </br>
+                        
+                        <label for="min_scr_inp">Minimum SCr:</label>
+                        <input class="form-control mb-1" type="number" step="0.1" name="min_scr" id="min_scr_inp" value="{{ min_scr }}"></input>
+                        
+                        <label for="max_scr_inp">Maximum SCr:</label>
+                        <input class="form-control" type="number" step="0.1" name="max_scr" id="max_scr_inp" value="{{ max_scr }}"></input>
+                    </div>
+
+                    <div class="form-group">
+                        <label><strong>Questions</strong></label>
+                        <div>
+                            <select class="form-control" data-width="fit" multiple name="question_choice" id="question-group">
+                                {% for q in questions %}
+                                    <option id="question_choice{{ forloop.counter }}" value="{{q}}" 
+                                    {% if q in question_choices %}
+                                        selected
+                                    {% endif %}>{{q}}</option>
+                                {% endfor %}
+                            </select>
+                            <script>
+                                $(document).ready(function () {
+                                    $("#question-group").select2();
+                                });
+                            </script>
+                        </div>
+                    </div>
+
+                    <div class="mb-1"> </br>
+                        <input type="checkbox" name="staff_choice" id="staff_choice1" value="staff_choice"
+                            {% if staff_choice %} checked {% endif %}>
+                        <label for="staff_choice1">Submitted by staff</label>
+                    </div>
+
+                </div>
+                <div class="card-body border-top">
+                    <a class="align-middle" href="{% url "cases:search" %}">Basic Search</a>
+                    <div class="float-right">
+                        <input type="submit" class="btn btn-primary btn-sm brand-green-bg brand-green-bg-hover" value="Submit">
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="case-content" id="main">
+            {% if cases %}
+            {% for case in cases %}
+            <div class="theme-container-border theme-container-bg theme-container-padding" id="main" style="margin:0 0 20px 0;">
+                <div>
+                    <a class="action-link text-decoration-none" href="{% url "cases:view-case" case_study_id=case.id %}">
+                        <h3 class="text-center"><strong>Case <span id="case_id">{{ case.id }}</span></strong></h5>
+                    </a>
+                    <div class="float-right">
+                        {% for tag in case.tags %}
+                        <span class="badge badge-secondary">{{ tag.tag.name }}</span>
+                        {% endfor %}
+                    </div>
+                    </br>
+                    <div class="card mt-2 mb-3 bg-light">
+                        <div class="card-body">
+                            {{ case.get_age_in_words|an|title }} {{ case.get_age_string }} {{ case.get_sex }}
+                            {{ case.get_optionals }}
+                            presents to your
+                            pharmacy {{ case.description }}
+                        </div>
+                    </div>
+                    <div class="float-left">
+                        <div>Avg Score: <span id="total_average">{{ case.average }}</span></div>
+                    </div>
+                    <div class="float-right" style="text-align: right">
+                        <div>Total Attempts: <span id="total_attempts">{{ case.attempts }}</span></div>
+                    </div> </br>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="theme-container-border theme-container-bg theme-container-padding">
+                <h5 class="text-center"><strong>No results found. Try broadening your search.</strong></h5>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/js/select2.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.15.4/dist/bootstrap-table.min.js"></script>
+    <script src="{% static "js/viewCase.js" %}"></script>
+    <script src="{% static "js/viewProfile.js" %}"></script>
+
+{% endblock %}
