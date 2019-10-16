@@ -37,7 +37,6 @@ def create_new_case(request, case_study_id):
     if request.method == "POST":
         # Fixes mutable error
         request.POST = request.POST.copy()
-        print(request.POST)
         # obtain forms with fields populated from POST request
         case_study_form = CaseStudyForm(request.POST, instance=case_study)
         # -- Medical history -- 
@@ -124,7 +123,6 @@ def create_new_case(request, case_study_id):
             if request.POST['age_type'] == 'Y':
                 request.POST['age'] = int(request.POST['age']) * 12
             if case_study_form.is_valid():
-                print("it is valid!!!!!")
                 case_study_form.is_submitted = False 
                 case_study_form = case_study_form.save(commit = False)
                 case_study_form.is_draft = False 
