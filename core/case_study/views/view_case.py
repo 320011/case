@@ -10,7 +10,7 @@ from ..models import Tag, TagRelationship, CaseStudy, MedicalHistory, Medication
 
 @login_required
 def view_case(request, case_study_id):
-    case_study = get_object_or_404(CaseStudy, pk=case_study_id)
+    case_study = get_object_or_404(CaseStudy, pk=case_study_id, case_state=CaseStudy.STATE_PUBLIC)
     mhx = MedicalHistory.objects.filter(case_study=case_study)
     medications = Medication.objects.filter(case_study=case_study)
     others = Other.objects.filter(case_study=case_study)
@@ -39,7 +39,7 @@ def view_case(request, case_study_id):
 
 @login_required
 def validate_answer(request, case_study_id):
-    case = get_object_or_404(CaseStudy, pk=case_study_id)
+    case = get_object_or_404(CaseStudy, pk=case_study_id, case_state=CaseStudy.STATE_PUBLIC)
     choice = request.GET.get('choice', None)
     success = False
     # Get message
@@ -77,7 +77,7 @@ def validate_answer(request, case_study_id):
 
 @login_required
 def submit_comment(request, case_study_id):
-    case = get_object_or_404(CaseStudy, pk=case_study_id)
+    case = get_object_or_404(CaseStudy, pk=case_study_id, case_state=CaseStudy.STATE_PUBLIC)
     body = request.GET.get('body', None)
     is_anon = request.GET.get('is_anon', None).capitalize()
     # Create comment
