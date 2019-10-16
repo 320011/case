@@ -35,10 +35,16 @@ def unsubmitted_cases(request):
     }
     return render(request, "unsubmitted_cases.html", c)
 
-# @login_required
-# def delete_unsubmitted_case(request, case_study_id):
-#     case_study = get_object_or_404(CaseStudy, pk=case_study_id)
-#     case_study.delete()
+@login_required
+def delete_unsubmitted_case(request):
+    case_id = request.GET.get('id', None)
+    case_study = get_object_or_404(CaseStudy, pk=case_id)
+    case_study.delete()
+    success = True if not case_study.id else False
+    data = {
+        'success': success
+    }
+    return JsonResponse(data)
 
 
 @login_required
