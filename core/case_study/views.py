@@ -29,7 +29,7 @@ def start_new_case(request):
 
 @login_required
 def unsubmitted_cases(request):
-    unsubmitted_cases = CaseStudy.objects.filter(created_by=request.user, is_submitted=False)
+    unsubmitted_cases = CaseStudy.objects.filter(created_by=request.user, is_draft=True)
     c = {
         "unsubmitted_cases": unsubmitted_cases
     }
