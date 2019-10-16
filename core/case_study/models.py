@@ -64,6 +64,7 @@ class CaseStudy(models.Model):
     date_created = models.DateTimeField(default=datetime.now)
     date_submitted = models.DateTimeField(null=True, blank=True)
     is_submitted = models.BooleanField(default=False)
+    is_draft = models.BooleanField(default=True)
     is_anonymous = models.BooleanField(default=True)
     date_last_edited = models.DateTimeField(null=True, blank=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name="created_by")
