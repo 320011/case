@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Create New Case | UWA Pharmacy Case
+{% endblock %}
+
+{% block body %}
+    <div class="action-list-container theme-container theme-contaienr-med">
+        <div class="alert alert-danger">
+          You currently have {{ unsubmitted_count }} unsubmitted case studies. Click <strong>Unsubmitted Cases</strong> to continue editing a previous case, or click <strong>Start New Case</strong> start a new one.
+        </div>
+        <div class="action-list theme-form">
+            <div class="action-container">
+                <a class="action-link" href="{% url "cases:unsubmitted-cases" %}">
+                    <div class="action-card" id="action-discover" style="background-color: #e6ac00;">
+                        <span class="notification-badge">
+                            {{ unsubmitted_count }}
+                        </span>
+                        <p class="action-title">Unsubmitted Cases</p>
+                    </div>
+                </a>
+            </div>
+            <div class="action-container">
+                <a class="action-link" id="create_new_case_button">
+                    <div class="action-card" id="action-create">
+                        {% if badge_count.cases > 0 %}
+                            <span class="notification-badge">
+                                {{ badge_count.cases }}
+                            </span>
+                        {% endif %}
+                        <p class="action-title">Start New Case</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <form method="post" id="create_new_case">
+        {% csrf_token %}
+        <input type="hidden" name="create_new_case" value="true">
+        <input class="d-none" type="submit">
+    </form>
+    <script>
+        document.getElementById("create_new_case_button").addEventListener("click", function() {
+          document.getElementById("create_new_case").submit();
+        }, false);
+    </script>
+{% endblock %}
