@@ -49,7 +49,7 @@ def delete_unsubmitted_case(request):
 @login_required
 def create_new_case(request, case_study_id):
     # returns object (case_study), and boolean specifying whether an object was created
-    case_study, created = CaseStudy.objects.get_or_create(pk=case_study_id)
+    case_study = get_object_or_404(CaseStudy, pk=case_study_id, case_state=CaseStudy.STATE_DRAFT, created_by=request.user)
     # case has been submitted or pending review so it cannot be accessed again
     if case_study.case_state != CaseStudy.STATE_DRAFT:
         return HttpResponseNotFound()
