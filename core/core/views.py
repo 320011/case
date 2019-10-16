@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 from django.http import HttpResponse
@@ -6,7 +7,7 @@ from django.shortcuts import render
 from case_admin.views.common import get_badge_counts
 from case_study.models import CaseStudy
 
-
+@login_required
 def index(request):
     unsubmitted_case_count = 0
     if request.user:
