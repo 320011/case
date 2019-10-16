@@ -364,7 +364,7 @@ def view_admin_case(request):
 
 @staff_required
 def view_admin_case_review(request):
-    data = populate_data(schema_case, CaseStudy.objects.filter(is_submitted=False))
+    data = populate_data(schema_case, CaseStudy.objects.filter(is_submitted=False, is_draft=False))
     c = {
         "title": "Review Case Studies",
         "model_name": "Case Study",

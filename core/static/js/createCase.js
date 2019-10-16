@@ -33,7 +33,7 @@ $('#save').click(function () {
 
 $('#submit_button').click(function () {
   $('#submission_type').val("submit");
-  $('#id_is_submitted').prop('value', true);
+  $('#id_is_submitted').prop('value', false);
   $('form').submit();
 });
 

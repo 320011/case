@@ -240,11 +240,11 @@ def delete_model(request, model, entity_id):
 
 def get_badge_counts():
     total = 0
-    new_user_count = User.objects.filter(is_active=False).count()
+    new_user_count = User.objects.filter(is_active=False, is_draft=False).count()
     total += new_user_count
-    new_case_count = CaseStudy.objects.filter(is_submitted=False).count()
+    new_case_count = CaseStudy.objects.filter(is_submitted=False, is_draft=False).count()
     total += new_case_count
-    new_comment_report_count = CommentReport.objects.filter(report_reviewed=False, report_author__is_report_silenced=False).count()
+    new_comment_report_count = CommentReport.objects.filter(report_reviewed=False, report_author__is_report_silenced=False, is_draft=False).count()
     total += new_comment_report_count
     return {
         "total": total,

@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponseNotFound
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
@@ -21,8 +21,10 @@ def start_new_case(request):
 def create_new_case(request, case_study_id):
     # returns object (case_study), and boolean specifying whether an object was created
     case_study, created = CaseStudy.objects.get_or_create(pk=case_study_id)
-    if (case_study.is_submitted):
-        return HttpResponseRedirect(reverse('cases:view-case', args=[case_study.id]))
+    # case has been submitted or pending review so it cannot be accessed again 
+    if (case_study.is_submitted or case_study.is_draft==False):
+        return HttpResponseNotFound()
+        # return HttpResponseRedirect(reverse('cases:view-case', args=[case_study.id]))
     relevant_tags = TagRelationship.objects.filter(case_study=case_study)  # return Tags for that case_study
     all_tags = Tag.objects.all()
     medical_histories = MedicalHistory.objects.filter(case_study=case_study)
@@ -35,6 +37,7 @@ def create_new_case(request, case_study_id):
     if request.method == "POST":
         # Fixes mutable error
         request.POST = request.POST.copy()
+        print(request.POST)
         # obtain forms with fields populated from POST request
         case_study_form = CaseStudyForm(request.POST, instance=case_study)
         # -- Medical history -- 
@@ -98,12 +101,12 @@ def create_new_case(request, case_study_id):
         if request.POST["submission_type"] == "save":
 
             # Checking for the type on submission, if years, store the value as months
-            if request.POST['age_type'] == 'Y':
+            if request.POST['age_type'] == 'Y' and request.POST['age'] != '':
                 request.POST['age'] = int(request.POST['age']) * 12
             if case_study_form.is_valid():
                 case_study_form.save()
                 # When page is re rendered, the value from the database is taken, so if years, render the correct value
-                if request.POST['age_type'] == 'Y':
+                if request.POST['age_type'] == 'Y' and request.POST['age'] != '':
                     request.POST['age'] = int(request.POST['age']) // 12
                 case_study_form = CaseStudyForm(request.POST, instance=case_study)
                 messages.success(request, 'Case Study saved!')
@@ -121,10 +124,12 @@ def create_new_case(request, case_study_id):
             if request.POST['age_type'] == 'Y':
                 request.POST['age'] = int(request.POST['age']) * 12
             if case_study_form.is_valid():
+                print("it is valid!!!!!")
+                case_study_form.is_submitted = False 
+                case_study_form = case_study_form.save(commit = False)
+                case_study_form.is_draft = False 
                 case_study_form.save()
-                case_study.date_submitted = timezone.now()
-                case_study.save()
-                messages.success(request, 'Case Study created!')
+                messages.success(request, 'Case study submitted for review!')
                 return HttpResponseRedirect(reverse('cases:view-case', args=[case_study.id]))
             else:
                 if request.POST['age_type'] == 'Y':
