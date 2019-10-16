@@ -6,36 +6,42 @@
 
 {% block body %}
     <div class="action-list-container theme-container theme-contaienr-med">
+        <div class="alert alert-info">
+          You currently have {{ unsubmitted_count }} unsubmitted case studies. To continue with those, click <strong>Unsubmitted Cases</strong>, otherwise continue with creating a new case.
+        </div>
         <div class="action-list theme-form">
             <div class="action-container">
                 <a class="action-link" href="{% url "case_admin:users" %}">
-                    <div class="action-card" id="action-admin-users">
-                        {% if badge_count.users > 0 %}
-                            <span class="notification-badge">
-                                {{ badge_count.users }}
-                            </span>
-                        {% endif %}
-                        <p class="action-title">Users</p>
+                    <div class="action-card" id="action-discover">
+                        <span class="notification-badge">
+                            {{ unsubmitted_count }}
+                        </span>
+                        <p class="action-title">Unsubmitted Cases</p>
                     </div>
                 </a>
             </div>
             <div class="action-container">
-                <a class="action-link" href="{% url "case_admin:cases" %}">
-                    <div class="action-card" id="action-admin-cases">
+                <a class="action-link" id="create_new_case_button">
+                    <div class="action-card" id="action-create">
                         {% if badge_count.cases > 0 %}
                             <span class="notification-badge">
                                 {{ badge_count.cases }}
                             </span>
                         {% endif %}
-                        <p class="action-title">Cases</p>
+                        <p class="action-title">Submit New Case</p>
                     </div>
                 </a>
             </div>
         </div>
     </div>
-    <form method="post">
-      {% csrf_token %}
-      <input type="hidden" name="create_new_case" value="true">
-      <input class="btn btn-primary" type="submit" value="POST">
+    <form method="post" id="create_new_case">
+        {% csrf_token %}
+        <input type="hidden" name="create_new_case" value="true">
+        <input class="d-none" type="submit">
     </form>
+    <script>
+        document.getElementById("create_new_case_button").addEventListener("click", function() {
+          document.getElementById("create_new_case").submit();
+        }, false);
+    </script>
 {% endblock %}
