@@ -25,7 +25,9 @@
     </a>
     <br>
     <br>
-    <div class="alert alert-info">All <strong>Unsubmitted</strong> cases created by you are shown here. To continue creating the case, click <strong>Edit</strong>, otherwise to remove the case, click <strong>Delete</strong>.</div>
+    <div class="alert alert-info">All <strong>Unsubmitted</strong> cases created by you are shown here. To continue
+      creating the case, click <strong>Edit</strong>, otherwise to remove the case, click <strong>Delete</strong>.
+    </div>
     <table
       data-toggle="table"
       data-search="true"
@@ -71,12 +73,14 @@
             {{ case.date_created }}
           </td>
           <td class="admin-entity-cell">
-            <a class="btn btn-sm btn-primary" href="{% url "cases:create-new-case" case.id %}" style="width: 100%; color: #FFF">
+            <a class="btn btn-sm btn-primary" href="{% url "cases:create-new-case" case.id %}"
+               style="width: 100%; color: #FFF">
               Edit
             </a>
           </td>
           <td class="admin-entity-cell">
-            <a class="btn btn-sm btn-danger" style="width: 100%; color: #FFF">
+            <a class="btn btn-sm btn-danger" style="width: 100%; color: #FFF"
+               onclick="return deleteCase('{{ case.id }}')">
               Delete
             </a>
           </td>
@@ -87,4 +91,25 @@
   </div>
   <script src="https://unpkg.com/bootstrap-table@1.15.4/dist/bootstrap-table.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/js/select2.min.js"></script>
+  <script>
+
+    function deleteCase(id) {
+      let confirmation = confirm(`You are about to permanently delete unsubmitted Case ${id}.\nAre you sure you want to proceed?`);
+      if (confirmation) {
+        $.ajax({
+          url: '/cases/api/v1/delete_unsubmitted_case/',
+          dataType: 'json',
+          data: {
+            'id': id
+          },
+          success: function (data) {
+            if (data.success){
+              alert("Case successfully deleted.");
+              window.location.reload(false);
+            }
+          }
+        });
+      }
+    }
+  </script>
 {% endblock %}
