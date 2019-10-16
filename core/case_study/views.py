@@ -15,9 +15,16 @@ from django.db.models import Q
 
 @login_required
 def start_new_case(request):
-    case = CaseStudy.objects.create(created_by=request.user)
-    return HttpResponseRedirect(
-        reverse("cases:create-new-case", kwargs={"case_study_id": case.id}))
+    unsubmitted_case_count = CaseStudy.objects.filter(created_by=request.user, is_submitted=False).count()
+    c = {
+        "unsubmitted_count" : unsubmitted_case_count
+    }
+    if unsubmitted_case_count == 0 or request.POST.get("create_new_case", False) == "true":
+        case = CaseStudy.objects.create(created_by=request.user)
+        return HttpResponseRedirect(
+            reverse("cases:create-new-case", kwargs={"case_study_id": case.id}))
+    else:
+        return render(request, "create_case_landing.html", c)
 
 
 @login_required
@@ -90,7 +97,7 @@ def create_new_case(request, case_study_id):
                               "case_study_tag_form": case_study_tag_form,
                               "medical_history_form": medical_history_form,
                               "medication_form": medication_form,
-                              "other_form": other_form,		
+                              "other_form": other_form,
                           })
             # if user adds other
         elif request.POST["submission_type"] == "other":
@@ -247,7 +254,7 @@ def view_case(request, case_study_id):
         "case": case_study,
         "mhx": mhx,
         "medications": medications,
-        "others" : others, 
+        "others" : others,
         "tags": tags,
         "comments": comments
     }
@@ -296,10 +303,10 @@ def submit_comment(request, case_study_id):
     body = request.GET.get('body', None)
     is_anon = request.GET.get('is_anon', None).capitalize()
     # Create comment 
-    if request.user.is_tutor: 
+    if request.user.is_tutor:
         comment = Comment.objects.create(comment=body, case_study=case, user=request.user, is_anon=False,
                                         comment_date=timezone.now())
-    else: 
+    else:
         comment = Comment.objects.create(comment=body, case_study=case, user=request.user, is_anon=is_anon,
                                         comment_date=timezone.now())
     data = {
@@ -339,7 +346,7 @@ def search(request):
             key_cases = key_cases.union(keyword_cases)
     else:
         keywords = ''
-    
+
     # Tags
     tag_cases = None
     tag_list=get.getlist('tag_choice')
@@ -398,7 +405,7 @@ def advsearch(request):
     # Keywords
     key_cases = None
     keywords = get.get("key_words")
-    if keywords is not None and len(keywords) !=0: 
+    if keywords is not None and len(keywords) !=0:
         key_cases = CaseStudy.objects.none()
         kw_list=keywords.split()
         for k in kw_list:
@@ -467,7 +474,7 @@ def advsearch(request):
                 filter_ids.append(case.id)
         other_cases = cases.filter(id__in=[item for item in filter_ids])
 
-    
+
     # Date submitted
     date_cases = None
     start_date = get.get("before_date")
@@ -475,7 +482,7 @@ def advsearch(request):
         date_cases = cases.filter(date_submitted__gte=start_date)
     else:
         start_date = 0
-    
+
     end_date = get.get("after_date")
     if end_date is not None and end_date is not '':
         # A day is added to make the selected end date inclusive
@@ -516,7 +523,7 @@ def advsearch(request):
             score_cases = score_cases.filter(id__in=[item for item in max_score_ids])
     else:
         max_score=''
-    
+
 
     # Age
     age_cases = None
@@ -546,7 +553,7 @@ def advsearch(request):
             sex_cases = cases.filter(sex='F')
         elif sex_choices[0] == 'Both':
             sex_cases = cases
-    
+
 
     # Height
     height_cases = None
@@ -565,7 +572,7 @@ def advsearch(request):
     else:
         max_height=''
 
-    
+
     # Weight
     weight_cases = None
     min_weight = get.get("min_weight")
@@ -583,7 +590,7 @@ def advsearch(request):
     else:
         max_weight=''
 
-    
+
     # SCr
     scr_cases = None
     min_scr = get.get("min_scr")
@@ -669,7 +676,7 @@ def advsearch(request):
         "medicines": distinct_medicines,
         "others": distinct_others,
         "questions": distinct_questions,
-    
+
         "get": get,
         "cases": cases,
 
