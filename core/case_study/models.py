@@ -60,17 +60,28 @@ class CaseStudy(models.Model):
         (ANSWER_C, "C"),
         (ANSWER_D, "D")
     ]
+    # Case State Choices
+    STATE_DRAFT = "D"
+    STATE_REVIEW = "R"
+    STATE_PUBLIC = "P"
+    STATE_CHOICES = [
+        (STATE_DRAFT, "D"),
+        (STATE_REVIEW, "R"),
+        (STATE_PUBLIC, "P"),
+    ]
     # Processing information and settings
-    date_created = models.DateTimeField(default=datetime.now)
-    date_submitted = models.DateTimeField(null=True, blank=True)
-    is_submitted = models.BooleanField(default=False)
-    is_draft = models.BooleanField(default=True)
-    is_anonymous = models.BooleanField(default=True)
-    date_last_edited = models.DateTimeField(null=True, blank=True)
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name="created_by")
-    last_edited_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,
-                                         related_name="last_edited_user")
-    is_deleted = models.BooleanField(default=False)
+    date_created = models.DateTimeField(default=datetime.now, null=False)
+    date_submitted = models.DateTimeField(null=True)
+    is_anonymous = models.BooleanField(default=True, null=False)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="created_by")
+    is_deleted = models.BooleanField(default=False, null=False)
+    case_state = models.CharField(
+        max_length=1,
+        choices=STATE_CHOICES,
+        default=STATE_DRAFT,
+        blank=False,
+        null=False
+    )
     # Case study fields
     height = models.IntegerField(null=True, blank=True)
     weight = models.FloatField(null=True, blank=True)
@@ -78,7 +89,8 @@ class CaseStudy(models.Model):
     age_type = models.CharField(
         max_length=1,
         choices=AGE_CHOICES,
-        default=YEARS
+        default=YEARS,
+        blank=True
     )
     age = models.IntegerField(null=True, blank=True)
     sex = models.CharField(
@@ -89,7 +101,7 @@ class CaseStudy(models.Model):
     )
     description = models.TextField(null=True, blank=True)
     # Case Study Question and Answer
-    question = models.ForeignKey(Question, on_delete=models.CASCADE, null=True, blank=True)
+    question = models.ForeignKey(Question, on_delete=models.SET_NULL, null=True, blank=True)
     answer_a = models.TextField(null=True, blank=True)
     answer_b = models.TextField(null=True, blank=True)
     answer_c = models.TextField(null=True, blank=True)
@@ -107,12 +119,18 @@ class CaseStudy(models.Model):
 
     def get_age_string(self):
         if self.age_type == 'Y':
-            return str(self.age // 12) + '-yo'
+            if self.age:
+                return str(self.age // 12) + '-yo'
+            else:
+                return ""
         return str(self.age) + '-mo'
 
     def get_age_in_words(self):
         if self.age_type == 'Y':
-            return num2words(self.age // 12)
+            if self.age:
+                return num2words(self.age // 12)
+            else:
+                return ""
         return num2words(self.age)
 
     def get_sex(self):

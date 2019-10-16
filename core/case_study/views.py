@@ -15,11 +15,11 @@ from django.db.models import Q
 
 @login_required
 def start_new_case(request):
-    unsubmitted_case_count = CaseStudy.objects.filter(created_by=request.user, is_submitted=False).count()
+    draft_case_count = CaseStudy.objects.filter(created_by=request.user, case_state=CaseStudy.STATE_DRAFT).count()
     c = {
-        "unsubmitted_count" : unsubmitted_case_count
+        "unsubmitted_count" : draft_case_count
     }
-    if unsubmitted_case_count == 0 or request.POST.get("create_new_case", False) == "true":
+    if draft_case_count == 0 or request.POST.get("create_new_case", False) == "true":
         case = CaseStudy.objects.create(created_by=request.user)
         return HttpResponseRedirect(
             reverse("cases:create-new-case", kwargs={"case_study_id": case.id}))
@@ -29,11 +29,12 @@ def start_new_case(request):
 
 @login_required
 def unsubmitted_cases(request):
-    unsubmitted_cases = CaseStudy.objects.filter(created_by=request.user, is_draft=True)
+    draft_cases = CaseStudy.objects.filter(created_by=request.user, case_state=CaseStudy.STATE_DRAFT)
     c = {
-        "unsubmitted_cases": unsubmitted_cases
+        "unsubmitted_cases": draft_cases
     }
-    return render(request, "unsubmitted_cases.html", c)
+    return render(request, "draft_cases.html", c)
+
 
 @login_required
 def delete_unsubmitted_case(request):
@@ -52,7 +53,7 @@ def create_new_case(request, case_study_id):
     # returns object (case_study), and boolean specifying whether an object was created
     case_study, created = CaseStudy.objects.get_or_create(pk=case_study_id)
     # case has been submitted or pending review so it cannot be accessed again 
-    if (case_study.is_submitted or case_study.is_draft==False):
+    if case_study.case_state != CaseStudy.STATE_DRAFT:
         return HttpResponseNotFound()
         # return HttpResponseRedirect(reverse('cases:view-case', args=[case_study.id]))
     relevant_tags = TagRelationship.objects.filter(case_study=case_study)  # return Tags for that case_study
@@ -119,7 +120,7 @@ def create_new_case(request, case_study_id):
         tag_list = request.POST.getlist("tag-list")
         # Create new ones 
         for tag in tag_list:
-            tag_object = get_object_or_404(Tag, pk=tag) 
+            tag_object = get_object_or_404(Tag, pk=tag)
             if TagRelationship.objects.filter(tag=tag_object, case_study=case_study).exists() == False:
                 TagRelationship.objects.create(tag=tag_object, case_study=case_study)
         relevant_tag_ids = TagRelationship.objects.filter(case_study=case_study).values_list("tag",flat=True)
@@ -128,7 +129,6 @@ def create_new_case(request, case_study_id):
             relevant_tags.append(relevant_tag)
 
         if request.POST["submission_type"] == "save":
-
             # Checking for the type on submission, if years, store the value as months
             if request.POST['age_type'] == 'Y' and request.POST['age'] != '':
                 request.POST['age'] = int(request.POST['age']) * 12
@@ -143,31 +143,39 @@ def create_new_case(request, case_study_id):
                               {
                                   "case_study_form": case_study_form,
                                   "relevant_tags": relevant_tags,
-                                  "all_tags": all_tags, 
+                                  "all_tags": all_tags,
                                   "medical_histories": medical_histories,
                                   "medications": medications,
                                   "others": others,
-                                  "case_study":case_study,
+                                  "case_study": case_study,
                               })
         elif request.POST["submission_type"] == "submit":
             if request.POST['age_type'] == 'Y':
-                request.POST['age'] = int(request.POST['age']) * 12
+                age_raw = request.POST['age']
+                if age_raw:
+                    request.POST['age'] = int(age_raw) * 12
+                else:
+                    request.POST['age'] = None
             if case_study_form.is_valid():
-                case_study_form.is_submitted = False 
-                case_study_form = case_study_form.save(commit = False)
-                case_study_form.is_draft = False 
+                case_study_form = case_study_form.save(commit=False)
+                case_study_form.case_state = CaseStudy.STATE_REVIEW
                 case_study_form.save()
-                messages.success(request, 'Case study submitted for review!')
-                return HttpResponseRedirect(reverse('cases:view-case', args=[case_study.id]))
+                messages.success(request, 'Case submitted for review. '
+                                          'An admin will review your case before it is made public.')
+                return HttpResponseRedirect(reverse('default'))
             else:
                 if request.POST['age_type'] == 'Y':
-                    request.POST['age'] = int(request.POST['age']) // 12
+                    age_raw = request.POST['age']
+                    if age_raw:
+                        request.POST['age'] = int(age_raw) // 12
+                    else:
+                        request.POST['age'] = None
                 case_study_form = CaseStudyForm(request.POST, instance=case_study)
                 return render(request, "create_new_case.html",
                               {
                                   "case_study_form": case_study_form,
                                   "relevant_tags": relevant_tags,
-                                  "all_tags": all_tags, 
+                                  "all_tags": all_tags,
                                   "medical_histories": medical_histories,
                                   "medications": medications,
                                   "others": others,
@@ -178,7 +186,7 @@ def create_new_case(request, case_study_id):
                           {
                               "case_study_form": case_study_form,
                               "relevant_tags": relevant_tags,
-                              "all_tags": all_tags, 
+                              "all_tags": all_tags,
                               "medical_histories": medical_histories,
                               "medications": medications,
                               "others": others,
@@ -190,12 +198,13 @@ def create_new_case(request, case_study_id):
                   {
                       "case_study_form": case_study_form,
                       "relevant_tags": relevant_tags,
-                      "all_tags": all_tags, 
+                      "all_tags": all_tags,
                       "medical_histories": medical_histories,
                       "medications": medications,
                       "others": others,
                       "case_study":case_study,
                   })
+
 
 @login_required
 def view_case(request, case_study_id):
@@ -224,6 +233,7 @@ def view_case(request, case_study_id):
         "comments": comments
     }
     return render(request, "view_case.html", c)
+
 
 @login_required
 def validate_answer(request, case_study_id):
@@ -262,6 +272,7 @@ def validate_answer(request, case_study_id):
     }
     return JsonResponse(data)
 
+
 @login_required
 def submit_comment(request, case_study_id):
     case = get_object_or_404(CaseStudy, pk=case_study_id)
@@ -270,10 +281,10 @@ def submit_comment(request, case_study_id):
     # Create comment 
     if request.user.is_tutor:
         comment = Comment.objects.create(comment=body, case_study=case, user=request.user, is_anon=False,
-                                        comment_date=timezone.now())
+                                         comment_date=timezone.now())
     else:
         comment = Comment.objects.create(comment=body, case_study=case, user=request.user, is_anon=is_anon,
-                                        comment_date=timezone.now())
+                                         comment_date=timezone.now())
     data = {
         'comment': {
             'body': body,
@@ -289,13 +300,10 @@ def submit_comment(request, case_study_id):
     return JsonResponse(data)
 
 
-
-
-
 @login_required
 def search(request):
     get = request.GET
-    cases = CaseStudy.objects.filter(is_submitted=True, is_deleted=False)
+    cases = CaseStudy.objects.filter(case_state=CaseStudy.STATE_PUBLIC)
 
     # Keywords
     key_cases = None
@@ -305,16 +313,16 @@ def search(request):
         kw_list=keywords.split()
         for k in kw_list:
             keyword_cases = cases.filter(Q(description__icontains=k) | Q(height__icontains=k) |
-                Q(weight__icontains=k) | Q(scr__icontains=k) | Q(age_type__icontains=k) |
-                Q(age__icontains=k) | Q(answer_a__icontains=k) | Q(answer_b__icontains=k) |
-                Q(answer_c__icontains=k) | Q(answer_d__icontains=k))
+                                         Q(weight__icontains=k) | Q(scr__icontains=k) | Q(age_type__icontains=k) |
+                                         Q(age__icontains=k) | Q(answer_a__icontains=k) | Q(answer_b__icontains=k) |
+                                         Q(answer_c__icontains=k) | Q(answer_d__icontains=k))
             key_cases = key_cases.union(keyword_cases)
     else:
         keywords = ''
 
     # Tags
     tag_cases = None
-    tag_list=get.getlist('tag_choice')
+    tag_list = get.getlist('tag_choice')
     if len(tag_list) != 0:
         filter_ids = []
         for case in cases:
@@ -331,7 +339,7 @@ def search(request):
     if get.get("staff_choice") is not None:
         anon_cases = cases.filter(created_by__is_staff=True)
 
-    #all tags
+    # all tags
     tags = Tag.objects.filter()
     sexes = CaseStudy.SEX_CHOICES
 
@@ -348,7 +356,7 @@ def search(request):
     c = {
         "tags": tags,
         "sexes": sexes,
-        "get":get,
+        "get": get,
 
         "cases": cases,
 
@@ -360,12 +368,10 @@ def search(request):
     return render(request,"search.html",c)
 
 
-
-
 @login_required
 def advsearch(request):
     get = request.GET
-    cases = CaseStudy.objects.filter(is_submitted=True, is_deleted=False)
+    cases = CaseStudy.objects.filter(case_state=CaseStudy.STATE_PUBLIC)
 
     # Keywords
     key_cases = None
@@ -375,9 +381,9 @@ def advsearch(request):
         kw_list=keywords.split()
         for k in kw_list:
             keyword_cases = cases.filter(Q(description__icontains=k) | Q(height__icontains=k) |
-                Q(weight__icontains=k) | Q(scr__icontains=k) | Q(age_type__icontains=k) |
-                Q(age__icontains=k) | Q(answer_a__icontains=k) | Q(answer_b__icontains=k) |
-                Q(answer_c__icontains=k) | Q(answer_d__icontains=k))
+                                         Q(weight__icontains=k) | Q(scr__icontains=k) | Q(age_type__icontains=k) |
+                                         Q(age__icontains=k) | Q(answer_a__icontains=k) | Q(answer_b__icontains=k) |
+                                         Q(answer_c__icontains=k) | Q(answer_d__icontains=k))
             key_cases = key_cases.union(keyword_cases)
     else:
         keywords = ''
@@ -439,7 +445,6 @@ def advsearch(request):
                 filter_ids.append(case.id)
         other_cases = cases.filter(id__in=[item for item in filter_ids])
 
-
     # Date submitted
     date_cases = None
     start_date = get.get("before_date")
@@ -459,7 +464,6 @@ def advsearch(request):
             date_cases = date_cases.filter(date_submitted__lte=end_inclusive)
     else:
         end_date = 0
-
 
     # Average score
     score_cases = None
@@ -489,7 +493,6 @@ def advsearch(request):
     else:
         max_score=''
 
-
     # Age
     age_cases = None
     min_age = get.get("min_age")
@@ -507,7 +510,6 @@ def advsearch(request):
     else:
         max_age=''
 
-
     # Sexes
     sex_cases = None
     sex_choices = get.getlist('sex_choice')
@@ -518,7 +520,6 @@ def advsearch(request):
             sex_cases = cases.filter(sex='F')
         elif sex_choices[0] == 'Both':
             sex_cases = cases
-
 
     # Height
     height_cases = None
@@ -555,7 +556,6 @@ def advsearch(request):
     else:
         max_weight=''
 
-
     # SCr
     scr_cases = None
     min_scr = get.get("min_scr")
@@ -571,8 +571,7 @@ def advsearch(request):
         else:
             scr_cases = scr_cases.filter(scr__lte=max_scr)
     else:
-        max_scr=''
-
+        max_scr = ''
 
     # Questions
     question_cases = None
@@ -585,12 +584,10 @@ def advsearch(request):
                 filter_ids.append(case.id)
         question_cases = cases.filter(id__in=[item for item in filter_ids])
 
-
     # Staff only
     anon_cases = None
     if get.get("staff_choice") is not None:
         anon_cases = cases.filter(created_by__is_staff=True)
-
 
     tags = Tag.objects.filter()
     sexes = ['Both', 'Male', 'Female']
@@ -621,7 +618,7 @@ def advsearch(request):
 
     # find the intersections of the filters that were used
     filters = [key_cases, tag_cases, mhx_cases, medicine_cases, other_cases, sex_cases, date_cases,
-                score_cases, age_cases, height_cases, weight_cases, scr_cases, question_cases, anon_cases]
+               score_cases, age_cases, height_cases, weight_cases, scr_cases, question_cases, anon_cases]
     for each_filter in filters:
         if each_filter is not None:
             cases = cases.intersection(each_filter)
