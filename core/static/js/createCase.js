@@ -27,9 +27,13 @@ $('#save').click(function () {
 });
 
 $('#submit_button').click(function () {
-  $('#submission_type').val("submit");
-  $('#id_is_submitted').prop('value', false);
-  $('form').submit();
+  if ($('#id_confirm_patient_anonymous').prop("checked")) {
+    $('#submission_type').val("submit");
+    $('#id_is_submitted').prop('value', false);
+    $('form').submit();
+  } else {
+    alert("Please confirm you have not entered any identifiable information")
+  }
 });
 
 

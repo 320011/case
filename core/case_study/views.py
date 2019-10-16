@@ -17,7 +17,7 @@ from django.db.models import Q
 def start_new_case(request):
     draft_case_count = CaseStudy.objects.filter(created_by=request.user, case_state=CaseStudy.STATE_DRAFT).count()
     c = {
-        "unsubmitted_count" : draft_case_count
+        "unsubmitted_count": draft_case_count
     }
     if draft_case_count == 0 or request.POST.get("create_new_case", False) == "true":
         case = CaseStudy.objects.create(created_by=request.user)
@@ -29,7 +29,7 @@ def start_new_case(request):
 
 @login_required
 def unsubmitted_cases(request):
-    draft_cases = CaseStudy.objects.filter(created_by=request.user, case_state=CaseStudy.STATE_DRAFT)
+    draft_cases = CaseStudy.objects.filter(created_by=request.user, case_state=CaseStudy.STATE_DRAFT).order_by("-date_created")
     c = {
         "unsubmitted_cases": draft_cases
     }
@@ -71,13 +71,13 @@ def create_new_case(request, case_study_id):
         # obtain forms with fields populated from POST request
         case_study_form = CaseStudyForm(request.POST, instance=case_study)
         # -- Medical history -- 
-        medical_histories = list(MedicalHistory.objects.filter(case_study=case_study).values_list("body",flat=True))
+        medical_histories = list(MedicalHistory.objects.filter(case_study=case_study).values_list("body", flat=True))
         medical_history_list = request.POST.getlist("medical-history-list")
         # Create new ones 
         for medical_history in medical_history_list:
             if medical_history not in medical_histories:
                 MedicalHistory.objects.create(body=medical_history, case_study=case_study)
-        medical_histories = list(MedicalHistory.objects.filter(case_study=case_study).values_list("body",flat=True))
+        medical_histories = list(MedicalHistory.objects.filter(case_study=case_study).values_list("body", flat=True))
         # Delete ones that are removed 
         for medical_history in medical_histories:
             if medical_history not in medical_history_list:
@@ -86,13 +86,13 @@ def create_new_case(request, case_study_id):
         medical_histories = MedicalHistory.objects.filter(case_study=case_study)
 
         # -- Medication -- 
-        medications = list(Medication.objects.filter(case_study=case_study).values_list("name",flat=True))
+        medications = list(Medication.objects.filter(case_study=case_study).values_list("name", flat=True))
         medication_list = request.POST.getlist("medication-list")
         # Create new ones 
         for medication in medication_list:
             if medication not in medications:
                 Medication.objects.create(name=medication, case_study=case_study)
-        medications = list(Medication.objects.filter(case_study=case_study).values_list("name",flat=True))
+        medications = list(Medication.objects.filter(case_study=case_study).values_list("name", flat=True))
         # Delete ones that are removed 
         for medication in medications:
             if medication not in medication_list:
@@ -101,13 +101,13 @@ def create_new_case(request, case_study_id):
         medications = Medication.objects.filter(case_study=case_study)
 
         # -- Other -- 
-        others = list(Other.objects.filter(case_study=case_study).values_list("other_body",flat=True))
+        others = list(Other.objects.filter(case_study=case_study).values_list("other_body", flat=True))
         other_list = request.POST.getlist("other-list")
         # Create new ones 
         for other in other_list:
             if other not in others:
                 Other.objects.create(other_body=other, case_study=case_study)
-        others = list(Other.objects.filter(case_study=case_study).values_list("other_body",flat=True))
+        others = list(Other.objects.filter(case_study=case_study).values_list("other_body", flat=True))
         # Delete ones that are removed 
         for other in others:
             if other not in other_list:
@@ -121,7 +121,7 @@ def create_new_case(request, case_study_id):
         # Create new ones 
         for tag in tag_list:
             tag_object = get_object_or_404(Tag, pk=tag)
-            if TagRelationship.objects.filter(tag=tag_object, case_study=case_study).exists() == False:
+            if not TagRelationship.objects.filter(tag=tag_object, case_study=case_study).exists():
                 TagRelationship.objects.create(tag=tag_object, case_study=case_study)
         relevant_tag_ids = TagRelationship.objects.filter(case_study=case_study).values_list("tag",flat=True)
         relevant_tags = []
