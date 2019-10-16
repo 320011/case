@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}
+  {{ title }} | UWA Pharmacy Case
+{% endblock %}
+
+{% block head %}
+  <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.4/dist/bootstrap-table.min.css">
+  <link href="https://unpkg.com/bootstrap-table@1.15.4/dist/extensions/sticky-header/bootstrap-table-sticky-header.css"
+        rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/css/select2.min.css" rel="stylesheet"/>
+{% endblock %}
+
+
+{% block body %}
+  {% if admin_message %}
+    <div class="alert {{ admin_message_type }} mt-3 mb-3">
+      <p style="margin: 0">{{ admin_message }}</p>
+    </div>
+  {% endif %}
+  <div class="theme-container" style="padding: 20px">
+    <a class="theme-btn" href="{% if back_url %}{{ back_url }}{% else %}{% url "cases:start-new-case" %}{% endif %}">
+      <i class="fa fa-angle-left"></i> Back
+    </a>
+    <br>
+    <br>
+    <div class="alert alert-info">All <strong>Unsubmitted</strong> cases created by you are shown here. To continue creating the case, click <strong>Edit</strong>, otherwise to remove the case, click <strong>Delete</strong>.</div>
+    <table
+      data-toggle="table"
+      data-search="true"
+      data-sortable="true"
+      data-show-export="true"
+      data-toolbar="#admin-table-toolbar"
+      class="table table-striped table-bordered table-sm">
+      <thead>
+      <tr>
+        <th data-sortable="true" scope="col" class="admin-table-header th-sm">
+          ID
+        </th>
+        <th data-sortable="true" scope="col" class="admin-table-header th-sm">
+          Age
+        </th>
+        <th data-sortable="true" scope="col" class="admin-table-header th-sm">
+          Sex
+        </th>
+        <th data-sortable="true" scope="col" class="admin-table-header th-sm">
+          Created At
+        </th>
+        <th data-sortable="true" scope="col" class="admin-table-header th-sm">
+          Edit
+        </th>
+        <th data-sortable="true" scope="col" class="admin-table-header th-sm">
+          Delete
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for case in unsubmitted_cases %}
+        <tr class="admin-entity-row" data-toggle="modal">
+          <td class="admin-entity-cell">
+            {{ case.id }}
+          </td>
+          <td class="admin-entity-cell">
+            {{ case.age }}
+          </td>
+          <td class="admin-entity-cell">
+            {{ case.sex }}
+          </td>
+          <td class="admin-entity-cell">
+            {{ case.date_created }}
+          </td>
+          <td class="admin-entity-cell">
+            <a class="btn btn-sm btn-primary" href="{% url "cases:create-new-case" case.id %}" style="width: 100%; color: #FFF">
+              Edit
+            </a>
+          </td>
+          <td class="admin-entity-cell">
+            <a class="btn btn-sm btn-danger" style="width: 100%; color: #FFF">
+              Delete
+            </a>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <script src="https://unpkg.com/bootstrap-table@1.15.4/dist/bootstrap-table.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/js/select2.min.js"></script>
+{% endblock %}
