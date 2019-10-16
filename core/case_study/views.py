@@ -28,6 +28,20 @@ def start_new_case(request):
 
 
 @login_required
+def unsubmitted_cases(request):
+    unsubmitted_cases = CaseStudy.objects.filter(created_by=request.user, is_submitted=False)
+    c = {
+        "unsubmitted_cases": unsubmitted_cases
+    }
+    return render(request, "unsubmitted_cases.html", c)
+
+# @login_required
+# def delete_unsubmitted_case(request, case_study_id):
+#     case_study = get_object_or_404(CaseStudy, pk=case_study_id)
+#     case_study.delete()
+
+
+@login_required
 def create_new_case(request, case_study_id):
     # returns object (case_study), and boolean specifying whether an object was created
     case_study, created = CaseStudy.objects.get_or_create(pk=case_study_id)
