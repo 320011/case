@@ -4,7 +4,7 @@ from django.http import HttpResponse, JsonResponse
 from case_study.models import Question, \
     Tag, CaseStudy, TagRelationship, \
     MedicalHistory, Medication, Other, Attempt, \
-    Comment, CommentVote, CommentReport
+    Comment, CommentReport
 from accounts.models import User
 from .forms import TagForm
 
@@ -76,10 +76,6 @@ def view_casestudy(request):
 
 def view_medication(request):
     return export_queryset_csv(Medication.objects.all(), "uwacase_medications.csv")
-
-
-def view_commentvote(request):
-    return export_queryset_csv(CommentVote.objects.all(), "uwacase_commentvotes.csv")
 
 
 def view_tagrelationship(request):

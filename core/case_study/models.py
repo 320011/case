@@ -197,7 +197,6 @@ class TagRelationship(models.Model):
         return "Tags {} as {}".format(str(self.case_study), str(self.tag))
 
 
-
 class MedicalHistory(models.Model):
     body = models.TextField(null=True, blank=True)
     case_study = models.ForeignKey(CaseStudy, on_delete=models.CASCADE)
@@ -217,6 +216,7 @@ class Medication(models.Model):
 class Other(models.Model):
     other_body = models.TextField(null=True, blank=True)
     case_study = models.ForeignKey(CaseStudy, on_delete=models.CASCADE)
+
     def __str__(self):
         return self.other_body
 
@@ -238,15 +238,6 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.comment
-
-
-class CommentVote(models.Model):
-    comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    
-    def get_vote_score(self, comment):
-        vote_object_count = CommentVote.objects.filter(comment=comment).count()
-        return vote_object_count
 
 
 class CommentReport(models.Model):
