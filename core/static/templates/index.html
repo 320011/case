@@ -13,6 +13,11 @@
             <div class="action-container">
                 <a class="action-link" href="{% url "cases:start-new-case" %}">
                     <div class="action-card" id="action-create">
+                        {% if badge_count_new_case > 0 %}
+                            <span class="notification-badge">
+                            {{ badge_count_new_case }}
+                        </span>
+                        {% endif %}
                         <p class="action-title">Submit New Case</p>
                     </div>
                 </a>

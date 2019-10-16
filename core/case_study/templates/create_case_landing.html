@@ -6,13 +6,13 @@
 
 {% block body %}
     <div class="action-list-container theme-container theme-contaienr-med">
-        <div class="alert alert-info">
-          You currently have {{ unsubmitted_count }} unsubmitted case studies. To continue with those, click <strong>Unsubmitted Cases</strong>, otherwise continue with creating a new case.
+        <div class="alert alert-danger">
+          You currently have {{ unsubmitted_count }} unsubmitted case studies. Click <strong>Unsubmitted Cases</strong> to continue editing a previous case, or click <strong>Start New Case</strong> start a new one.
         </div>
         <div class="action-list theme-form">
             <div class="action-container">
                 <a class="action-link" href="{% url "cases:unsubmitted-cases" %}">
-                    <div class="action-card" id="action-discover">
+                    <div class="action-card" id="action-discover" style="background-color: #e6ac00;">
                         <span class="notification-badge">
                             {{ unsubmitted_count }}
                         </span>
@@ -28,7 +28,7 @@
                                 {{ badge_count.cases }}
                             </span>
                         {% endif %}
-                        <p class="action-title">Submit New Case</p>
+                        <p class="action-title">Start New Case</p>
                     </div>
                 </a>
             </div>
