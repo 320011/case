@@ -191,8 +191,10 @@ def advsearch(request):
     if min_score is not None and min_score is not '':
         min_score_ids = []
         for case in cases:
-            if case.get_average_score() >= float(min_score):
-                min_score_ids.append(case.id)
+            avg = case.get_average_score()
+            if avg is not None:
+                if avg >= float(min_score):
+                    min_score_ids.append(case.id)
         score_cases = cases.filter(id__in=[item for item in min_score_ids])
     else:
         min_score=''
@@ -202,13 +204,17 @@ def advsearch(request):
         max_score_ids = []
         if min_score == '':
             for case in cases:
-                if case.get_average_score() <= float(max_score):
-                    max_score_ids.append(case.id)
+                avg = case.get_average_score()
+                if avg is not None:
+                    if avg <= float(max_score):
+                        max_score_ids.append(case.id)
             score_cases = cases.filter(id__in=[item for item in max_score_ids])
         else:
             for case in score_cases:
-                if case.get_average_score() <= float(max_score):
-                    max_score_ids.append(case.id)
+                avg = case.get_average_score()
+                if avg is not None:
+                    if avg <= float(max_score):
+                        max_score_ids.append(case.id)
             score_cases = score_cases.filter(id__in=[item for item in max_score_ids])
     else:
         max_score=''
