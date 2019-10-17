@@ -61,8 +61,14 @@ def search(request):
         if each_filter is not None:
             cases = cases.intersection(each_filter)
 
-    # attach respective tags to the case studies
+    # attach respective average score, total attempts, tags to the case studies
     for case in cases:
+        case.average = case.get_average_score()
+        if case.average is None: # no attempts made
+            case.average = 0
+        elif case.average % 1 == 0: # average is a whole number
+            case.average = int(case.average)
+        case.attempts = len(Attempt.objects.filter(case_study=case))
         case.tags = TagRelationship.objects.filter(case_study=case)
 
     c = {
