@@ -249,3 +249,14 @@ class CommentReport(models.Model):
     report_date = models.DateTimeField(null=False)
     reason = models.TextField(null=False, blank=False)
     report_reviewed = models.BooleanField(null=False, default=False)
+
+
+class Playlist(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    current_position = models.IntegerField(default=0)
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE, null=True)
+    case_list = models.TextField(null=True)
+    date_created = models.DateTimeField(default=datetime.now)
+
+    def __str__(self):
+        return self.playlist
