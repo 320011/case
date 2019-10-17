@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}
+  Playlists | UWA Pharmacy Case
+{% endblock %}
+
+{% block body %}
+  <div class="theme-container">
+    <div class="d-flex justify-content-between">
+      <h1 class="theme-header" style="text-align: left">
+        My Playlists
+      </h1>
+      <a href="#" class="btn btn-primary" style="margin-bottom: 15px"><i class="fa fa-fw fa-plus"></i> New Playlist</a>
+    </div>
+    {% if playlists %}
+      <div class="card mt-3">
+        <div class="card-body">
+
+        </div>
+      </div>
+    {% else %}
+      <div class="alert alert-info mt-3">
+        You have not created any playlists.
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}
