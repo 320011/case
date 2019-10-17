@@ -143,14 +143,6 @@ def view_profile(request):
     return render(request, "profile-cases.html", c)
 
 
-@login_required
-def view_profile_results(request):
-    c = {
-        "title": "Results | My Profile",
-    }
-    return render(request, "profile-results.html", c)
-
-
 def view_login(request):
     if request.method == "POST":
         form = LogInForm(data=request.POST)
