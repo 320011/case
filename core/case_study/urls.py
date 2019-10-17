@@ -1,6 +1,6 @@
 from django.urls import path
 
-from case_study.views import case_search, create_case, view_case
+from case_study.views import case_search, create_case, view_case, case_playlists
 
 app_name = "cases"
 
@@ -8,6 +8,8 @@ urlpatterns = [
     path("new/", create_case.start_new_case, name="start-new-case"),
     path("edit/<int:case_study_id>", create_case.create_new_case, name="create-new-case"),
     path("view/<int:case_study_id>/", view_case.view_case, name="view-case"),
+    path("playlists/", case_playlists.playlist_landing, name="playlist-landing"),
+    path("playlist/<int:playlist_id>/case/<int:case_study_id>", view_case.view_case, name="playlist-case"),
     path("search/", case_search.search, name="search"),
     path("search/advanced/", case_search.advsearch, name="advsearch"),
     path("drafts/", create_case.unsubmitted_cases, name="unsubmitted-cases"),
