@@ -69,7 +69,7 @@
         },
         success : function(resp) {
           if (resp.success) {
-            document.getElementById("score").innerText = resp.data.score;
+            document.getElementById("score").innerText = resp.data.score + "%";
             document.getElementById("attempts").innerText = resp.data.attempts;
           } else {
             alert(resp.message)
