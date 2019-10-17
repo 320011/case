@@ -16,7 +16,11 @@ def view_case(request, case_study_id):
     others = Other.objects.filter(case_study=case_study)
     tags = TagRelationship.objects.filter(case_study=case_study)
     total_average = case_study.get_average_score()
+    if total_average is not None and total_average % 1 == 0: # if average is a whole number
+            total_average = str(int(total_average)) + '%' # round the floating point
     user_average = case_study.get_average_score(user=request.user)
+    if user_average is not None and user_average % 1 == 0:
+            user_average = str(int(user_average)) + '%'
     user_attempts = Attempt.objects.filter(case_study=case_study, user=request.user).count()
     total_attempts = Attempt.objects.filter(case_study=case_study).count()
     comments = Comment.objects.filter(case_study=case_study_id, is_deleted=False).order_by("-comment_date")
