@@ -40,19 +40,17 @@ schema_case = {
             "write": True,
         },
         {
-            "title": "Is Submitted",
-            "key": "is_submitted",
+            "title": "State",
+            "type": "choices",
+            "key": "case_state",
             "widget": {
-                "template": "w-checkbox.html",
+                "template": "w-select.html",
             },
-            "write": True,
-        },
-        {
-            "title": "Is Draft",
-            "key": "is_draft",
-            "widget": {
-                "template": "w-checkbox.html",
-            },
+            "choices": [
+                ("D", "Draft"),
+                ("R", "Review"),
+                ("P", "Public")
+            ],
             "write": True,
         },
         {
@@ -70,28 +68,6 @@ schema_case = {
             "model": User,
             "allow_null": True,
             "key": "created_by",
-            "widget": {
-                "template": "w-select.html",
-            },
-            "write": True,
-        },
-        {
-            "title": "Date Last Edited",
-            "key": "date_last_edited",
-            "hide_in_table": True,
-            "value_format": "datetime-local",
-            "widget": {
-                "template": "w-datetime.html",
-            },
-            "write": True,
-        },
-        {
-            "title": "User Last Edited",
-            "type": "foreignkey",
-            "model": User,
-            "allow_null": True,
-            "key": "last_edited_user",
-            "hide_in_table": True,
             "widget": {
                 "template": "w-select.html",
             },
@@ -320,7 +296,7 @@ def case_action(request, case_id):
     body = json.loads(request.body)
     action = body["action"]
     if action == "APPROVE":
-        CaseStudy.objects.filter(pk=case_id).update(is_submitted=True)
+        CaseStudy.objects.filter(pk=case_id).update(case_state=CaseStudy.STATE_PUBLIC)
         return JsonResponse({
             "success": True,
             "message": "Approved case study"
@@ -357,7 +333,7 @@ def api_admin_case(request, case_id):
 @staff_required
 def view_admin_case(request):
     data = populate_data(schema_case, CaseStudy.objects.all())
-    new_case_count = CaseStudy.objects.filter(is_submitted=False).count()
+    new_case_count = CaseStudy.objects.filter(case_state=CaseStudy.STATE_REVIEW).count()
     c = {
         "title": "Case Study Admin",
         "model_name": "Case Study",
@@ -372,7 +348,7 @@ def view_admin_case(request):
 
 @staff_required
 def view_admin_case_review(request):
-    data = populate_data(schema_case, CaseStudy.objects.filter(is_submitted=False))
+    data = populate_data(schema_case, CaseStudy.objects.filter(case_state=CaseStudy.STATE_REVIEW))
     c = {
         "title": "Review Case Studies",
         "model_name": "Case Study",

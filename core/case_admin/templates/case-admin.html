@@ -98,6 +98,8 @@
                                                 <i class="fa fa-circle admin-check" style="color:rgba(1,1,1,0.2);"></i>
                                             {% endif %}
                                         </div>
+                                    {% elif field.type == "choices" %}
+                                        {{ field.value }}
                                     {% elif field.type == "foreignkey" %}
                                         {{ field.value }}
                                     {% elif field.type == "foreignkey-multiple" %}

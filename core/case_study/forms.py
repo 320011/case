@@ -24,7 +24,6 @@ class CaseStudyForm(ModelForm):
             "answer_d",
             "answer",
             "feedback",
-            "is_submitted",
             "is_anonymous",
             "confirm_patient_anonymous"
         ]

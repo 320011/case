@@ -48,12 +48,15 @@ def populate_data(schema, queryset):
             # handle choices fields
             elif d.get("type", "") == "choices":
                 opts = []
+                val_set = False
                 for c in d["choices"]:
                     opts.append({
                         "id": c[0],
                         "name": str(c[1]),
                         "selected": c[0] == d["value"],
                     })
+                    if not val_set and c[0] == d["value"]:
+                        d["value"] = c[1]
                 d["options"] = opts
             # handle foreign key fields
             elif d.get("type", "") == "foreignkey":
@@ -242,7 +245,7 @@ def get_badge_counts():
     total = 0
     new_user_count = User.objects.filter(is_active=False).count()
     total += new_user_count
-    new_case_count = CaseStudy.objects.filter(is_submitted=False).count()
+    new_case_count = CaseStudy.objects.filter(case_state=CaseStudy.STATE_REVIEW).count()
     total += new_case_count
     new_comment_report_count = CommentReport.objects.filter(report_reviewed=False, report_author__is_report_silenced=False).count()
     total += new_comment_report_count

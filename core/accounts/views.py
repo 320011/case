@@ -46,7 +46,7 @@ def view_profile(request):
     user = request.user
     attempts = Attempt.objects.filter(user=request.user).distinct().values('case_study').annotate(
         case_count=Count('case_study')).filter(case_count__gt=0).order_by('case_study')
-    cases = CaseStudy.objects.filter(id__in=[item['case_study'] for item in attempts])
+    cases = CaseStudy.objects.filter(id__in=[item['case_study'] for item in attempts], case_state=CaseStudy.STATE_PUBLIC)
 
     # extract all the tags related to user's submitted cases and also the user averages and user
     # attempts to calculate the overall score of the user
