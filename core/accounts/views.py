@@ -144,6 +144,8 @@ def view_profile(request):
 
 
 def view_login(request):
+    if request.user.is_authenticated: # if the user is logged in
+        return redirect('/') # redirect to home page
     if request.method == "POST":
         form = LogInForm(data=request.POST)
         if form.is_valid():
