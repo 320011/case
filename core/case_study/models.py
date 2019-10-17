@@ -235,7 +235,7 @@ class Comment(models.Model):
     is_anon = models.BooleanField(null=False, default=False)
     is_deleted = models.BooleanField(null=False, default=False)
     comment_date = models.DateTimeField(null=True)
-    comment_appropriate = models.BooleanField(default=True)
+    is_deleted = models.BooleanField(default=True)
 
     def __str__(self):
         return self.comment
@@ -250,6 +250,4 @@ class CommentReport(models.Model):
     report_date = models.DateTimeField(null=False)
     reason = models.TextField(null=False, blank=False)
     report_reviewed = models.BooleanField(null=False, default=False)
-    report_author_name = models.CharField(max_length=100, blank=True)
-    report_author_email = models.EmailField(max_length=250)
 

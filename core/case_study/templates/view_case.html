@@ -123,7 +123,7 @@
                         <div class="mb-3">All Comments</div>
                         <div id="comment-container">
                             {% for comment in comments %}
-                                {% if comment.comment_appropriate == True %}
+                                {% if comment.is_deleted == False %}
                                 {% if comment.user == request.user %}
                                     <div class="row justify-content-end">
                                         <div class="col-8 comment-container">
@@ -148,11 +148,10 @@
 
 
                                     <small class="float-right report" id= "{{comment.id}}"> 
-                                    <img src="{% static 'img/report_flag.png'%}" alt="report" width="20" height="20"  data-toggle="tooltip" title="Report" data-placement="top" ></small>
+                                    <img src="{% static 'img/report_flag.png'%}" alt="report" width="20" height="20"  data-toggle="tooltip" title="Report" data-placement="top"   ></small>
                                                 </div>
                                 
-                                    
-                                    <small class="float-right delete" id= "{{comment.id}}" ><img src="{% static 'img/report_delete.png'%}" width="20" height="20" data-toggle="tooltip" title="Delete" data-placement="bottom"></small> 
+                  <small class="float-right delete" id= "{{comment.id}}"><img src="{% static 'img/report_delete.png'%}" width="20" height="20" data-toggle="tooltip" title="Delete" data-placement="bottom" ></small> 
                                             
                             <p class="mb-1 ">{{ comment.comment }}</p>
 
@@ -219,9 +218,25 @@
     </div>
     </div>
     <br>
+<style>
+.report{
+    position: relative; 
+    bottom: 1px;
+    color: #FFF; 
+    cursor: pointer;
+}
+.delete{
+    position: relative; 
+    top: 7px;
+    color: #FFF; 
+    cursor: pointer;
+}
+</style>
+                  
     <script src="{% static "js/viewCase.js" %}"></script>
     <script src="{% static "js/report.js" %}"></script>
+
 <script>
-    var csrftoken = '{{ csrf_token }}';
+    var csrftoken = getCookie('csrftoken');
 </script>
 {% endblock %}
