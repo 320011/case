@@ -257,6 +257,3 @@ class Playlist(models.Model):
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE, null=True)
     case_list = models.TextField(null=True)
     date_created = models.DateTimeField(default=datetime.now)
-
-    def __str__(self):
-        return self.playlist
