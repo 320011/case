@@ -69,9 +69,9 @@ def view_profile(request):
         overall_score = 'N/A'
     else:
         overall_score = float("{0:.2f}".format(total_score/total_tries))
-    # better formats the overall_score
-    if overall_score % 1 == 0:
-        overall_score = int(overall_score)
+        if overall_score % 1 == 0: # if whole number
+            overall_score = int(overall_score) # round it
+        overall_score = str(overall_score) + '%'
 
     tag_filter, tag_score = "", 0
     # if the user filters the cases by tags or time, then the view needs to be updated
@@ -113,19 +113,28 @@ def view_profile(request):
         total_tag_tries = sum(tag_attempts)
         tag_score = float("{0:.2f}".format(total_tag_score/total_tag_tries))
         # better formats the tag_score
-        if tag_score % 1 == 0:
-            tag_score = int(tag_score)
+        if tag_score % 1 == 0: # if whole number
+            tag_score = int(tag_score) # round it
+        tag_score = str(tag_score) + '%'
 
 
     # all of these are calculated per case to be shown
     # total_average, user_average, user_attempts, total_attempts, tags = [], [], [], [], []
     for case in cases:
         case.total_average = case.get_average_score()
-        if case.total_average % 1 == 0: # if it is a whole number
-            case.total_average = int(case.total_average)
+        if case.total_average is not None:
+            if case.total_average % 1 == 0: # if it is a whole number
+                case.total_average = int(case.total_average) # round the floating point
+            case.total_average = str(case.total_average) + '%'
+        else:
+            case.total_average = 'N/A'
         case.user_average = case.get_average_score(user=request.user)
-        if case.user_average % 1 == 0: # if it is a whole number
-            case.user_average = int(case.user_average)
+        if case.user_average is not None:
+            if case.user_average % 1 == 0: # if it is a whole number
+                case.user_average = int(case.user_average)
+            case.user_average = str(case.user_average) + '%'
+        else:
+            case.user_average = 'N/A'
         case.user_attempts = len(Attempt.objects.filter(case_study=case, user=request.user))
         case.total_attempts = len(Attempt.objects.filter(case_study=case))
         case.tags = TagRelationship.objects.filter(case_study=case)

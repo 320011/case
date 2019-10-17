@@ -68,6 +68,8 @@ def search(request):
             if case.average % 1 == 0: # if average is a whole number
                 case.average = int(case.average) # round the floating point
             case.average = str(case.average) + '%'
+        else:
+            case.average = 'N/A'
         case.attempts = len(Attempt.objects.filter(case_study=case))
         case.tags = TagRelationship.objects.filter(case_study=case)
 
@@ -348,6 +350,8 @@ def advsearch(request):
             if case.average % 1 == 0: # if average is a whole number
                 case.average = int(case.average) # round the floating point
             case.average = str(case.average) + '%'
+        else:
+            case.average = 'N/A'
         case.attempts = len(Attempt.objects.filter(case_study=case))
         case.tags = TagRelationship.objects.filter(case_study=case)
 

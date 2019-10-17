@@ -20,11 +20,15 @@ def view_case(request, case_study_id):
         if total_average % 1 == 0: # if average is a whole number
             total_average = int(total_average) # round the floating point
         total_average = str(total_average) + '%'
+    else:
+        total_average = 'N/A'
     user_average = case_study.get_average_score(user=request.user)
     if user_average is not None:
         if user_average % 1 == 0:
             user_average = int(user_average)
         user_average = str(user_average) + '%'
+    else:
+        user_average = 'N/A'
     user_attempts = Attempt.objects.filter(case_study=case_study, user=request.user).count()
     total_attempts = Attempt.objects.filter(case_study=case_study).count()
     comments = Comment.objects.filter(case_study=case_study_id, is_deleted=False).order_by("-comment_date")

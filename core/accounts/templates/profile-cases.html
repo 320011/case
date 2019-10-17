@@ -22,9 +22,9 @@
                     {% if user.degree_commencement_year %} (Started {{ user.degree_commencement_year }}) {% endif %} </span></div>
                 <div><span id="user_email">{{ user.email }}</span></div>
                 </br>
-				<div>My overall score: <span id="overall_score">{{ overall_score }}%</span></div>
+				<div>My overall score: <span id="overall_score">{{ overall_score }}</span></div>
 				{% if tag_filter %}
-					<div>My score for {{ tag_filter }}: <span id="tag_score">{{ tag_score }}%</span></div>
+					<div>My score for {{ tag_filter }}: <span id="tag_score">{{ tag_score }}</span></div>
 				{% endif %}
             </div>
             <div class="card-body border-top">
@@ -78,8 +78,8 @@
                                 </div>
                             </div>
                             <div class="float-left">
-                                <div>Avg Score: <span id="total_average">{{ case.total_average }}%</span></div>
-                                <div>My Score: <span id="user_average">{{ case.user_average }}%</span></div>
+                                <div>Avg Score: <span id="total_average">{{ case.total_average }}</span></div>
+                                <div>My Score: <span id="user_average">{{ case.user_average }}</span></div>
                             </div>
                             <div class="float-right" style="text-align: right">
                                 <div>Total Attempts: <span id="total_attempts">{{ case.total_attempts }}</span></div>
