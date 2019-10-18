@@ -58,14 +58,14 @@
 
         <div class="case-content" id="main">
             {% if cases %}
-                {% for case, total_average, user_average, user_attempts, total_attempts, all_tags in cases %}
+                {% for case in cases %}
                     <div class="theme-container-border theme-container-bg theme-container-padding" id="main" style="margin:0 0 20px 0;">
                         <div>
                             <a class="action-link text-decoration-none" href="{% url "cases:view-case" case_study_id=case.id %}">
                                 <h3 class="text-center"><strong>Case <span id="case_id">{{ case.id }}</span></strong></h3>
                             </a>
                             <div class="float-right">
-                                {% for tag in all_tags %}
+                                {% for tag in case.tags %}
                                     <span class="badge badge-secondary">{{ tag.tag.name }}</span>
                                 {% endfor %}
                             </div>
@@ -78,12 +78,12 @@
                                 </div>
                             </div>
                             <div class="float-left">
-                                <div>Avg Score: <span id="total_average">{{ total_average }}</span></div>
-                                <div>My Score: <span id="user_average">{{ user_average }}</span></div>
+                                <div>Avg Score: <span id="total_average">{{ case.total_average }}</span></div>
+                                <div>My Score: <span id="user_average">{{ case.user_average }}</span></div>
                             </div>
                             <div class="float-right" style="text-align: right">
-                                <div>Total Attempts: <span id="total_attempts">{{ total_attempts }}</span></div>
-                                <div>My Attempts: <span id="user_attempts">{{ user_attempts }}</span></div>
+                                <div>Total Attempts: <span id="total_attempts">{{ case.total_attempts }}</span></div>
+                                <div>My Attempts: <span id="user_attempts">{{ case.user_attempts }}</span></div>
                             </div>
                             <br>
                             <br>

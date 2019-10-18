@@ -61,8 +61,16 @@ def search(request):
         if each_filter is not None:
             cases = cases.intersection(each_filter)
 
-    # attach respective tags to the case studies
+    # attach respective average score, total attempts, tags to the case studies
     for case in cases:
+        case.average = case.get_average_score()
+        if case.average is not None:
+            if case.average % 1 == 0: # if average is a whole number
+                case.average = int(case.average) # round the floating point
+            case.average = str(case.average) + '%'
+        else:
+            case.average = 'N/A'
+        case.attempts = len(Attempt.objects.filter(case_study=case))
         case.tags = TagRelationship.objects.filter(case_study=case)
 
     c = {
@@ -183,8 +191,10 @@ def advsearch(request):
     if min_score is not None and min_score is not '':
         min_score_ids = []
         for case in cases:
-            if case.get_average_score() >= float(min_score):
-                min_score_ids.append(case.id)
+            avg = case.get_average_score()
+            if avg is not None:
+                if avg >= float(min_score):
+                    min_score_ids.append(case.id)
         score_cases = cases.filter(id__in=[item for item in min_score_ids])
     else:
         min_score=''
@@ -194,13 +204,17 @@ def advsearch(request):
         max_score_ids = []
         if min_score == '':
             for case in cases:
-                if case.get_average_score() <= float(max_score):
-                    max_score_ids.append(case.id)
+                avg = case.get_average_score()
+                if avg is not None:
+                    if avg <= float(max_score):
+                        max_score_ids.append(case.id)
             score_cases = cases.filter(id__in=[item for item in max_score_ids])
         else:
             for case in score_cases:
-                if case.get_average_score() <= float(max_score):
-                    max_score_ids.append(case.id)
+                avg = case.get_average_score()
+                if avg is not None:
+                    if avg <= float(max_score):
+                        max_score_ids.append(case.id)
             score_cases = score_cases.filter(id__in=[item for item in max_score_ids])
     else:
         max_score=''
@@ -338,6 +352,12 @@ def advsearch(request):
     # attach respective average score, total attempts, tags to the case studies
     for case in cases:
         case.average = case.get_average_score()
+        if case.average is not None:
+            if case.average % 1 == 0: # if average is a whole number
+                case.average = int(case.average) # round the floating point
+            case.average = str(case.average) + '%'
+        else:
+            case.average = 'N/A'
         case.attempts = len(Attempt.objects.filter(case_study=case))
         case.tags = TagRelationship.objects.filter(case_study=case)
 

@@ -1,6 +1,7 @@
 from accounts.models import User
 from case_study.models import CaseStudy, Tag, Question, TagRelationship, MedicalHistory, Medication, Other
 from core.decorators import staff_required
+from datetime import datetime
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
@@ -296,7 +297,7 @@ def case_action(request, case_id):
     body = json.loads(request.body)
     action = body["action"]
     if action == "APPROVE":
-        CaseStudy.objects.filter(pk=case_id).update(case_state=CaseStudy.STATE_PUBLIC)
+        CaseStudy.objects.filter(pk=case_id).update(case_state=CaseStudy.STATE_PUBLIC, date_submitted=datetime.now())
         return JsonResponse({
             "success": True,
             "message": "Approved case study"
