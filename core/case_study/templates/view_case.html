@@ -62,11 +62,11 @@
                     <li>{{ medication }}</li>
                 {% endfor %}
             </ul>
-            Other:		
-            <ul style="display: inherit; list-style-type: inherit">		
-                {% for other in others %}		
-                    <li>{{ other }}</li>		
-                {% endfor %}		
+            Other:
+            <ul style="display: inherit; list-style-type: inherit">
+                {% for other in others %}
+                    <li>{{ other }}</li>
+                {% endfor %}
             </ul>
             Question:
             <div class="card mt-2 mb-3">
@@ -104,108 +104,106 @@
                                 <label for="comment-box">Add Comment</label>
                                 <textarea class="form-control" id="comment-box" rows="3" placeholder="Enter comment here"></textarea>
                             </div>
-                            
+
                             <div class="form-group form-check">
                                 {% if not request.user.is_tutor %}
-                                <input type="checkbox" class="form-check-input" id="is_anonymous_checkbox">
-                                <label class="form-check-label" for="is_anonymous_checkbox">
-                                    <small>Comment as anonymous</small>
-                                </label>
+                                    <input type="checkbox" class="form-check-input" id="is_anonymous_checkbox">
+                                    <label class="form-check-label" for="is_anonymous_checkbox">
+                                        <small>Comment as anonymous</small>
+                                    </label>
                                 {% endif %}
                                 <a class="theme-btn float-right" style="color: #FFF; cursor: pointer" id="submit_comment">Submit Comment</a>
                                 <br>
                             </div>
-                            
+
                         </form>
-                        
+
                         <br>
                         <hr>
                         <div class="mb-3">All Comments</div>
                         <div id="comment-container">
                             {% for comment in comments %}
                                 {% if comment.is_deleted == False %}
-                                {% if comment.user == request.user %}
-                                    <div class="row justify-content-end">
-                                        <div class="col-8 comment-container">
-                                            <div class="alert alert-primary" role="alert">
-                                                <div class="d-flex w-100 justify-content-between comment-content">
-                                                    <small class="text-muted">
-                                                        {% if comment.is_anon == True %}
-                                                            {{ comment.user }} (Anonymous)
-                                                        {% else %}
-                                                            {% if request.user.is_tutor %}
+                                    {% if comment.user == request.user %}
+                                        <div class="row justify-content-end">
+                                            <div class="col-8 comment-container">
+                                                <div class="alert alert-primary" role="alert">
+                                                    <div class="d-flex w-100 justify-content-between comment-content">
+                                                        <small class="text-muted">
+                                                            {% if comment.is_anon == True %}
+                                                                {{ comment.user }} (Anonymous)
+                                                            {% else %}
+                                                                {% if request.user.is_tutor %}
+                                                                    <a data-toggle="tooltip" title="Tutor"><i class="fa fa-fw fa-graduation-cap" data-toggle="tooltip"></i></a> {{ comment.user }}
+                                                                {% else %}
+                                                                    {{ comment.user }}
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        </small>
+
+
+                                                        <br class="comment-break d-none">
+
+                                                        <small class="text-muted" id="comment_date">{{ comment.comment_date }}</small>
+
+
+                                                        <small class="float-right report" id= "{{comment.id}}">
+                                                            <img src="{% static 'img/report_flag.png'%}" alt="report" width="20" height="20"  data-toggle="tooltip" title="Report" data-placement="top"   ></small>
+                                                    </div>
+
+                                                    <small class="float-right delete" id= "{{comment.id}}"><img src="{% static 'img/report_delete.png'%}" width="20" height="20" data-toggle="tooltip" title="Delete" data-placement="bottom" ></small>
+
+                                                    <p class="mb-1 ">{{ comment.comment }}</p>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    {% elif comment.user.is_tutor %}
+                                        <div class="row justify-content-start">
+                                            <div class="col-8 comment-container">
+                                                <div class="alert alert-info " role="alert">
+                                                    <div class="d-flex w-100 justify-content-between comment-content">
+                                                        <small class="text-muted">
                                                             <a data-toggle="tooltip" title="Tutor"><i class="fa fa-fw fa-graduation-cap" data-toggle="tooltip"></i></a> {{ comment.user }}
+                                                        </small>
+
+
+                                                        <br class="comment-break d-none">
+                                                        <small class="text-muted">{{ comment.comment_date }}</small>
+                                                    </div>
+
+                                                    <small class="float-right report" id= "{{comment.id}}" >
+                                                        <img src="{% static 'img/report_flag.png'%}" alt="report" width="20" height="20" data-toggle="tooltip" title="Report" data-placement="top"></small>
+
+                                                    <p class="mb-1">{{ comment.comment }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="row justify-content-start">
+                                            <div class="col-8 comment-container">
+                                                <div class="alert alert-secondary justify-content-start" role="alert">
+                                                    <div class="d-flex w-100 justify-content-between comment-content">
+                                                        <small class="text-muted">
+                                                            {% if comment.is_anon == True %}
+                                                                Anonymous
                                                             {% else %}
                                                                 {{ comment.user }}
                                                             {% endif %}
-                                                        {% endif %}
-                                                    </small>
-                                         
+                                                        </small>
 
-                                                    <br class="comment-break d-none">
-
-                                            <small class="text-muted" id="comment_date">{{ comment.comment_date }}</small>
-
-
-                                    <small class="float-right report" id= "{{comment.id}}"> 
-                                    <img src="{% static 'img/report_flag.png'%}" alt="report" width="20" height="20"  data-toggle="tooltip" title="Report" data-placement="top"   ></small>
+                                                        <br class="comment-break d-none">
+                                                        <small class="text-muted">{{ comment.comment_date }}</small>
+                                                    </div>
+                                                    <small class="float-right report" id= "{{comment.id}}" >
+                                                        <img src="{% static 'img/report_flag.png'%}" alt="report" width="20" height="20" data-toggle="tooltip" title="Report" data-placement="top"></small>
+                                                    <p class="mb-1">{{ comment.comment }}</p>
                                                 </div>
-                                
-                  <small class="float-right delete" id= "{{comment.id}}"><img src="{% static 'img/report_delete.png'%}" width="20" height="20" data-toggle="tooltip" title="Delete" data-placement="bottom" ></small> 
-                                            
-                            <p class="mb-1 ">{{ comment.comment }}</p>
-
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-                                {% elif comment.user.is_tutor %}
-                                    <div class="row justify-content-start">
-                                        <div class="col-8 comment-container">
-                                            <div class="alert alert-info " role="alert">
-                                                <div class="d-flex w-100 justify-content-between comment-content">
-                                                    <small class="text-muted">
-                                                            <a data-toggle="tooltip" title="Tutor"><i class="fa fa-fw fa-graduation-cap" data-toggle="tooltip"></i></a> {{ comment.user }}
-                                                    </small>
-                                             
-
-                                                    <br class="comment-break d-none">
-                                                    <small class="text-muted">{{ comment.comment_date }}</small>
-                                                </div>
-                                                                                      
-                              <small class="float-right report" id= "{{comment.id}}" > 
-                                <img src="{% static 'img/report_flag.png'%}" alt="report" width="20" height="20" data-toggle="tooltip" title="Report" data-placement="top"></small>
-
-                                                <p class="mb-1">{{ comment.comment }}</p>
                                             </div>
                                         </div>
-                                    </div>
-                                {% else %}
-                                    <div class="row justify-content-start">
-                                        <div class="col-8 comment-container">
-                                            <div class="alert alert-secondary justify-content-start" role="alert">
-                                                <div class="d-flex w-100 justify-content-between comment-content">
-                                                    <small class="text-muted">
-                                                        {% if comment.is_anon == True %}
-                                                            Anonymous
-                                                        {% else %}
-                                                            {{ comment.user }}
-                                                        {% endif %}
-                                                    </small>
-                                                  
-                                                    <br class="comment-break d-none">
-                                                    <small class="text-muted">{{ comment.comment_date }}</small>
-                                                </div>
-
-                            <small class="float-right report" id= "{{comment.id}}" > 
-                                    <img src="{% static 'img/report_flag.png'%}" alt="report" width="20" height="20" data-toggle="tooltip" title="Report" data-placement="top"></small>
-
-                                                <p class="mb-1">{{ comment.comment }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                {% endif %}
+                                    {% endif %}
 
                                 {% endif %}
                             {% endfor %}
@@ -218,25 +216,27 @@
     </div>
     </div>
     <br>
-<style>
-.report{
-    position: relative; 
-    bottom: 1px;
-    color: #FFF; 
-    cursor: pointer;
-}
-.delete{
-    position: relative; 
-    top: 7px;
-    color: #FFF; 
-    cursor: pointer;
-}
-</style>
-                  
+    <style>
+        .report{
+            position: relative;
+            bottom: 1px;
+            color: #FFF;
+            cursor: pointer;
+            filter: grayscale(100%);
+        }
+        .delete{
+            position: relative;
+            top: 7px;
+            color: #FFF;
+            cursor: pointer;
+            filter: grayscale(100%);
+        }
+    </style>
+
     <script src="{% static "js/viewCase.js" %}"></script>
     <script src="{% static "js/report.js" %}"></script>
 
-<script>
-    var csrftoken = getCookie('csrftoken');
-</script>
+    <script>
+        var csrftoken = getCookie('csrftoken');
+    </script>
 {% endblock %}

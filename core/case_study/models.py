@@ -235,7 +235,6 @@ class Comment(models.Model):
     is_anon = models.BooleanField(null=False, default=False)
     is_deleted = models.BooleanField(null=False, default=False)
     comment_date = models.DateTimeField(null=True)
-    is_deleted = models.BooleanField(default=True)
 
     def __str__(self):
         return self.comment

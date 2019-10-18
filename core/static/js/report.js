@@ -11,72 +11,44 @@ $.ajaxSetup({
 });
 
 $(".report").click(function(){
-	var reasons = window.prompt('What is the report reason?');
-	var success_message = "Thanks for your report!";
-	var failure_message = "You can't submit a report without reasons";
-
-	if(reasons != null && reasons != '') 
+    let reasons = prompt('Report reason');
+    if(reasons != null && reasons.trim() != "")
     {
-      var id = $(this).attr('id'); //get the id of the comment
-
-  	$.ajax({
-  		type: 'POST',
-  		url: '/cases/api/v1/submit_report/' + id + '/' ,
-      dataType: 'json',
-      data:{
-            'comment_id': id,
-            'report_reason': reasons
-          },
-
-    success: function(){
-      alert(success_message);
-
-      }
-
-  	});
-
-
+        let id = $(this).attr('id'); //get the id of the comment
+        $.ajax({
+            type: 'POST',
+            url: '/cases/api/v1/submit_report/' + id,
+            dataType: 'json',
+            data:{
+                'comment_id': id,
+                'report_reason': reasons
+            },
+            success: function(resp){
+                alert("Your report has been submitted and will be reviewed by staff");
+            }
+        });
+    } else {
+        alert("Please try again and enter a reason");
     }
-
-    if(reasons == null)
-    {
-    	return;
-    }
-
-    if(reasons == ''){
-    	alert(failure_message);
-    }
-
 });
 
 
-
 $(".delete").click(function(){
-  confirmation = window.confirm('Is it okay to delete this comment?');
-  success_message = "You have deleted a comment(softly).";
-
-  if(confirmation){
-      var id = $(this).attr('id'); //get the id of the comment\
-
-    $.ajax({
-      type: 'POST',
-      url: '/cases/api/v1/delete_comment/' + id + '/' ,
-      dataType: 'json',
-      data:{
-            'comment_id': id
-          },
-
-    success: function(){
-      alert(success_message);
-      }
-  });
-
-  if(!confirmation)
-  {
-    return;
-  }
-
-};
+    if(confirm('Are you sure you would like to delete this comment.\n\nIt will no longer appear to users but it will still be available in the admin until it is hard deleted.')){
+        let id = $(this).attr('id'); //get the id of the comment\
+        $.ajax({
+            type: 'POST',
+            url: '/cases/api/v1/delete_comment/' + id + '/' ,
+            dataType: 'json',
+            data:{
+                'comment_id': id
+            },
+            success: function(){
+                alert("The comment has been deleted.");
+                location.reload();
+            }
+        });
+    }
 });
 
 function getCookie(name) {

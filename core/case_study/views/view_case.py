@@ -135,8 +135,11 @@ def submit_report(request, comment_id):
 @login_required
 def delete_comment(request, comment_id):
     comment = get_object_or_404(Comment, pk=comment_id)
-    comment.id_deleted = True
+    comment.is_deleted = True
     comment.save()
-    data = {}
+    data = {
+        "success": True,
+        "message": "Comment successfully deleted"
+    }
 
     return JsonResponse(data)
