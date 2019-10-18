@@ -205,7 +205,9 @@ def api_admin_comment(request, comment_id):
 def view_admin_comment(request):
     if request.method == "GET":
         data = populate_data(schema_comment, Comment.objects.all())
-        comment_report_count = CommentReport.objects.filter(report_reviewed=False, report_author__is_report_silenced=False).count()
+        comment_report_count = CommentReport.objects.filter(report_reviewed=False,
+                                                            report_author__is_report_silenced=False,
+                                                            comment__is_deleted=False).count()
         c = {
             "title": "Comment Admin",
             "model_name": "Comment",
@@ -222,7 +224,9 @@ def view_admin_comment(request):
 @staff_required
 def view_admin_comment_review(request):
     if request.method == "GET":
-        data = populate_data(schema_comment_report, CommentReport.objects.filter(report_reviewed=False, report_author__is_report_silenced=False))
+        data = populate_data(schema_comment_report, CommentReport.objects.filter(report_reviewed=False,
+                                                                                 report_author__is_report_silenced=False,
+                                                                                 comment__is_deleted=False))
         c = {
             "title": "Comment Reports",
             "model_name": "Comment",

@@ -247,7 +247,9 @@ def get_badge_counts():
     total += new_user_count
     new_case_count = CaseStudy.objects.filter(case_state=CaseStudy.STATE_REVIEW).count()
     total += new_case_count
-    new_comment_report_count = CommentReport.objects.filter(report_reviewed=False, report_author__is_report_silenced=False).count()
+    new_comment_report_count = CommentReport.objects.filter(report_reviewed=False,
+                                                            report_author__is_report_silenced=False,
+                                                            comment__is_deleted=False).count()
     total += new_comment_report_count
     return {
         "total": total,
