@@ -35,6 +35,9 @@ AUTH_USER_MODEL = 'accounts.User'
 LOGIN_URL = '/user/login/'
 LOGIN_REDIRECT_URL = '/'
 
+
+
+
 # Application definition
 
 INSTALLED_APPS = [
