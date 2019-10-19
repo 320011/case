@@ -52,10 +52,10 @@
                       {#                      {% url "cases:playlist-case" playlist.id %}#}
                       <i class="fa fa-fw fa-play"></i>
                     </a>
-                    <a href="#" class="mx-2" style="color: inherit">
+                    <a class="mx-2" style="color: inherit; cursor: pointer" onclick="return refreshPlaylist({{ playlist.id }})">
                       <i class="fa fa-fw fa-refresh"></i>
                     </a>
-                    <a href="#" style="color: inherit">
+                    <a href="#" style="color: inherit; cursor: pointer" onclick="return deletePlaylist({{ playlist.id }})">
                       <i class="fa fa-fw fa-trash"></i>
                     </a>
                   </div>
@@ -103,11 +103,31 @@
       }
     });
 
+    function refreshPlaylist(id) {
+      let confirmation = confirm("You are about to refresh this playlist. This will re-randomise all cases in the playlist.\n\nAre you sure you want to proceed?\nThis action cannot be undone.");
+      if (confirmation) {
+        $.ajax({
+          type: "POST",
+          url: '/cases/api/v1/refresh_playlist/',
+          dataType: 'json',
+          data: {
+            'playlist_id': id
+          },
+          success: function (resp) {
+            if (resp.success) {
+              alert(resp.message);
+              window.location.reload(false);
+            }
+          }
+        });
+      }
+    }
+
 
     $('#create_playlist').click(function () {
       $.ajax({
         type: "POST",
-        url: "/cases/api/v1/new_playlist",
+        url: "/cases/api/v1/new_playlist/",
         data: {
           "tag_id": $("#id_field").val()
         },
@@ -116,7 +136,7 @@
             alert(resp.message);
             window.location.reload(false);
           } else {
-            alert("There was an error, please try again.");
+            alert(resp.message);
           }
         }
       });
