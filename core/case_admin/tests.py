@@ -8,12 +8,14 @@ from case_admin.views import tag
 # Create your tests here.
 class AdminTestCase(TestCase):
     def setUp(self):
-        Tag.objects.all().delete()
         Tag.objects.create(pk=1, name="test_tag")
-        CaseStudy.objects.all().delete()
         CaseStudy.objects.create(pk=1, case_state=CaseStudy.STATE_REVIEW)
-        User.objects.all().delete()
         User.objects.create(is_active=False)
+
+    def tearDown(self):
+        Tag.objects.all().delete()
+        CaseStudy.objects.all().delete()
+        User.objects.all().delete()
 
     def test_populate_data(self):
         data = populate_data(tag.schema_tag, Tag.objects.all())
