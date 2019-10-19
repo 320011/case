@@ -40,7 +40,8 @@
           <h5 class="mb-2 mt-3"><strong>Playlist</strong></h5>
           <div>
             {% if playlist.previous_case %}
-              <a href="{% url "cases:playlist-case" playlist.id playlist.previous_case %}" class="btn btn-sm btn-primary">
+              <a href="{% url "cases:playlist-case" playlist.id playlist.previous_case %}"
+                 class="btn btn-sm btn-primary">
                 Previous
               </a>
             {% endif %}
@@ -96,6 +97,9 @@
             <a class="list-group-item" onclick="handleClick(this);" id="C">C. {{ case.answer_c }}</a>
             <a class="list-group-item" onclick="handleClick(this);" id="D">D. {{ case.answer_d }}</a>
           </div>
+          {% if playlist.next_case %}
+            <a href="{% url "cases:playlist-case" playlist.id playlist.next_case %}" class="btn btn-primary">Next Case</a>
+          {% endif %}
           <a class="theme-btn float-right" style="color: #FFF; cursor: pointer" id="submit_response">
             {% if attempts.user_attempts == 0 %}Submit Response{% else %}Attempt Again{% endif %}</a>
         </div>
