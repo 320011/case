@@ -191,7 +191,7 @@ def api_admin_comment(request, comment_id):
     if request.method == "PATCH":
         return patch_model(request, Comment, schema_comment, comment_id)
     elif request.method == "DELETE":
-        return delete_model(request, comment_id)
+        return delete_model(request, Comment, comment_id)
     elif request.method == "PUT":  # use PUT for actions
         return comment_action(request, comment_id)
     else:
