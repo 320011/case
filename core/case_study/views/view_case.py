@@ -4,12 +4,12 @@ from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 
-from ..models import Tag, TagRelationship, CaseStudy, MedicalHistory, Medication, Attempt, Comment, Other, Question, CommentReport
+from ..models import Tag, TagRelationship, CaseStudy, MedicalHistory, Medication, Attempt, Comment, Other, Question, CommentReport, Playlist
 
 
 
 @login_required
-def view_case(request, case_study_id):
+def view_case(request, case_study_id, playlist_id = None):
     case_study = get_object_or_404(CaseStudy, pk=case_study_id, case_state=CaseStudy.STATE_PUBLIC)
     mhx = MedicalHistory.objects.filter(case_study=case_study)
     medications = Medication.objects.filter(case_study=case_study)
@@ -46,6 +46,13 @@ def view_case(request, case_study_id):
         "tags": tags,
         "comments": comments
     }
+    if playlist_id:
+        playlist = get_object_or_404(Playlist, pk=playlist_id)
+        if playlist.owner == request.user:
+            case_list = [int(case_id) for case_id in playlist.case_list.split(',')]
+            playlist.current_position = case_list.index(case_study_id)
+            playlist.save()
+            c["playlist"] = playlist
     return render(request, "view_case.html", c)
 
 

@@ -7,6 +7,38 @@
 {% endblock %}
 
 {% block head %}
+    <style>
+        @keyframes opacity-loop {
+            0% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .playlist-action-btn {
+            width: 40%;
+        }
+
+        .btn-flash {
+            animation: opacity-loop 1s ease-in-out infinite;
+        }
+
+        /* narrow */
+        @media only screen and (max-width: 410px) {
+            #attempt_again {
+                display: block;
+                margin-bottom: 10px;
+            }
+            #next_case {
+                display: inline-block;
+            }
+        }
+    </style>
 {% endblock %}
 
 {% block description %}
@@ -36,6 +68,28 @@
                         <span class="badge badge-secondary">{{ tag.tag }}</span>
                     {% endfor %}
                 </div>
+                {% if playlist %}
+                    <h5 class="mb-2 mt-3"><strong>Playlist</strong></h5>
+                    <div>
+                        {% if playlist.previous_case %}
+                            <a href="{% url "cases:playlist-case" playlist.id playlist.previous_case %}"
+                               class="btn btn-sm btn-primary playlist-action-btn">
+                                Previous
+                            </a>
+                        {% else %}
+                            <button disabled class="btn btn-sm btn-primary playlist-action-btn">Previous</button>
+                        {% endif %}
+                        {% if playlist.next_case %}
+                            <a href="{% url "cases:playlist-case" playlist.id playlist.next_case %}"
+                               class="btn btn-sm btn-primary playlist-action-btn">
+                                Next
+                            </a>
+                        {% else %}
+                            <button disabled class="btn btn-sm btn-primary playlist-action-btn">Next</button>
+                        {% endif %}
+                    </div>
+                {% endif %}
+
             </div>
         </div>
         <div class="theme-container-border theme-container-bg theme-container-padding case-content" id="main">
@@ -80,7 +134,8 @@
                         <a class="list-group-item" onclick="handleClick(this);" id="C">C. {{ case.answer_c }}</a>
                         <a class="list-group-item" onclick="handleClick(this);" id="D">D. {{ case.answer_d }}</a>
                     </div>
-                    <a class="theme-btn float-right" style="color: #FFF; cursor: pointer" id="submit_response">{% if attempts.user_attempts == 0 %}Submit Response{% else %}Attempt Again{% endif %}</a>
+                    <a class="theme-btn float-right" style="color: #FFF; cursor: pointer" id="submit_response">
+                        {% if attempts.user_attempts == 0 or playlist %}Submit Response{% else %}Attempt Again{% endif %}</a>
                 </div>
                 <div class="card-body pt-0" id="feedback">
                     <div class="alert mb-3" id="feedback_alert"></div>
@@ -88,9 +143,25 @@
                     <div class="card mt-2 mb-3 bg-light">
                         <div class="card-body" id="feedback_text"></div>
                     </div>
-                    <div class="float-right">
-                        <a class="theme-btn float-right" id="attempt_again" style="color: #FFF">Attempt Again</a>
-                    </div>
+                    {% if playlist.next_case %}
+                        <div class="float-left">
+                            <a class="btn btn-primary" id="attempt_again" style="color: #FFF; cursor: pointer">Attempt Again</a>
+                        </div>
+                        <div class="float-right">
+                            <a href="{% url "cases:playlist-case" playlist.id playlist.next_case %}"
+                               id="next_case"
+                               class="btn-flash btn btn-primary">Next Case in Playlist</a>
+                        </div>
+                    {% elif not playlist.next_case and playlist.previous_case %}
+                        <h1 class="theme-header">Playlist Complete</h1>
+                        <center>
+                            <a href="{% url "cases:playlist-landing" %}" class="btn btn-primary">Return to Playlists Home</a>
+                        </center>
+                    {% else %}
+                        <div class="float-right">
+                            <a class="theme-btn float-right" id="attempt_again" style="color: #FFF">Attempt Again</a>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
             <div class="{% if attempts.user_attempts == 0 %}d-none{% endif %}" id="discussion_container">
@@ -112,7 +183,8 @@
                                         <small>Comment as anonymous</small>
                                     </label>
                                 {% endif %}
-                                <a class="theme-btn float-right" style="color: #FFF; cursor: pointer" id="submit_comment">Submit Comment</a>
+                                <a class="theme-btn float-right" style="color: #FFF; cursor: pointer" id="submit_comment">Submit
+                                    Comment</a>
                                 <br>
                             </div>
 
@@ -134,7 +206,9 @@
                                                                 {{ comment.user }} (Anonymous)
                                                             {% else %}
                                                                 {% if request.user.is_tutor %}
-                                                                    <a data-toggle="tooltip" title="Tutor"><i class="fa fa-fw fa-graduation-cap" data-toggle="tooltip"></i></a> {{ comment.user }}
+                                                                    <a data-toggle="tooltip" title="Tutor"><i class="fa fa-fw fa-graduation-cap"
+                                                                                                              data-toggle="tooltip"></i></a>
+                                                                    {{ comment.user }}
                                                                 {% else %}
                                                                     {{ comment.user }}
                                                                 {% endif %}
@@ -147,11 +221,14 @@
                                                         <small class="text-muted" id="comment_date">{{ comment.comment_date }}</small>
 
 
-                                                        <small class="float-right report" id= "{{comment.id}}">
-                                                            <img src="{% static 'img/report_flag.png'%}" alt="report" width="20" height="20"  data-toggle="tooltip" title="Report" data-placement="top"   ></small>
+                                                        <small class="float-right report" id="{{ comment.id }}">
+                                                            <img src="{% static 'img/report_flag.png' %}" alt="report" width="20" height="20"
+                                                                 data-toggle="tooltip" title="Report" data-placement="top"></small>
                                                     </div>
 
-                                                    <small class="float-right delete" id= "{{comment.id}}"><img src="{% static 'img/report_delete.png'%}" width="20" height="20" data-toggle="tooltip" title="Delete" data-placement="bottom" ></small>
+                                                    <small class="float-right delete" id="{{ comment.id }}"><img
+                                                            src="{% static 'img/report_delete.png' %}" width="20" height="20" data-toggle="tooltip"
+                                                            title="Delete" data-placement="bottom"></small>
 
                                                     <p class="mb-1 ">{{ comment.comment }}</p>
 
@@ -166,7 +243,8 @@
                                                 <div class="alert alert-info " role="alert">
                                                     <div class="d-flex w-100 justify-content-between comment-content">
                                                         <small class="text-muted">
-                                                            <a data-toggle="tooltip" title="Tutor"><i class="fa fa-fw fa-graduation-cap" data-toggle="tooltip"></i></a> {{ comment.user }}
+                                                            <a data-toggle="tooltip" title="Tutor"><i class="fa fa-fw fa-graduation-cap"
+                                                                                                      data-toggle="tooltip"></i></a> {{ comment.user }}
                                                         </small>
 
 
@@ -174,8 +252,9 @@
                                                         <small class="text-muted">{{ comment.comment_date }}</small>
                                                     </div>
 
-                                                    <small class="float-right report" id= "{{comment.id}}" >
-                                                        <img src="{% static 'img/report_flag.png'%}" alt="report" width="20" height="20" data-toggle="tooltip" title="Report" data-placement="top"></small>
+                                                    <small class="float-right report" id="{{ comment.id }}">
+                                                        <img src="{% static 'img/report_flag.png' %}" alt="report" width="20" height="20"
+                                                             data-toggle="tooltip" title="Report" data-placement="top"></small>
 
                                                     <p class="mb-1">{{ comment.comment }}</p>
                                                 </div>
@@ -197,8 +276,9 @@
                                                         <br class="comment-break d-none">
                                                         <small class="text-muted">{{ comment.comment_date }}</small>
                                                     </div>
-                                                    <small class="float-right report" id= "{{comment.id}}" >
-                                                        <img src="{% static 'img/report_flag.png'%}" alt="report" width="20" height="20" data-toggle="tooltip" title="Report" data-placement="top"></small>
+                                                    <small class="float-right report" id="{{ comment.id }}">
+                                                        <img src="{% static 'img/report_flag.png' %}" alt="report" width="20" height="20"
+                                                             data-toggle="tooltip" title="Report" data-placement="top"></small>
                                                     <p class="mb-1">{{ comment.comment }}</p>
                                                 </div>
                                             </div>
@@ -217,14 +297,15 @@
     </div>
     <br>
     <style>
-        .report{
+        .report {
             position: relative;
             bottom: 1px;
             color: #FFF;
             cursor: pointer;
             filter: grayscale(100%);
         }
-        .delete{
+
+        .delete {
             position: relative;
             top: 7px;
             color: #FFF;
