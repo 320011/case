@@ -47,13 +47,16 @@
             {% for playlist in playlists %}
               <li class="list-group-item" style="color: #636363">
                 <div class="d-flex justify-content-between">
-                  <div>{% if playlist.tag %}{{ playlist.tag }}{% else %}All Tags{% endif %} Playlist</div>
+                  <a href="{% url "cases:playlist-case" playlist.id playlist.current_case %}"
+                     style="color: inherit; text-decoration: none">
+                    {% if playlist.tag %}{{ playlist.tag }}{% else %}All Tags{% endif %} Playlist</a>
                   <div class="d-flex">
-                    <a href="{% url "cases:playlist-case" playlist.id playlist.current_case  %}" style="color: inherit" data-toggle="tooltip" data-html="true" title="Resume">
+                    <a href="{% url "cases:playlist-case" playlist.id playlist.current_case %}" style="color: inherit"
+                       data-toggle="tooltip" data-html="true" title="Resume">
                       <i class="fa fa-fw fa-play"></i>
                     </a>
                     <a class="mx-2" style="color: inherit; cursor: pointer" data-toggle="tooltip" data-html="true"
-                       title="Refresh" onclick="return refreshPlaylist({{ playlist.id }})">
+                       title="Recreate" onclick="return refreshPlaylist({{ playlist.id }})">
                       <i class="fa fa-fw fa-refresh"></i>
                     </a>
                     <a href="#" style="color: inherit; cursor: pointer" data-toggle="tooltip" data-html="true"

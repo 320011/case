@@ -30,7 +30,7 @@ $.ajaxSetup({
 });
 
 function refreshPlaylist(id) {
-  let confirmation = confirm("You are about to refresh this playlist. This will re-randomise all cases in the playlist.\n\nAre you sure you want to proceed?\nThis action cannot be undone.");
+  let confirmation = confirm("You are about to refresh this playlist. This will re-randomise all cases in the playlist, and you will lose your current progress.\n\nAre you sure you want to proceed?\nThis action cannot be undone.");
   if (confirmation) {
     $.ajax({
       type: "POST",
