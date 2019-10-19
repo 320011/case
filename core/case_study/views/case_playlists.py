@@ -28,14 +28,14 @@ def create_new_playlist(request):
         case_list = list(
             CaseStudy.objects.filter(case_state=CaseStudy.STATE_PUBLIC, tagrelationship__tag=tag).values_list('id',
                                                                                                               flat=True))
-        if case_list:
+        if len(case_list) > 1:
             shuffle(case_list)
             case_string = ','.join(str(e) for e in case_list)
             new_playlist = Playlist.objects.create(owner=request.user, tag=tag, date_created=timezone.now(), case_list=case_string)
     else:
         tag = None
         case_list = list(CaseStudy.objects.filter(case_state=CaseStudy.STATE_PUBLIC).values_list('id', flat=True))
-        if case_list:
+        if len(case_list) > 1:
             shuffle(case_list)
             case_string = ','.join(str(e) for e in case_list)
             new_playlist = Playlist.objects.create(owner=request.user, tag=tag, date_created=timezone.now(), case_list=case_string)
@@ -54,20 +54,32 @@ def create_new_playlist(request):
 def refresh_playlist(request):
     playlist_id = request.POST.get('playlist_id', None)
     playlist = get_object_or_404(Playlist, pk=int(playlist_id))
-    if not playlist.case_list:
+    if playlist.tag:
+        case_list = list(
+            CaseStudy.objects.filter(case_state=CaseStudy.STATE_PUBLIC, tagrelationship__tag=playlist.tag).values_list('id',
+                                                                                                              flat=True))
+        if len(case_list) > 1:
+            shuffle(case_list)
+            case_string = ','.join(str(e) for e in case_list)
+            playlist.case_list = case_string
+            playlist.current_position = 0
+            playlist.save()
+    else:
+        case_list = list(CaseStudy.objects.filter(case_state=CaseStudy.STATE_PUBLIC).values_list('id', flat=True))
+        if len(case_list) > 1:
+            shuffle(case_list)
+            case_string = ','.join(str(e) for e in case_list)
+            playlist.case_list = case_string
+            playlist.current_position = 0
+            playlist.save()
+    if playlist.case_list:
         return JsonResponse({
-            "success": False,
-            "message": "Your playlist does not contain any cases. Please recreate your playlist."
+            "success": True,
+            "message": "Your playlist was successfully refreshed!"
         })
-    current_case_list = playlist.case_list.split(',')
-    shuffle(current_case_list)
-    new_case_list = ','.join(str(e) for e in current_case_list)
-    playlist.case_list = new_case_list
-    playlist.current_position = 0
-    playlist.save()
     return JsonResponse({
-        "success": True,
-        "message": "Your playlist was successfully refreshed!"
+        "success": False,
+        "message": "There are not enough cases to create a playlist for this tag."
     })
 
 

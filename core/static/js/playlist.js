@@ -43,6 +43,8 @@ function refreshPlaylist(id) {
         if (resp.success) {
           alert(resp.message);
           window.location.reload(false);
+        }else{
+          alert(resp.message)
         }
       }
     });
