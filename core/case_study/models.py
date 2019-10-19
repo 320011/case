@@ -262,4 +262,15 @@ class Playlist(models.Model):
         case_list = [int(case_id) for case_id in self.case_list.split(',')]
         return case_list[self.current_position]
 
+    def next_case(self):
+        case_list = [int(case_id) for case_id in self.case_list.split(',')]
+        if self.current_position + 1 >= len(case_list):
+            return None
+        return case_list[self.current_position + 1]
+
+    def previous_case(self):
+        case_list = [int(case_id) for case_id in self.case_list.split(',')]
+        if self.current_position - 1 < 0:
+            return None
+        return case_list[self.current_position - 1]
 
