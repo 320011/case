@@ -51,3 +51,15 @@ class CaseStudyTestCase(TestCase):
         second_case = CaseStudy.objects.get(pk=2)
         self.assertEquals(first_case.get_average_score(), 50.0)
         self.assertEquals(second_case.get_average_score(), 100.0)
+
+class PlaylistTestCase(TestCase):
+    def setUp(self):
+        User.objects.create(email="test@test.com")
+        Playlist.objects.create(current_position=0, case_list="3,5,7,1", owner_id=1)
+        Playlist.objects.create(current_position=3, case_list="8,5,7,4", owner_id=1)
+
+    def test_current_case(self):
+        first_playlist = Playlist.objects.get(pk=1)
+        second_playlist = Playlist.objects.get(pk=2)
+        self.assertEquals(first_playlist.current_case(), 3)
+        self.assertEquals(second_playlist.current_case(), 4)
