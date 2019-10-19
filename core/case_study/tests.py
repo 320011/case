@@ -4,7 +4,7 @@ from .models import *
 from accounts.models import User
 
 
-# Unit tests for case_study module.
+# Unit tests for CaseStudy model
 
 class CaseStudyTestCase(TestCase):
     def setUp(self):
@@ -52,6 +52,8 @@ class CaseStudyTestCase(TestCase):
         self.assertEquals(first_case.get_average_score(), 50.0)
         self.assertEquals(second_case.get_average_score(), 100.0)
 
+# Unit tests for Playlist model
+
 class PlaylistTestCase(TestCase):
     def setUp(self):
         User.objects.create(email="test@test.com")
@@ -63,3 +65,15 @@ class PlaylistTestCase(TestCase):
         second_playlist = Playlist.objects.get(pk=2)
         self.assertEquals(first_playlist.current_case(), 3)
         self.assertEquals(second_playlist.current_case(), 4)
+
+    def test_next_case(self):
+        first_playlist = Playlist.objects.get(pk=1)
+        second_playlist = Playlist.objects.get(pk=2)
+        self.assertEquals(first_playlist.next_case(), 5)
+        self.assertEquals(second_playlist.next_case(), None)
+
+    def test_previous_case(self):
+        first_playlist = Playlist.objects.get(pk=1)
+        second_playlist = Playlist.objects.get(pk=2)
+        self.assertEquals(first_playlist.previous_case(), None)
+        self.assertEquals(second_playlist.previous_case(), 7)
