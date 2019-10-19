@@ -22,13 +22,14 @@
             </div>
             <div class="modal-body">
               <div class="alert alert-info">
-                Please select a tag to create a playlist based on a specific tag, otherwise leave it empty for all cases.
+                Please select a tag to create a playlist based on a specific tag, otherwise leave it empty for all
+                cases.
               </div>
               {{ form.field }}
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Create Playlist</button>
+              <button type="button" class="btn btn-primary" id="create_playlist">Create Playlist</button>
             </div>
           </div>
         </div>
@@ -45,10 +46,10 @@
             {% for playlist in playlists %}
               <li class="list-group-item" style="color: #636363">
                 <div class="d-flex justify-content-between">
-                  <div>{{ playlist.tag }} Playlist</div>
+                  <div>{% if playlist.tag %}{{ playlist.tag }}{% else %}All Tags{% endif %} Playlist</div>
                   <div class="d-flex">
                     <a href="#" style="color: inherit">
-{#                      {% url "cases:playlist-case" playlist.id %}#}
+                      {#                      {% url "cases:playlist-case" playlist.id %}#}
                       <i class="fa fa-fw fa-play"></i>
                     </a>
                     <a href="#" class="mx-2" style="color: inherit">
@@ -70,28 +71,55 @@
       </div>
     {% endif %}
   </div>
-{#  <script>#}
-{#  $('#id_field').change(function() {#}
-{#    if($('#id_field').val()){#}
-{#      $.ajax({#}
-{#        type:"GET",#}
-{#        url : "/analytics/api/v1/tag_performance",#}
-{#        data : {#}
-{#          "tag_id" : $(this).val()#}
-{#        },#}
-{#        success : function(resp) {#}
-{#          if (resp.success) {#}
-{#            document.getElementById("score").innerText = resp.data.score + "%";#}
-{#            document.getElementById("attempts").innerText = resp.data.attempts;#}
-{#          } else {#}
-{#            alert(resp.message)#}
-{#          }#}
-{#        }#}
-{#      });#}
-{#    }else{#}
-{#      document.getElementById("score").innerText = "";#}
-{#      document.getElementById("attempts").innerText = "";#}
-{#    }#}
-{#  })#}
-{#  </script>#}
+  <script>
+    function csrfSafeMethod(method) {
+      // these HTTP methods do not require CSRF protection
+      return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        let cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          let cookie = cookies[i].trim();
+          // Does this cookie string begin with the name we want?
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
+    let csrftoken = getCookie('csrftoken');
+
+    $.ajaxSetup({
+      beforeSend: function (xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+          xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+      }
+    });
+
+
+    $('#create_playlist').click(function () {
+      $.ajax({
+        type: "POST",
+        url: "/cases/api/v1/new_playlist",
+        data: {
+          "tag_id": $("#id_field").val()
+        },
+        success: function (resp) {
+          if (resp.success) {
+            alert(resp.message);
+            window.location.reload(false);
+          } else {
+            alert("There was an error, please try again.");
+          }
+        }
+      });
+    })
+  </script>
 {% endblock %}
