@@ -250,3 +250,27 @@ class CommentReport(models.Model):
     reason = models.TextField(null=False, blank=False)
     report_reviewed = models.BooleanField(null=False, default=False)
 
+
+class Playlist(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    current_position = models.IntegerField(default=0)
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE, null=True)
+    case_list = models.TextField(null=True)
+    date_created = models.DateTimeField(default=datetime.now)
+
+    def current_case(self):
+        case_list = [int(case_id) for case_id in self.case_list.split(',')]
+        return case_list[self.current_position]
+
+    def next_case(self):
+        case_list = [int(case_id) for case_id in self.case_list.split(',')]
+        if self.current_position + 1 >= len(case_list):
+            return None
+        return case_list[self.current_position + 1]
+
+    def previous_case(self):
+        case_list = [int(case_id) for case_id in self.case_list.split(',')]
+        if self.current_position - 1 < 0:
+            return None
+        return case_list[self.current_position - 1]
+

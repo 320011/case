@@ -137,3 +137,12 @@ class OtherForm(ModelForm):
         super(OtherForm, self).__init__(*args, **kwargs)
         for fname, f in self.fields.items():
             f.widget.attrs["class"] = "form-control"
+
+
+class PlaylistTagForm(forms.Form):
+    field = forms.ModelChoiceField(queryset=Tag.objects.all().order_by('name'), empty_label="All Tags")
+
+    def __init__(self, *args, **kwargs):
+        super(PlaylistTagForm, self).__init__(*args, **kwargs)
+        for fname, f in self.fields.items():
+            f.widget.attrs["class"] = "form-control"

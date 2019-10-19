@@ -22,6 +22,13 @@
                     </div>
                 </a>
             </div>
+            <div class="action-container">
+                <a class="action-link" href="{% url "cases:playlist-landing" %}">
+                    <div class="action-card" id="action-playlist">
+                        <p class="action-title">Case Playlists</p>
+                    </div>
+                </a>
+            </div>
             {% if user.is_staff %}
                 <div class="action-container">
                     <a class="action-link" href="{% url "case_admin:default" %}">
