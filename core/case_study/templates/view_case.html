@@ -3,271 +3,321 @@
 {% load tags %}
 
 {% block title %}
-  Case {{ case.id }} | UWA Pharmacy Case
+    Case {{ case.id }} | UWA Pharmacy Case
 {% endblock %}
 
 {% block head %}
+    <style>
+        @keyframes opacity-loop {
+            0% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .playlist-action-btn {
+            width: 40%;
+        }
+
+        .btn-flash {
+            animation: opacity-loop 1s ease-in-out infinite;
+        }
+
+        /* narrow */
+        @media only screen and (max-width: 410px) {
+            #attempt_again {
+                display: block;
+                margin-bottom: 10px;
+            }
+            #next_case {
+                display: inline-block;
+            }
+        }
+    </style>
 {% endblock %}
 
 {% block description %}
 {% endblock %}
 
 {% block body %}
-  <div class="row" id="row-container">
-    <div class="theme-container-border theme-container-bg theme-container-padding case-side" id="details">
-      <div class="card-body">
-        <h5 class="mb-2"><strong>Details</strong></h5>
-        <div class="mb-3">
-          <div>Created: {{ case.date_created|date:"M d, Y" }}</div>
-          {% if user.is_tutor %}
-            <div>Created By: {{ case.created_by }}</div>
-          {% else %}
-            {% if not case.is_anonymous and case.created_by.is_tutor %}
-              <div>Created By: {{ case.created_by }}</div>
-            {% endif %}
-          {% endif %}
-        </div>
-        <div>Average Score: <span id="total_average">{{ attempts.total_average }}</span></div>
-        <div>My Score: <span id="user_average">{{ attempts.user_average }}</span></div>
-        <div>Total Attempts: <span id="total_attempts">{{ attempts.total_attempts }}</span></div>
-        <div>My Attempts: <span id="user_attempts">{{ attempts.user_attempts }}</span></div>
-        <div>
-          {% for tag in tags %}
-            <span class="badge badge-secondary">{{ tag.tag }}</span>
-          {% endfor %}
-        </div>
-        {% if playlist %}
-          <h5 class="mb-2 mt-3"><strong>Playlist</strong></h5>
-          <div>
-            {% if playlist.previous_case %}
-              <a href="{% url "cases:playlist-case" playlist.id playlist.previous_case %}"
-                 class="btn btn-sm btn-primary">
-                Previous
-              </a>
-            {% endif %}
-            {% if playlist.next_case %}
-              <a href="{% url "cases:playlist-case" playlist.id playlist.next_case %}" class="btn btn-sm btn-primary">
-                Next
-              </a>
-            {% endif %}
-          </div>
-        {% endif %}
-
-      </div>
-    </div>
-    <div class="theme-container-border theme-container-bg theme-container-padding case-content" id="main">
-      <div>
-        <h1 class="theme-header">Case <span id="case_id">{{ case.id }}</span></h1>
-        Description:
-        <div class="card mt-2 mb-3 bg-light">
-          <div class="card-body">
-            {{ case.get_age_in_words|an|title }} {{ case.get_age_string }} {{ case.get_sex }} {{ case.get_optionals }}
-            presents to your
-            pharmacy {{ case.description }}
-          </div>
-        </div>
-      </div>
-      Medical History:
-      <ul style="display: inherit; list-style-type: inherit">
-        {% for history in mhx %}
-          <li>{{ history }}</li>
-        {% endfor %}
-      </ul>
-      Medication:
-      <ul style="display: inherit; list-style-type: inherit">
-        {% for medication in medications %}
-          <li>{{ medication }}</li>
-        {% endfor %}
-      </ul>
-      Other:
-      <ul style="display: inherit; list-style-type: inherit">
-        {% for other in others %}
-          <li>{{ other }}</li>
-        {% endfor %}
-      </ul>
-      Question:
-      <div class="card mt-2 mb-3">
-        <div class="card-body">
-          <div><strong>{{ case.question }}</strong></div>
-        </div>
-        <div class="card-body pt-0" id="questions">
-          <div class="list-group mb-3" id="list-tab" role="tablist">
-            <a class="list-group-item" onclick="handleClick(this);" id="A" disabled>A. {{ case.answer_a }}</a>
-            <a class="list-group-item" onclick="handleClick(this);" id="B">B. {{ case.answer_b }}</a>
-            <a class="list-group-item" onclick="handleClick(this);" id="C">C. {{ case.answer_c }}</a>
-            <a class="list-group-item" onclick="handleClick(this);" id="D">D. {{ case.answer_d }}</a>
-          </div>
-          {% if playlist.next_case %}
-            <a href="{% url "cases:playlist-case" playlist.id playlist.next_case %}" class="btn btn-primary">Next Case</a>
-          {% endif %}
-          <a class="theme-btn float-right" style="color: #FFF; cursor: pointer" id="submit_response">
-            {% if attempts.user_attempts == 0 %}Submit Response{% else %}Attempt Again{% endif %}</a>
-        </div>
-        <div class="card-body pt-0" id="feedback">
-          <div class="alert mb-3" id="feedback_alert"></div>
-          Feedback:
-          <div class="card mt-2 mb-3 bg-light">
-            <div class="card-body" id="feedback_text"></div>
-          </div>
-          <div class="float-right">
-            <a class="theme-btn float-right" id="attempt_again" style="color: #FFF">Attempt Again</a>
-          </div>
-        </div>
-      </div>
-      <div class="{% if attempts.user_attempts == 0 %}d-none{% endif %}" id="discussion_container">
-        <div class="alert alert-info text-center" id="show_discussion" style="cursor: pointer">
-          <strong id="show_hide">Show Discussion</strong>
-        </div>
-        <div class="card mt-2 mb-3" id="discussion">
-          <div class="card-body">
-            <form>
-              <div class="form-group">
-                <label for="comment-box">Add Comment</label>
-                <textarea class="form-control" id="comment-box" rows="3" placeholder="Enter comment here"></textarea>
-              </div>
-
-              <div class="form-group form-check">
-                {% if not request.user.is_tutor %}
-                  <input type="checkbox" class="form-check-input" id="is_anonymous_checkbox">
-                  <label class="form-check-label" for="is_anonymous_checkbox">
-                    <small>Comment as anonymous</small>
-                  </label>
+    <div class="row" id="row-container">
+        <div class="theme-container-border theme-container-bg theme-container-padding case-side" id="details">
+            <div class="card-body">
+                <h5 class="mb-2"><strong>Details</strong></h5>
+                <div class="mb-3">
+                    <div>Created: {{ case.date_created|date:"M d, Y" }}</div>
+                    {% if user.is_tutor %}
+                        <div>Created By: {{ case.created_by }}</div>
+                    {% else %}
+                        {% if not case.is_anonymous and case.created_by.is_tutor %}
+                            <div>Created By: {{ case.created_by }}</div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+                <div>Average Score: <span id="total_average">{{ attempts.total_average }}</span></div>
+                <div>My Score: <span id="user_average">{{ attempts.user_average }}</span></div>
+                <div>Total Attempts: <span id="total_attempts">{{ attempts.total_attempts }}</span></div>
+                <div>My Attempts: <span id="user_attempts">{{ attempts.user_attempts }}</span></div>
+                <div>
+                    {% for tag in tags %}
+                        <span class="badge badge-secondary">{{ tag.tag }}</span>
+                    {% endfor %}
+                </div>
+                {% if playlist %}
+                    <h5 class="mb-2 mt-3"><strong>Playlist</strong></h5>
+                    <div>
+                        {% if playlist.previous_case %}
+                            <a href="{% url "cases:playlist-case" playlist.id playlist.previous_case %}"
+                               class="btn btn-sm btn-primary playlist-action-btn">
+                                Previous
+                            </a>
+                        {% else %}
+                            <button disabled class="btn btn-sm btn-primary playlist-action-btn">Previous</button>
+                        {% endif %}
+                        {% if playlist.next_case %}
+                            <a href="{% url "cases:playlist-case" playlist.id playlist.next_case %}"
+                               class="btn btn-sm btn-primary playlist-action-btn">
+                                Next
+                            </a>
+                        {% else %}
+                            <button disabled class="btn btn-sm btn-primary playlist-action-btn">Next</button>
+                        {% endif %}
+                    </div>
                 {% endif %}
-                <a class="theme-btn float-right" style="color: #FFF; cursor: pointer" id="submit_comment">Submit
-                  Comment</a>
-                <br>
-              </div>
 
-            </form>
-
-            <br>
-            <hr>
-            <div class="mb-3">All Comments</div>
-            <div id="comment-container">
-              {% for comment in comments %}
-                {% if comment.is_deleted == False %}
-                  {% if comment.user == request.user %}
-                    <div class="row justify-content-end">
-                      <div class="col-8 comment-container">
-                        <div class="alert alert-primary" role="alert">
-                          <div class="d-flex w-100 justify-content-between comment-content">
-                            <small class="text-muted">
-                              {% if comment.is_anon == True %}
-                                {{ comment.user }} (Anonymous)
-                              {% else %}
-                                {% if request.user.is_tutor %}
-                                  <a data-toggle="tooltip" title="Tutor"><i class="fa fa-fw fa-graduation-cap"
-                                                                            data-toggle="tooltip"></i></a>
-                                  {{ comment.user }}
-                                {% else %}
-                                  {{ comment.user }}
-                                {% endif %}
-                              {% endif %}
-                            </small>
-
-
-                            <br class="comment-break d-none">
-
-                            <small class="text-muted" id="comment_date">{{ comment.comment_date }}</small>
-
-
-                            <small class="float-right report" id="{{ comment.id }}">
-                              <img src="{% static 'img/report_flag.png' %}" alt="report" width="20" height="20"
-                                   data-toggle="tooltip" title="Report" data-placement="top"></small>
-                          </div>
-
-                          <small class="float-right delete" id="{{ comment.id }}"><img
-                            src="{% static 'img/report_delete.png' %}" width="20" height="20" data-toggle="tooltip"
-                            title="Delete" data-placement="bottom"></small>
-
-                          <p class="mb-1 ">{{ comment.comment }}</p>
-
-                        </div>
-
-                      </div>
-
-                    </div>
-                  {% elif comment.user.is_tutor %}
-                    <div class="row justify-content-start">
-                      <div class="col-8 comment-container">
-                        <div class="alert alert-info " role="alert">
-                          <div class="d-flex w-100 justify-content-between comment-content">
-                            <small class="text-muted">
-                              <a data-toggle="tooltip" title="Tutor"><i class="fa fa-fw fa-graduation-cap"
-                                                                        data-toggle="tooltip"></i></a> {{ comment.user }}
-                            </small>
-
-
-                            <br class="comment-break d-none">
-                            <small class="text-muted">{{ comment.comment_date }}</small>
-                          </div>
-
-                          <small class="float-right report" id="{{ comment.id }}">
-                            <img src="{% static 'img/report_flag.png' %}" alt="report" width="20" height="20"
-                                 data-toggle="tooltip" title="Report" data-placement="top"></small>
-
-                          <p class="mb-1">{{ comment.comment }}</p>
-                        </div>
-                      </div>
-                    </div>
-                  {% else %}
-                    <div class="row justify-content-start">
-                      <div class="col-8 comment-container">
-                        <div class="alert alert-secondary justify-content-start" role="alert">
-                          <div class="d-flex w-100 justify-content-between comment-content">
-                            <small class="text-muted">
-                              {% if comment.is_anon == True %}
-                                Anonymous
-                              {% else %}
-                                {{ comment.user }}
-                              {% endif %}
-                            </small>
-
-                            <br class="comment-break d-none">
-                            <small class="text-muted">{{ comment.comment_date }}</small>
-                          </div>
-                          <small class="float-right report" id="{{ comment.id }}">
-                            <img src="{% static 'img/report_flag.png' %}" alt="report" width="20" height="20"
-                                 data-toggle="tooltip" title="Report" data-placement="top"></small>
-                          <p class="mb-1">{{ comment.comment }}</p>
-                        </div>
-                      </div>
-                    </div>
-                  {% endif %}
-
-                {% endif %}
-              {% endfor %}
             </div>
-          </div>
         </div>
-      </div>
-      <!-- Show comments if attempt is >= 1 -->
+        <div class="theme-container-border theme-container-bg theme-container-padding case-content" id="main">
+            <div>
+                <h1 class="theme-header">Case <span id="case_id">{{ case.id }}</span></h1>
+                Description:
+                <div class="card mt-2 mb-3 bg-light">
+                    <div class="card-body">
+                        {{ case.get_age_in_words|an|title }} {{ case.get_age_string }} {{ case.get_sex }} {{ case.get_optionals }}
+                        presents to your
+                        pharmacy {{ case.description }}
+                    </div>
+                </div>
+            </div>
+            Medical History:
+            <ul style="display: inherit; list-style-type: inherit">
+                {% for history in mhx %}
+                    <li>{{ history }}</li>
+                {% endfor %}
+            </ul>
+            Medication:
+            <ul style="display: inherit; list-style-type: inherit">
+                {% for medication in medications %}
+                    <li>{{ medication }}</li>
+                {% endfor %}
+            </ul>
+            Other:
+            <ul style="display: inherit; list-style-type: inherit">
+                {% for other in others %}
+                    <li>{{ other }}</li>
+                {% endfor %}
+            </ul>
+            Question:
+            <div class="card mt-2 mb-3">
+                <div class="card-body">
+                    <div><strong>{{ case.question }}</strong></div>
+                </div>
+                <div class="card-body pt-0" id="questions">
+                    <div class="list-group mb-3" id="list-tab" role="tablist">
+                        <a class="list-group-item" onclick="handleClick(this);" id="A" disabled>A. {{ case.answer_a }}</a>
+                        <a class="list-group-item" onclick="handleClick(this);" id="B">B. {{ case.answer_b }}</a>
+                        <a class="list-group-item" onclick="handleClick(this);" id="C">C. {{ case.answer_c }}</a>
+                        <a class="list-group-item" onclick="handleClick(this);" id="D">D. {{ case.answer_d }}</a>
+                    </div>
+                    <a class="theme-btn float-right" style="color: #FFF; cursor: pointer" id="submit_response">
+                        {% if attempts.user_attempts == 0 or playlist %}Submit Response{% else %}Attempt Again{% endif %}</a>
+                </div>
+                <div class="card-body pt-0" id="feedback">
+                    <div class="alert mb-3" id="feedback_alert"></div>
+                    Feedback:
+                    <div class="card mt-2 mb-3 bg-light">
+                        <div class="card-body" id="feedback_text"></div>
+                    </div>
+                    {% if playlist.next_case %}
+                        <div class="float-left">
+                            <a class="btn btn-primary" id="attempt_again" style="color: #FFF; cursor: pointer">Attempt Again</a>
+                        </div>
+                        <div class="float-right">
+                            <a href="{% url "cases:playlist-case" playlist.id playlist.next_case %}"
+                               id="next_case"
+                               class="btn-flash btn btn-primary">Next Case in Playlist</a>
+                        </div>
+                    {% elif not playlist.next_case and playlist.previous_case %}
+                        <h1 class="theme-header">Playlist Complete</h1>
+                        <center>
+                            <a href="{% url "cases:playlist-landing" %}" class="btn btn-primary">Return to Playlists Home</a>
+                        </center>
+                    {% else %}
+                        <div class="float-right">
+                            <a class="theme-btn float-right" id="attempt_again" style="color: #FFF">Attempt Again</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="{% if attempts.user_attempts == 0 %}d-none{% endif %}" id="discussion_container">
+                <div class="alert alert-info text-center" id="show_discussion" style="cursor: pointer">
+                    <strong id="show_hide">Show Discussion</strong>
+                </div>
+                <div class="card mt-2 mb-3" id="discussion">
+                    <div class="card-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="comment-box">Add Comment</label>
+                                <textarea class="form-control" id="comment-box" rows="3" placeholder="Enter comment here"></textarea>
+                            </div>
+
+                            <div class="form-group form-check">
+                                {% if not request.user.is_tutor %}
+                                    <input type="checkbox" class="form-check-input" id="is_anonymous_checkbox">
+                                    <label class="form-check-label" for="is_anonymous_checkbox">
+                                        <small>Comment as anonymous</small>
+                                    </label>
+                                {% endif %}
+                                <a class="theme-btn float-right" style="color: #FFF; cursor: pointer" id="submit_comment">Submit
+                                    Comment</a>
+                                <br>
+                            </div>
+
+                        </form>
+
+                        <br>
+                        <hr>
+                        <div class="mb-3">All Comments</div>
+                        <div id="comment-container">
+                            {% for comment in comments %}
+                                {% if comment.is_deleted == False %}
+                                    {% if comment.user == request.user %}
+                                        <div class="row justify-content-end">
+                                            <div class="col-8 comment-container">
+                                                <div class="alert alert-primary" role="alert">
+                                                    <div class="d-flex w-100 justify-content-between comment-content">
+                                                        <small class="text-muted">
+                                                            {% if comment.is_anon == True %}
+                                                                {{ comment.user }} (Anonymous)
+                                                            {% else %}
+                                                                {% if request.user.is_tutor %}
+                                                                    <a data-toggle="tooltip" title="Tutor"><i class="fa fa-fw fa-graduation-cap"
+                                                                                                              data-toggle="tooltip"></i></a>
+                                                                    {{ comment.user }}
+                                                                {% else %}
+                                                                    {{ comment.user }}
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        </small>
+
+
+                                                        <br class="comment-break d-none">
+
+                                                        <small class="text-muted" id="comment_date">{{ comment.comment_date }}</small>
+
+
+                                                        <small class="float-right report" id="{{ comment.id }}">
+                                                            <img src="{% static 'img/report_flag.png' %}" alt="report" width="20" height="20"
+                                                                 data-toggle="tooltip" title="Report" data-placement="top"></small>
+                                                    </div>
+
+                                                    <small class="float-right delete" id="{{ comment.id }}"><img
+                                                            src="{% static 'img/report_delete.png' %}" width="20" height="20" data-toggle="tooltip"
+                                                            title="Delete" data-placement="bottom"></small>
+
+                                                    <p class="mb-1 ">{{ comment.comment }}</p>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    {% elif comment.user.is_tutor %}
+                                        <div class="row justify-content-start">
+                                            <div class="col-8 comment-container">
+                                                <div class="alert alert-info " role="alert">
+                                                    <div class="d-flex w-100 justify-content-between comment-content">
+                                                        <small class="text-muted">
+                                                            <a data-toggle="tooltip" title="Tutor"><i class="fa fa-fw fa-graduation-cap"
+                                                                                                      data-toggle="tooltip"></i></a> {{ comment.user }}
+                                                        </small>
+
+
+                                                        <br class="comment-break d-none">
+                                                        <small class="text-muted">{{ comment.comment_date }}</small>
+                                                    </div>
+
+                                                    <small class="float-right report" id="{{ comment.id }}">
+                                                        <img src="{% static 'img/report_flag.png' %}" alt="report" width="20" height="20"
+                                                             data-toggle="tooltip" title="Report" data-placement="top"></small>
+
+                                                    <p class="mb-1">{{ comment.comment }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="row justify-content-start">
+                                            <div class="col-8 comment-container">
+                                                <div class="alert alert-secondary justify-content-start" role="alert">
+                                                    <div class="d-flex w-100 justify-content-between comment-content">
+                                                        <small class="text-muted">
+                                                            {% if comment.is_anon == True %}
+                                                                Anonymous
+                                                            {% else %}
+                                                                {{ comment.user }}
+                                                            {% endif %}
+                                                        </small>
+
+                                                        <br class="comment-break d-none">
+                                                        <small class="text-muted">{{ comment.comment_date }}</small>
+                                                    </div>
+                                                    <small class="float-right report" id="{{ comment.id }}">
+                                                        <img src="{% static 'img/report_flag.png' %}" alt="report" width="20" height="20"
+                                                             data-toggle="tooltip" title="Report" data-placement="top"></small>
+                                                    <p class="mb-1">{{ comment.comment }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Show comments if attempt is >= 1 -->
+        </div>
     </div>
-  </div>
-  </div>
-  <br>
-  <style>
-    .report {
-      position: relative;
-      bottom: 1px;
-      color: #FFF;
-      cursor: pointer;
-      filter: grayscale(100%);
-    }
+    </div>
+    <br>
+    <style>
+        .report {
+            position: relative;
+            bottom: 1px;
+            color: #FFF;
+            cursor: pointer;
+            filter: grayscale(100%);
+        }
 
-    .delete {
-      position: relative;
-      top: 7px;
-      color: #FFF;
-      cursor: pointer;
-      filter: grayscale(100%);
-    }
-  </style>
+        .delete {
+            position: relative;
+            top: 7px;
+            color: #FFF;
+            cursor: pointer;
+            filter: grayscale(100%);
+        }
+    </style>
 
-  <script src="{% static "js/viewCase.js" %}"></script>
-  <script src="{% static "js/report.js" %}"></script>
+    <script src="{% static "js/viewCase.js" %}"></script>
+    <script src="{% static "js/report.js" %}"></script>
 
-  <script>
-    var csrftoken = getCookie('csrftoken');
-  </script>
+    <script>
+        var csrftoken = getCookie('csrftoken');
+    </script>
 {% endblock %}

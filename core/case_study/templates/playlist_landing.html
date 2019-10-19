@@ -48,7 +48,8 @@
               <li class="list-group-item" style="color: #636363">
                 <div class="d-flex justify-content-between">
                   <a href="{% url "cases:playlist-case" playlist.id playlist.current_case %}"
-                     style="color: inherit; text-decoration: none">
+                     class="theme-link"
+                     style="text-decoration: none">
                     {% if playlist.tag %}{{ playlist.tag }}{% else %}All Tags{% endif %} Playlist</a>
                   <div class="d-flex">
                     <a href="{% url "cases:playlist-case" playlist.id playlist.current_case %}" style="color: inherit"
