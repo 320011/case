@@ -20,11 +20,11 @@ This project is licensed under the  [MIT License](https://github.com/320011/case
 
 ### Database Server
 
-1. Install postgres
+1. Install postgres 9.5 or greater
 
 2. Set up postgres database for case with associated user
 
-3. Allow postgres connections to the app server using md5
+3. Allow postgres connections to the app server
 
 ### App Server:
 
