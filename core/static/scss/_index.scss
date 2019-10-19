@@ -76,6 +76,17 @@ $block-box-shadow: 5px 5px 12px 1px rgba(0, 0, 0, 0.3);
   }
 }
 
+#action-playlist {
+  $c: #ff9800;
+  background-image: url("/static/img/playlist.png");
+  background-color: $c;
+
+  &:hover {
+    background-size: auto 70%;
+    background-color: darken($c, 10%);
+  }
+}
+
 #action-admin {
   $c: #b33e3e;
   background-image: url("/static/img/admin.png");
