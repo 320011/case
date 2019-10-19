@@ -48,8 +48,7 @@
                 <div class="d-flex justify-content-between">
                   <div>{% if playlist.tag %}{{ playlist.tag }}{% else %}All Tags{% endif %} Playlist</div>
                   <div class="d-flex">
-                    <a href="#" style="color: inherit" data-toggle="tooltip" data-html="true" title="Resume">
-                      {#                      {% url "cases:playlist-case" playlist.id %}#}
+                    <a href="{% url "cases:playlist-case" playlist.id playlist.current_case  %}" style="color: inherit" data-toggle="tooltip" data-html="true" title="Resume">
                       <i class="fa fa-fw fa-play"></i>
                     </a>
                     <a class="mx-2" style="color: inherit; cursor: pointer" data-toggle="tooltip" data-html="true"
