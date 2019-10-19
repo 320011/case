@@ -46,6 +46,8 @@ def view_case(request, case_study_id, playlist_id = None):
         "tags": tags,
         "comments": comments
     }
+    if playlist_id:
+        c["playlist"] = playlist_id
     return render(request, "view_case.html", c)
 
 
