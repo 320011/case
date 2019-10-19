@@ -9,12 +9,12 @@ from accounts.models import User
 class CaseStudyTestCase(TestCase):
     def setUp(self):
         User.objects.create(email="test@test.com")
-        CaseStudy.objects.create(age=24, answer_a="a", answer_b="b", answer_c="c", answer_d="d", answer="D", height=175, weight=70, scr=3)
+        CaseStudy.objects.create(age=24, answer_a="a", answer_b="b", answer_c="c", answer_d="d", answer=CaseStudy.ANSWER_D, height=175, weight=70, scr=3)
         CaseStudy.objects.create(age=24, sex=CaseStudy.FEMALE, age_type=CaseStudy.MONTHS, answer_a="a", answer_b="b",
-                                 answer_c="c", answer_d="d", answer="C", height=175, weight=70)
-        Attempt.objects.create(case_study_id=1, user_answer="A", user_id=1)
-        Attempt.objects.create(case_study_id=1, user_answer="D", user_id=1)
-        Attempt.objects.create(case_study_id=2, user_answer="C", user_id=1)
+                                 answer_c="c", answer_d="d", answer=CaseStudy.ANSWER_C, height=175, weight=70)
+        Attempt.objects.create(case_study_id=1, user_answer=CaseStudy.ANSWER_A, user_id=1)
+        Attempt.objects.create(case_study_id=1, user_answer=CaseStudy.ANSWER_D, user_id=1)
+        Attempt.objects.create(case_study_id=2, user_answer=CaseStudy.ANSWER_C, user_id=1)
 
     def test_age_string(self):
         first_case = CaseStudy.objects.get(pk=1)
