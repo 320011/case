@@ -18,4 +18,5 @@ urlpatterns = [
     path("api/v1/delete_unsubmitted_case/", create_case.delete_unsubmitted_case, name="delete-unsubmitted-case"),
     path("api/v1/submit_report/<int:comment_id>", view_case.submit_report, name="submit-report"),
     path("api/v1/delete_comment/<int:comment_id>/", view_case.delete_comment, name="delete_comment"),
+    path("api/v1/new_playlist", case_playlists.create_new_playlist, name="new-playlist"),
 ]
