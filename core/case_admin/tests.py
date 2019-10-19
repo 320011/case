@@ -12,11 +12,6 @@ class AdminTestCase(TestCase):
         CaseStudy.objects.create(pk=1, case_state=CaseStudy.STATE_REVIEW)
         User.objects.create(is_active=False)
 
-    def tearDown(self):
-        Tag.objects.all().delete()
-        CaseStudy.objects.all().delete()
-        User.objects.all().delete()
-
     def test_populate_data(self):
         data = populate_data(tag.schema_tag, Tag.objects.all())
         self.assertEqual(len(data["entities"]), 1)
