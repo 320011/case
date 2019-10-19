@@ -48,14 +48,16 @@
                 <div class="d-flex justify-content-between">
                   <div>{% if playlist.tag %}{{ playlist.tag }}{% else %}All Tags{% endif %} Playlist</div>
                   <div class="d-flex">
-                    <a href="#" style="color: inherit">
+                    <a href="#" style="color: inherit" data-toggle="tooltip" data-html="true" title="Resume">
                       {#                      {% url "cases:playlist-case" playlist.id %}#}
                       <i class="fa fa-fw fa-play"></i>
                     </a>
-                    <a class="mx-2" style="color: inherit; cursor: pointer" onclick="return refreshPlaylist({{ playlist.id }})">
+                    <a class="mx-2" style="color: inherit; cursor: pointer" data-toggle="tooltip" data-html="true"
+                       title="Refresh" onclick="return refreshPlaylist({{ playlist.id }})">
                       <i class="fa fa-fw fa-refresh"></i>
                     </a>
-                    <a href="#" style="color: inherit; cursor: pointer" onclick="return deletePlaylist({{ playlist.id }})">
+                    <a href="#" style="color: inherit; cursor: pointer" data-toggle="tooltip" data-html="true"
+                       title="Delete" onclick="return deletePlaylist({{ playlist.id }})">
                       <i class="fa fa-fw fa-trash"></i>
                     </a>
                   </div>
@@ -108,15 +110,37 @@
       if (confirmation) {
         $.ajax({
           type: "POST",
-          url: '/cases/api/v1/refresh_playlist/',
-          dataType: 'json',
+          url: "/cases/api/v1/refresh_playlist/",
+          dataType: "json",
           data: {
-            'playlist_id': id
+            "playlist_id": id
           },
           success: function (resp) {
             if (resp.success) {
               alert(resp.message);
               window.location.reload(false);
+            }
+          }
+        });
+      }
+    }
+
+    function deletePlaylist(id) {
+      let confirmation = confirm("You are about to delete this playlist.\n\nAre you sure you want to proceed?\nThis action cannot be undone.");
+      if (confirmation) {
+        $.ajax({
+          type: "POST",
+          url: "/cases/api/v1/delete_playlist/",
+          dataType: "json",
+          data: {
+            "playlist_id": id
+          },
+          success: function (resp) {
+            if (resp.success) {
+              alert("Playlist deleted!");
+              window.location.reload(false);
+            } else {
+              alert("An error has occurred. Please try again.")
             }
           }
         });
