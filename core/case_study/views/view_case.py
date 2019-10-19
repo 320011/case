@@ -9,7 +9,7 @@ from ..models import Tag, TagRelationship, CaseStudy, MedicalHistory, Medication
 
 
 @login_required
-def view_case(request, case_study_id):
+def view_case(request, case_study_id, playlist_id = None):
     case_study = get_object_or_404(CaseStudy, pk=case_study_id, case_state=CaseStudy.STATE_PUBLIC)
     mhx = MedicalHistory.objects.filter(case_study=case_study)
     medications = Medication.objects.filter(case_study=case_study)
