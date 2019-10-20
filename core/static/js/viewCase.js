@@ -132,10 +132,10 @@ $('#submit_comment').click(function () {
                         </small>\
                         <br class="${br}">\
                         <small class="text-muted">${date}</small>\
-                      </div>\
-                      <small class="float-right delete" id="${comment_id}">
-                      <i class="fa fa-trash" aria-hidden="true" data-toggle="tooltip" title="Delete" data-placement="bottom"></i></small>                      
+                      </div>\                    
                       <p class="mb-1">${data.comment.body}</p>\
+                      <small class="delete" id="${comment_id}">\
+                      <a data-toggle="tooltip" title="Delete" data-placement="top">delete</a></small>\
                     </div>\
                   </div>\
                 </div>`;
