@@ -221,17 +221,17 @@
                                                         <small class="text-muted" id="comment_date">{{ comment.comment_date }}</small>
 
                                                         {% if comment.user != request.user %}
-                                                    <small class="float-right report" id="{{ comment.id }}">
+                                                        <small class="float-right report" id="{{ comment.id }}">
                                                         <i class="fa-fw fa fa-flag"
-                                                             data-toggle="tooltip" title="Report" data-placement="top"></i></small>
+                                                         data-toggle="tooltip" title="Report" data-placement="top"></i></small>
                                                         {% endif %}
 
                                                     </div>
-                                                {% if comment.user == request.user  %}
-                                                    <small class="float-right delete" id="{{ comment.id }}">
+                                                        {% if request.user.is_superuser  %}
+                                                        <small class="float-right delete" id="{{ comment.id }}">
                                                         <i class="fa fa-trash" aria-hidden="true"
                                                         data-toggle="tooltip"
-                                                            title="Delete" data-placement="bottom"></i></small>
+                                                        title="Delete" data-placement="bottom"></i></small>
                                                         {% endif %}
 
                                                     <p class="mb-1 ">{{ comment.comment }}</p>
@@ -255,21 +255,20 @@
                                                         <br class="comment-break d-none">
                                                         <small class="text-muted">{{ comment.comment_date }}</small>
 
-                                     {% if comment.user != request.user %}
-                                             <small class="float-right report" id="{{ comment.id }}">
-                                                        <i class="fa-fw fa fa-flag"
-                                                             data-toggle="tooltip" title="Report" data-placement="top"></i></small>
+                                                            {% if comment.user != request.user %}
+                                                            <small class="float-right report" id="{{ comment.id }}">
+                                                            <i class="fa-fw fa fa-flag"
+                                                                 data-toggle="tooltip" title="Report" data-placement="top"></i></small>
 
-                                                    {% endif %}
-                                                    </div>
-                                               
-
+                                                            {% endif %}
+                                                        </div>
                                                    
-                                    {% if comment.user == request.user %}
-                                                    <small class="float-right delete" id="{{ comment.id }}">
-                                                        <i class="fa fa-trash" aria-hidden="true" data-toggle="tooltip"
-                                                            title="Delete" data-placement="bottom"></i></small>
-                                                         {% endif %}
+                                                            {% if request.user.is_superuser %}
+                                                            <small class="float-right delete" id="{{ comment.id }}">
+                                                                <i class="fa fa-trash" aria-hidden="true" data-toggle="tooltip"
+                                                                    title="Delete" data-placement="bottom"></i></small>
+                                                            {% endif %}
+
                                                     <p class="mb-1">{{ comment.comment }}</p>
                                                 </div>
                                             </div>
@@ -290,19 +289,19 @@
                                                         <br class="comment-break d-none">
                                                         <small class="text-muted">{{ comment.comment_date }}</small>
 
-                                                {% if comment.user != request.user %}
-                                                    <small class="float-right report" id="{{ comment.id }}">
-                                                        <i class="fa-fw fa fa-flag"
-                                                             data-toggle="tooltip" title="Report" data-placement="top"></i></small>
-                                                    {% endif %}
+                                                        {% if comment.user != request.user %}
+                                                        <small class="float-right report" id="{{ comment.id }}">
+                                                            <i class="fa-fw fa fa-flag"
+                                                                 data-toggle="tooltip" title="Report" data-placement="top"></i></small>
+                                                        {% endif %}
 
 
                                                     </div>
 
-                                                {% if comment.user == request.user %}
-                                                    <small class="float-right delete" id="{{ comment.id }}">
-                                                        <i class="fa fa-trash" aria-hidden="true"  data-toggle="tooltip" title="Delete" data-placement="bottom"></i></small>
-                                                         {% endif %}
+                                                        {% if request.user.is_superuser %}
+                                                        <small class="float-right delete" id="{{ comment.id }}">
+                                                            <i class="fa fa-trash" aria-hidden="true"  data-toggle="tooltip" title="Delete" data-placement="bottom"></i></small>
+                                                        {% endif %}
                                                     <p class="mb-1">{{ comment.comment }}</p>
 
                                                 </div>
@@ -325,10 +324,11 @@
         .report {
             position: relative;
             bottom: 1px;
-            color: #B22222 ;
+            left: 1%;
+            color: #000000 ;
             font-size: 120%;
             cursor: pointer;
-            filter: grayscale(10x0%);
+            filter: grayscale(100%);
         }
 
         .delete {

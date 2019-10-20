@@ -121,7 +121,7 @@ $('#submit_comment').click(function () {
           name = data.comment.is_anon ? data.user.name + " (Anonymous)" :  data.user.name;
         }
         // 
-
+      if(data.user.is_staff){
         htmlstring =
           `<div class="row justify-content-end">\
                   <div class="${container}">\
@@ -133,31 +133,50 @@ $('#submit_comment').click(function () {
                         <br class="${br}">\
                         <small class="text-muted">${date}</small>\
                       </div>\
-                    <small class="float-right delete" id="${comment_id}">
-                                                        <i class="fa fa-trash" aria-hidden="true"
-                                                        width="20" height="20" data-toggle="tooltip"
-                                                            title="Delete" data-placement="bottom"></i></small>                      <p class="mb-1">${data.comment.body}</p>\
+                      <small class="float-right delete" id="${comment_id}">
+                      <i class="fa fa-trash" aria-hidden="true" data-toggle="tooltip" title="Delete" data-placement="bottom"></i></small>                      
+                      <p class="mb-1">${data.comment.body}</p>\
                     </div>\
                   </div>\
                 </div>`;
-        $("#comment-container").prepend($(htmlstring).hide().delay(500).show('slow'));
+              }
+      else{
+        htmlstring =
+          `<div class="row justify-content-end">\
+                  <div class="${container}">\
+                    <div class="alert alert-primary" role="alert">\
+                      <div class="${content}">\
+                        <small class="text-muted">\
+                        ${name}\
+                        </small>\
+                        <br class="${br}">\
+                        <small class="text-muted">${date}</small>\
+                      </div>\
+                      <p class="mb-1">${data.comment.body}</p>\
+                    </div>\
+                  </div>\
+                </div>`;  
+      }
 
-    $(".delete").click(function(){
-    if(confirm('Are you sure you would like to delete this comment.\n\nIt will no longer appear to users but it will still be available in the admin until it is hard deleted.')){
-        $.ajax({
-            type: 'POST',
-            url: '/cases/api/v1/delete_comment/' + comment_id  + '/' ,
-            dataType: 'json',
-            data:{
-                'comment_id': comment_id 
-            },
-            success: function(){
-                alert("The comment has been deleted.");
-                location.reload();
-            }
-        });
-    }
-});
+        $("#comment-container").prepend($(htmlstring).hide().delay(500).show('slow'));
+    
+
+      $(".delete").click(function(){
+      if(confirm('Are you sure you would like to delete this comment.\n\nIt will no longer appear to users but it will still be available in the admin until it is hard deleted.')){
+          $.ajax({
+              type: 'POST',
+              url: '/cases/api/v1/delete_comment/' + comment_id  + '/' ,
+              dataType: 'json',
+              data:{
+                  'comment_id': comment_id 
+              },
+              success: function(){
+                  alert("The comment has been deleted.");
+                  location.reload();
+              }
+          });
+      }
+  });
       }
     });
   }
