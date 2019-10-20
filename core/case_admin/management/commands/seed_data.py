@@ -23,6 +23,58 @@ class Command(BaseCommand):
         if action == "delete":
             print("----- Delete seed data start -----")
 
+        if action == "delete":
+            try:
+                user = User.objects.all().delete()
+                print("Users have been deleted")
+            except:
+                print("Users have already been delete")
+            try:
+                question = Question.objects.all().delete()
+                print("Questions have been deleted")
+            except:
+                print("Questions have already been deleted")
+            try:
+                case = CaseStudy.objects.all().delete()
+                print("Case Studies have been deleted")
+            except:
+                print("Case Studies have already been deleted")
+            try:
+                tag_relationship = TagRelationship.objects.all().delete()
+                print("Tag relationships have been deleted")
+            except:
+                print("Tag relationships have already been deleted")
+            try:
+                question = Tag.objects.all().delete()
+                print("Tags have been deleted")
+            except:
+                print("Tags have been already deleted")
+            try:
+                medical_history = MedicalHistory.objects.all().delete()
+                print("Medical history have been deleted")
+            except:
+                print("Medical history have already been deleted")
+            try:
+                medication = Medication.objects.all().delete()
+                print("Medication have been deleted")
+            except:
+                print("Medication have already been deleted")
+            try:
+                other = Other.objects.all().delete()
+                print("Other have been deleted")
+            except:
+                print("Other have already been deleted")
+            try:
+                comment = Comment.objects.all().delete()
+                print("Comment have been deleted")
+            except:
+                print("Comment have already been deleted")
+            try:
+                attempt = Attempt.objects.all().delete()
+                print("Attempt have been deleted")
+            except:
+                print("Attempt have already been deleted")
+
         test_users = [
             {
                 "id" : 1 , 
@@ -78,15 +130,6 @@ class Command(BaseCommand):
                     user.save()
                     print("Created user " + test_user["email"] )
 
-        if action == "delete":
-            for test_user in test_users:
-                try:
-                    user = User.objects.get(email=test_user["email"]).delete()
-                    print(test_user["email"] + " User has been deleted")
-                except:
-                    print("Could not find or delete user " + test_user["email"])
-        
-        
         # test questions
         test_questions = [
             {
@@ -112,14 +155,6 @@ class Command(BaseCommand):
                     question = Question.objects.create(body=test_question["body"])
                     print("Question: '" + test_question["body"] + "' has been created")
         
-        if action == "delete":
-            for test_question in test_questions:
-                try:
-                    question = Question.objects.get(body=test_question["body"]).delete()
-                    print("Question: '" + test_question["body"] + "' has been deleted")
-                except:
-                    print("Could not delete question: '" + test_question["body"] + "'")
-
         # test tags
         test_tags = [
             {
@@ -143,15 +178,7 @@ class Command(BaseCommand):
                 except ObjectDoesNotExist:
                     question = Tag.objects.create(name=test_tag["name"])
                     print("Tag: '" + test_tag["name"] + "' has been created")
-        
-        if action == "delete":
-            for test_tag in test_tags:
-                try:
-                    question = Tag.objects.get(name=test_tag["name"]).delete()
-                    print("Tag: '" + test_tag["name"] + "' has been deleted")
-                except:
-                    print("Could not delete tag: '" + test_tag["name"] + "'")
-        
+
         # test cases
         test_cases = [
             {
@@ -164,7 +191,7 @@ class Command(BaseCommand):
                 "age_type" : "Y",
                 "age" : 45,
                 "sex" : "M",
-                "description" : "A patient shows up with a bleeding knee and cuts to arms.",
+                "description" : "with a bleeding knee and cuts to arms.",
                 "question" : "test_What should you tell the patient?",
                 "answer_a" : "Nothing",
                 "answer_b" : "I can't help you",
@@ -183,7 +210,7 @@ class Command(BaseCommand):
                 "age_type" : "Y",
                 "age" : 30,
                 "sex" : "F",
-                "description" : "A patient shows up complaining pains to her belly.",
+                "description" : "complaining pains to her belly.",
                 "question" : "test_What should you tell the patient?",
                 "answer_a" : "Nothing",
                 "answer_b" : "I can't help you",
@@ -202,7 +229,7 @@ class Command(BaseCommand):
                 "age_type" : "Y",
                 "age" : 17,
                 "sex" : "F",
-                "description" : "A patient shows up complaining feeling faint.",
+                "description" : "complaining feeling faint.",
                 "question" : "test_What should you tell the patient?",
                 "answer_a" : "Nothing",
                 "answer_b" : "I can't help you",
@@ -227,7 +254,6 @@ class Command(BaseCommand):
                     case.height = test_case["height"]
                     case.weight = test_case["weight"]
                     case.scr = test_case["scr"]
-                    case.age_type = test_case["age_type"]
                     case.age = test_case["age"]
                     case.sex = test_case["sex"]
                     case.description = test_case["description"]
@@ -241,36 +267,28 @@ class Command(BaseCommand):
                     case.feedback = test_case["feedback"]
                     case.save()
                     print("Created case " + test_case["description"] )
-        
-        if action == "delete":
-            for test_case in test_cases:
-                try:
-                    case = CaseStudy.objects.get(description=test_case["description"]).delete()
-                    print(test_case["description"] + " case has been deleted")
-                except:
-                   print("Could not delete: '" + test_case["description"] + "'")
 
         # test test_tag_relationships
         test_tag_relationships = [
             {
                 "id":1,
                 "tag": "test_Fever",
-                "case": "A patient shows up complaining feeling faint."
+                "case": "complaining feeling faint."
             },
             {
                 "id":2,
                 "tag": "test_Cold",
-                "case": "A patient shows up complaining feeling faint."
+                "case": "complaining feeling faint."
             },
             {
                 "id":3,
                 "tag": "test_Rash",
-                "case": "A patient shows up with a bleeding knee and cuts to arms."
+                "case": "with a bleeding knee and cuts to arms."
             },
             {
                 "id":4,
                 "tag": "test_Cold",
-                "case": "A patient shows up complaining pains to her belly."
+                "case": "complaining pains to her belly."
             },
         ]
 
@@ -286,35 +304,25 @@ class Command(BaseCommand):
                     case = CaseStudy.objects.get(description=test_tag_relationship["case"])
                     tag_relationship = TagRelationship.objects.create(tag=tag, case_study=case)
                     print("Tag relationship: " + test_tag_relationship["tag"] + " with '" + test_tag_relationship["case"] + "' has been created")
-        
-        if action == "delete":
-            for test_tag_relationship in test_tag_relationships:
-                try:
-                    tag = Tag.objects.get(name=test_tag_relationship["tag"])
-                    case = CaseStudy.objects.get(description=test_tag_relationship["case"])
-                    tag_relationship = TagRelationship.objects.get(tag=tag, case_study=case).delete()
-                    print("Tag relationship: " + test_tag_relationship["tag"] + " with '" + test_tag_relationship["case"] + "' has been deleted")
-                except:
-                    print("Tag relationship: " + test_tag_relationship["tag"] + " with '" + test_tag_relationship["case"] + "' has already been deleted")
 
 
         # test medical history
         test_medical_historys = [
             {
                 "body" : "Family history of Huntington's diesease",
-                "case" : "A patient shows up complaining feeling faint."
+                "case" : "complaining feeling faint."
             }, 
             {
                 "body" : "Asthma",
-                "case" : "A patient shows up with a bleeding knee and cuts to arms."
+                "case" : "with a bleeding knee and cuts to arms."
             }, 
             {
                 "body" : "Dislocated Shoulder",
-                "case" : "A patient shows up with a bleeding knee and cuts to arms."
+                "case" : "with a bleeding knee and cuts to arms."
             }, 
             {
                 "body" : "Asthma",
-                "case" : "A patient shows up complaining pains to her belly."
+                "case" : "complaining pains to her belly."
             }, 
         ]
 
@@ -329,32 +337,23 @@ class Command(BaseCommand):
                     medical_history = MedicalHistory.objects.create(body=test_medical_history["body"], case_study=case)
                     print("Medical history: " + test_medical_history["body"] + " with '" + test_medical_history["case"] +  "' has been created")
         
-        if action == "delete":
-            for test_medical_history in test_medical_historys:
-                try:
-                    case = CaseStudy.objects.get(description=test_medical_history["case"])
-                    medical_history = MedicalHistory.objects.get(body=test_medical_history["body"], case_study=case).delete()
-                    print("Medical history: " + test_medical_history["body"] + " with '" + test_medical_history["case"] +  "' has been deleted")
-                except:
-                    print("Medical history: " + test_medical_history["body"] + " with '" + test_medical_history["case"] +  "' has already been deleted")
-
         # test medications
         test_medications = [
             {
                 "name" : "Cortisol 50mg",
-                "case" : "A patient shows up complaining feeling faint."
+                "case" : "complaining feeling faint."
             }, 
             {
                 "name" : "Panadol 500mg",
-                "case" : "A patient shows up with a bleeding knee and cuts to arms."
+                "case" : "with a bleeding knee and cuts to arms."
             }, 
             {
                 "name" : "Corex Cough Syrup",
-                "case" : "A patient shows up complaining pains to her belly."
+                "case" : "complaining pains to her belly."
             }, 
             {
                 "name" : "Panadol 500mg",
-                "case" : "A patient shows up complaining pains to her belly."
+                "case" : "complaining pains to her belly."
             }, 
         ]
 
@@ -369,20 +368,11 @@ class Command(BaseCommand):
                     medication = Medication.objects.create(name=test_medication["name"], case_study=case)
                     print("Medication: " + test_medication["name"] + " with '" + test_medication["case"] +  "' has been created")
         
-        if action == "delete":
-            for test_medication in test_medications:
-                try:
-                    case = CaseStudy.objects.get(description=test_medication["case"])
-                    medication = Medication.objects.get(name=test_medication["name"], case_study=case).delete()
-                    print("Medication: " + test_medication["name"] + " with '" + test_medication["case"] +  "' has been deleted")
-                except:
-                    print("Medication: " + test_medication["name"] + " with '" + test_medication["case"] +  "' has already been deleted")
-
         # test other
         test_others = [
             {
                 "other_body" : "Currently seeing a specialist",
-                "case" : "A patient shows up complaining feeling faint."
+                "case" : "complaining feeling faint."
             }, 
         ]
 
@@ -397,26 +387,19 @@ class Command(BaseCommand):
                     other = Other.objects.create(other_body=test_other["other_body"], case_study=case)
                     print("Other: " + test_other["other_body"] + " with '" + test_other["case"] +  "' has been created")
         
-        if action == "delete":
-            for test_other in test_others:
-                try:
-                    case = CaseStudy.objects.get(description=test_other["case"])
-                    other = Other.objects.get(other_body=test_other["other_body"], case_study=case).delete()
-                    print("Other: " + test_other["other_body"] + " with '" + test_other["case"] +  "' has been deleted")
-                except:
-                    print("Other: " + test_other["other_body"] + " with '" + test_other["case"] +  "' has already been deleted")
-
         # test comments 
         test_comments = [
             {
                 "comment" : "Why is this answer D?",
-                "case" : "A patient shows up complaining feeling faint.", 
-                "user" : "bobby@example.com"
+                "case" : "complaining feeling faint.", 
+                "user" : "bobby@example.com", 
+                "comment_date": "2019-09-01T13:20:30",
             }, 
             {
                 "comment" : "Because the patient has a history of huntington's diesease",
-                "case" : "A patient shows up complaining feeling faint.", 
-                "user" : "david@example.com"
+                "case" : "complaining feeling faint.", 
+                "user" : "david@example.com",
+                "comment_date": "2019-09-01T13:20:45",
             }, 
         ]
 
@@ -425,163 +408,153 @@ class Command(BaseCommand):
                 try:
                     case = CaseStudy.objects.get(description=test_comment["case"])
                     user = User.objects.get(email=test_comment["user"])
-                    comment = Comment.objects.get(comment=test_comment["comment"], case_study=case, user=user)
+                    comment = Comment.objects.get(comment=test_comment["comment"], case_study=case, user=user, comment_date=test_comment["comment_date"])
                     print("Comment by: " + test_comment["user"] + "has already been created")
                 except ObjectDoesNotExist:
                     case = CaseStudy.objects.get(description=test_comment["case"])
                     user = User.objects.get(email=test_comment["user"])
-                    comment = Comment.objects.create(comment=test_comment["comment"], case_study=case, user=user)
+                    comment = Comment.objects.create(comment=test_comment["comment"], case_study=case, user=user, comment_date=test_comment["comment_date"])
                     print("Comment by: " + test_comment["user"] + "has been created")
-        
-        if action == "delete":
-            for test_comment in test_comments:
-                try:
-                    case = CaseStudy.objects.get(description=test_comment["case"])
-                    user = User.objects.get(email=test_comment["user"])
-                    comment = Comment.objects.get(comment=test_comment["comment"], case_study=case, user=user).delete()
-                    print("Comment by: " + test_comment["user"] + "has been deleted")
-                except:
-                    print("Comment by: " + test_comment["user"] + "has already been deleted")
 
         # test attempts
         test_attempts = [
             {
                 "id":1,
                 "user_answer": "A",
-                "case": "A patient shows up complaining feeling faint.", 
+                "case": "complaining feeling faint.", 
                 "user": "bobby@example.com", 
                 "attempt_date": "2019-09-01T13:20:30",
             },
             {
                 "id":2,
                 "user_answer": "B",
-                "case": "A patient shows up complaining feeling faint.", 
+                "case": "complaining feeling faint.", 
                 "user": "bobby@example.com", 
                 "attempt_date": "2019-09-02T13:20:30",
             },
             {
                 "id":3,
                 "user_answer": "C",
-                "case": "A patient shows up complaining feeling faint.", 
+                "case": "complaining feeling faint.", 
                 "user": "bobby@example.com", 
                 "attempt_date": "2019-09-03T13:20:30",
             },
             {
                 "id":4,
                 "user_answer": "D",
-                "case": "A patient shows up complaining feeling faint.", 
+                "case": "complaining feeling faint.", 
                 "user": "bobby@example.com", 
                 "attempt_date": "2019-09-04T13:20:30",
             },
             {
                 "id":5,
                 "user_answer": "D",
-                "case": "A patient shows up complaining feeling faint.", 
+                "case": "complaining feeling faint.", 
                 "user": "sally@example.com", 
                 "attempt_date": "2019-09-02T13:20:30",
             },
             {
                 "id":6,
                 "user_answer": "D",
-                "case": "A patient shows up complaining feeling faint.", 
+                "case": "complaining feeling faint.", 
                 "user": "david@example.com", 
                 "attempt_date": "2019-09-03T13:20:30",
             },
             {
                 "id":7,
                 "user_answer": "C",
-                "case": "A patient shows up complaining feeling faint.", 
+                "case": "complaining feeling faint.", 
                 "user": "jess@example.com", 
                 "attempt_date": "2019-09-11T13:20:30",
             },
             {
                 "id":8,
                 "user_answer": "D",
-                "case": "A patient shows up complaining feeling faint.", 
+                "case": "complaining feeling faint.", 
                 "user": "jess@example.com", 
                 "attempt_date": "2019-09-15T13:20:30",
             },
             {
                 "id":9,
                 "user_answer": "A",
-                "case": "A patient shows up with a bleeding knee and cuts to arms.", 
+                "case": "with a bleeding knee and cuts to arms.", 
                 "user": "bobby@example.com", 
                 "attempt_date": "2019-09-09T13:20:30",
             },
             {
                 "id":10,
                 "user_answer": "B",
-                "case": "A patient shows up with a bleeding knee and cuts to arms.", 
+                "case": "with a bleeding knee and cuts to arms.", 
                 "user": "bobby@example.com", 
                 "attempt_date": "2019-09-17T13:20:30",
             },
             {
                 "id":11,
                 "user_answer": "C",
-                "case": "A patient shows up with a bleeding knee and cuts to arms.", 
+                "case": "with a bleeding knee and cuts to arms.", 
                 "user": "bobby@example.com", 
                 "attempt_date": "2019-09-20T13:20:30",
             },
             {
                 "id":12,
                 "user_answer": "D",
-                "case": "A patient shows up with a bleeding knee and cuts to arms.", 
+                "case": "with a bleeding knee and cuts to arms.", 
                 "user": "bobby@example.com", 
                 "attempt_date": "2019-09-15T13:20:30",
             },
             {
                 "id":13,
                 "user_answer": "C",
-                "case": "A patient shows up with a bleeding knee and cuts to arms.", 
+                "case": "with a bleeding knee and cuts to arms.", 
                 "user": "sally@example.com", 
                 "attempt_date": "2019-09-07T13:20:30",
             },
             {
                 "id":14,
                 "user_answer": "D",
-                "case": "A patient shows up with a bleeding knee and cuts to arms.", 
+                "case": "with a bleeding knee and cuts to arms.", 
                 "user": "sally@example.com", 
                 "attempt_date": "2019-09-08T13:20:30",
             },
             {
                 "id":15,
                 "user_answer": "A",
-                "case": "A patient shows up with a bleeding knee and cuts to arms.", 
+                "case": "with a bleeding knee and cuts to arms.", 
                 "user": "david@example.com", 
                 "attempt_date": "2019-09-10T13:20:30",
             },
             {
                 "id":16,
                 "user_answer": "A",
-                "case": "A patient shows up with a bleeding knee and cuts to arms.", 
+                "case": "with a bleeding knee and cuts to arms.", 
                 "user": "jess@example.com", 
                 "attempt_date": "2019-09-11T13:20:30",
             },
             {
                 "id":17,
                 "user_answer": "D",
-                "case": "A patient shows up complaining pains to her belly.", 
+                "case": "complaining pains to her belly.", 
                 "user": "jess@example.com", 
                 "attempt_date": "2019-09-14T13:20:30",
             },
             {
                 "id":18,
                 "user_answer": "D",
-                "case": "A patient shows up complaining pains to her belly.", 
+                "case": "complaining pains to her belly.", 
                 "user": "bobby@example.com", 
                 "attempt_date": "2019-09-12T13:20:30",
             },
             {
                 "id":19,
                 "user_answer": "D",
-                "case": "A patient shows up complaining pains to her belly.", 
+                "case": "complaining pains to her belly.", 
                 "user": "david@example.com", 
                 "attempt_date": "2019-09-03T13:20:30",
             },
             {
                 "id":20,
                 "user_answer": "A",
-                "case": "A patient shows up complaining pains to her belly.", 
+                "case": "complaining pains to her belly.", 
                 "user": "sally@example.com", 
                 "attempt_date": "2019-09-06T13:20:30",
             },
@@ -599,17 +572,7 @@ class Command(BaseCommand):
                     case = CaseStudy.objects.get(description=test_attempt["case"])
                     attempt = Attempt.objects.create(user_answer=test_attempt["user_answer"],case_study=case,user=user,attempt_date=test_attempt["attempt_date"])
                     print("Attempt by: " + test_attempt["user"] + " for case '" + test_attempt["case"] +  "' has been created")
-        
-        if action == "delete":
-            for test_attempt in test_attempts:
-                try:
-                    user = User.objects.get(email=test_attempt["user"])
-                    case = CaseStudy.objects.get(description=test_attempt["case"])
-                    attempt = Attempt.objects.get(user_answer=test_attempt["user_answer"],case_study=case,user=user,attempt_date=test_attempt["attempt_date"]).delete()
-                    print("Attempt by: " + test_attempt["user"] + " for case '" + test_attempt["case"] +  "' has been deleted")
-                except:
-                    print("Attempt by: " + test_attempt["user"] + " for case '" + test_attempt["case"] +  "' has already been deleted")
-
+    
         if action == "create":
             print("----- Create seed data complete -----")
         if action == "delete":
