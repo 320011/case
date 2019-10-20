@@ -29,3 +29,15 @@ class AccountsTestCase(TestCase):
         u.email_user(subject, message, from_email)
         self.assertEquals(len(mail.outbox), 1)
         self.assertEquals(mail.outbox[0].subject, "Test subject")
+
+    def test_create_user(self):
+        email = "user@test.com"
+        password = "TestPassword123"
+        user = User.objects.create_user(email, password)
+        self.assertEquals(user.is_staff, user.is_superuser, False)
+
+    def test_create_superuser(self):
+        email = "superuser@test.com"
+        password = "TestPassword123"
+        superuser = User.objects.create_superuser(email, password)
+        self.assertEquals(superuser.is_staff, superuser.is_superuser, True)
