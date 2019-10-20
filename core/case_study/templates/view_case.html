@@ -221,7 +221,7 @@
                                                         <small class="text-muted" id="comment_date">{{ comment.comment_date }}</small>
 
                                                         {% if comment.user != request.user %}
-                            <small class="float-right report" id="{{ comment.id }}">
+                                                    <small class="float-right report" id="{{ comment.id }}">
                                                         <i class="fa-fw fa fa-flag"
                                                              data-toggle="tooltip" title="Report" data-placement="top"></i></small>
                                                         {% endif %}
@@ -230,7 +230,7 @@
                                                 {% if comment.user == request.user  %}
                                                     <small class="float-right delete" id="{{ comment.id }}">
                                                         <i class="fa fa-trash" aria-hidden="true"
-                                                        width="20" height="20" data-toggle="tooltip"
+                                                        data-toggle="tooltip"
                                                             title="Delete" data-placement="bottom"></i></small>
                                                         {% endif %}
 
@@ -267,7 +267,7 @@
                                                    
                                     {% if comment.user == request.user %}
                                                     <small class="float-right delete" id="{{ comment.id }}">
-                                                        <i class="fa fa-trash" aria-hidden="true" width="20" height="20" data-toggle="tooltip"
+                                                        <i class="fa fa-trash" aria-hidden="true" data-toggle="tooltip"
                                                             title="Delete" data-placement="bottom"></i></small>
                                                          {% endif %}
                                                     <p class="mb-1">{{ comment.comment }}</p>
@@ -301,8 +301,7 @@
 
                                                 {% if comment.user == request.user %}
                                                     <small class="float-right delete" id="{{ comment.id }}">
-                                                        <i class="fa fa-trash" aria-hidden="true" width="20" height="20" data-toggle="tooltip"
-                                                            title="Delete" data-placement="bottom"></i></small>
+                                                        <i class="fa fa-trash" aria-hidden="true"  data-toggle="tooltip" title="Delete" data-placement="bottom"></i></small>
                                                          {% endif %}
                                                     <p class="mb-1">{{ comment.comment }}</p>
 
