@@ -568,12 +568,12 @@
       "id": "ad881493-1e1b-48d6-bd48-232fc8398416",
       "comment": "",
       "command": "click",
-      "target": "xpath=(//button[@type='button'])[19]",
+      "target": "css=#entity-edit-modal-40 .btn:nth-child(2)",
       "targets": [
-        ["css=#entity-edit-modal-18 .btn:nth-child(2)", "css:finder"],
-        ["xpath=(//button[@type='button'])[19]", "xpath:attributes"],
-        ["xpath=//div[@id='entity-edit-modal-18']/div/div/div[3]/button[2]", "xpath:idRelative"],
-        ["xpath=//div[4]/div/div/div[3]/button[2]", "xpath:position"]
+        ["css=#entity-edit-modal-40 .btn:nth-child(2)", "css:finder"],
+        ["xpath=(//button[@type='button'])[39]", "xpath:attributes"],
+        ["xpath=//div[@id='entity-edit-modal-40']/div/div/div[3]/button[2]", "xpath:idRelative"],
+        ["xpath=//div[8]/div/div/div[3]/button[2]", "xpath:position"]
       ],
       "value": ""
     }, {
@@ -876,7 +876,7 @@
       "command": "select",
       "target": "id=id_question",
       "targets": [],
-      "value": "label=What should you do?"
+      "value": "label=test_What should you tell the patient?"
     }, {
       "id": "89badb18-71b4-4779-a32c-5329aa4f4110",
       "comment": "",
@@ -2382,12 +2382,12 @@
       "id": "58077cd8-94f2-43df-a550-fa398afee669",
       "comment": "",
       "command": "click",
-      "target": "xpath=(//button[@type='button'])[39]",
+      "target": "css=#entity-edit-modal-23 .btn:nth-child(2)",
       "targets": [
-        ["css=#entity-edit-modal-21 .btn:nth-child(2)", "css:finder"],
-        ["xpath=(//button[@type='button'])[39]", "xpath:attributes"],
-        ["xpath=//div[@id='entity-edit-modal-21']/div/div/div[3]/button[2]", "xpath:idRelative"],
-        ["xpath=//div[8]/div/div/div[3]/button[2]", "xpath:position"]
+        ["css=#entity-edit-modal-23 .btn:nth-child(2)", "css:finder"],
+        ["xpath=(//button[@type='button'])[19]", "xpath:attributes"],
+        ["xpath=//div[@id='entity-edit-modal-23']/div/div/div[3]/button[2]", "xpath:idRelative"],
+        ["xpath=//div[4]/div/div/div[3]/button[2]", "xpath:position"]
       ],
       "value": ""
     }, {
@@ -2780,13 +2780,12 @@
       "id": "455f1c3c-8d24-4744-8659-0ee3dc4c010f",
       "comment": "",
       "command": "click",
-      "target": "xpath=(//button[@type='button'])[4]",
+      "target": "css=#entity-edit-modal-15 .btn:nth-child(2)",
       "targets": [
-        ["css=#entity-edit-modal-6 .btn:nth-child(2)", "css:finder"],
-        ["xpath=(//button[@type='button'])[4]", "xpath:attributes"],
-        ["xpath=//div[@id='entity-edit-modal-6']/div/div/div[3]/button[2]", "xpath:idRelative"],
-        ["xpath=//button[2]", "xpath:position"],
-        ["xpath=//button[contains(.,'Hard Delete')]", "xpath:innerText"]
+        ["css=#entity-edit-modal-15 .btn:nth-child(2)", "css:finder"],
+        ["xpath=(//button[@type='button'])[14]", "xpath:attributes"],
+        ["xpath=//div[@id='entity-edit-modal-15']/div/div/div[3]/button[2]", "xpath:idRelative"],
+        ["xpath=//div[3]/div/div/div[3]/button[2]", "xpath:position"]
       ],
       "value": ""
     }, {

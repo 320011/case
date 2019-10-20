@@ -81,28 +81,32 @@ class Command(BaseCommand):
                 "firstName" : "David" , 
                 "lastName" : "D", 
                 "email" : "david@example.com",
-                "password" : "test123456789!"
+                "password" : "test123456789!", 
+                "is_staff" : False
             }, 
             {
                 "id" : 2 , 
                 "firstName" : "Jess" , 
                 "lastName" : "J", 
                 "email" : "jess@example.com",
-                "password" : "test123456789!"
+                "password" : "test123456789!", 
+                "is_staff" : False
             }, 
             {
                 "id" : 3, 
                 "firstName" : "Bobby" , 
                 "lastName" : "B", 
                 "email" : "bobby@example.com",
-                "password" : "test123456789!"
+                "password" : "test123456789!", 
+                "is_staff" : False
             }, 
             {
                 "id" : 4, 
                 "firstName" : "Sam" , 
                 "lastName" : "S", 
                 "email" : "sam@example.com",
-                "password" : "test123456789!"
+                "password" : "test123456789!", 
+                "is_staff" : False
             }
             , 
             {
@@ -110,7 +114,17 @@ class Command(BaseCommand):
                 "firstName" : "Sally" , 
                 "lastName" : "S", 
                 "email" : "sally@example.com",
-                "password" : "test123456789!"
+                "password" : "test123456789!", 
+                "is_staff" : False
+
+            }, 
+            {
+                "id" : 6, 
+                "firstName" : "AdminTest" , 
+                "lastName" : "AdminTest", 
+                "email" : "admin@example.com",
+                "password" : "test123456789!", 
+                "is_staff" : True
             }
         ]
 
@@ -127,6 +141,7 @@ class Command(BaseCommand):
                     user.university = "UWA"
                     user.degree_commencement_year = 2019
                     user.set_password(test_user["password"]) 
+                    user.is_staff = test_user["is_staff"]
                     user.save()
                     print("Created user " + test_user["email"] )
 
