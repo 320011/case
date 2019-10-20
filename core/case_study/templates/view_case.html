@@ -19,22 +19,18 @@
         opacity: 1;
       }
     }
-
     .playlist-action-btn {
       width: 40%;
     }
-
     .btn-flash {
       animation: opacity-loop 1s ease-in-out infinite;
     }
-
     /* narrow */
     @media only screen and (max-width: 410px) {
       #attempt_again {
         display: block;
         margin-bottom: 10px;
       }
-
       #next_case {
         display: inline-block;
       }
@@ -320,42 +316,6 @@
       </div>
       <!-- Show comments if attempt is >= 1 -->
     </div>
-<<<<<<< HEAD
-    </div>
-    <br>
-    <style>
-        .report {
-            color: #A9A9A9;
-            font-size: 90%;
-            cursor: pointer;
-            filter: grayscale(100%);
-        }
-
-        .delete {
-            font-size: 90%;
-            color:  #A9A9A9;
-            cursor: pointer;
-            filter: grayscale(100%);
-
-        }
-
-        .ow {
-            max-width: 500px;
-            overflow-wrap: break-word;
-            word-wrap: break-word;
-            hyphens: auto;
-        }
-    </style>
-
-
-
-    <script src="{% static "js/viewCase.js" %}"></script>
-    <script src="{% static "js/report.js" %}"></script>
-
-    <script>
-        var csrftoken = getCookie('csrftoken');
-    </script>
-=======
   </div>
   </div>
   <br>
@@ -366,15 +326,12 @@
       cursor: pointer;
       filter: grayscale(100%);
     }
-
     .delete {
       font-size: 90%;
       color: #A9A9A9;
       cursor: pointer;
       filter: grayscale(100%);
-
     }
-
     .ow {
       max-width: 100%;
       overflow-wrap: break-word;
@@ -391,5 +348,4 @@
   <script>
     var csrftoken = getCookie('csrftoken');
   </script>
->>>>>>> 5f67672f0b075eadd7d00664ac9190c010e335ac
 {% endblock %}
