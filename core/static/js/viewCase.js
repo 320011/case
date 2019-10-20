@@ -114,6 +114,7 @@ $('#submit_comment').click(function () {
         let br = window.innerWidth < 1026 ? "comment-break" : "comment-break d-none";
         let name = data.user.name;
         let date = moment(data.comment.date).format("MMM D YYYY, hh:mm a.");
+        let delete_img = "/static/img/report_delete.png"
         if ( data.user.is_tutor ) {
           name = '<a data-toggle="tooltip" title="Tutor"><i class="fa fa-fw fa-graduation-cap" data-toggle="tooltip"></i></a>' + data.user.name;
         } else {
@@ -132,6 +133,7 @@ $('#submit_comment').click(function () {
                         <br class="${br}">\
                         <small class="text-muted">${date}</small>\
                       </div>\
+                    <small class="float-right delete" id="{{ comment.id }}"><img src="${delete_img}" width="20" height="20" data-toggle="tooltip title="Delete" data-placement="bottom"></small>\
                       <p class="mb-1">${data.comment.body}</p>\
                     </div>\
                   </div>\

@@ -202,7 +202,7 @@
                                                 <div class="alert alert-primary" role="alert">
                                                     <div class="d-flex w-100 justify-content-between comment-content">
                                                         <small class="text-muted">
-                                                            {% if comment.is_anon == True %}
+                                                        {% if comment.is_anon == True %}
                                                                 {{ comment.user }} (Anonymous)
                                                             {% else %}
                                                                 {% if request.user.is_tutor %}
@@ -220,15 +220,19 @@
 
                                                         <small class="text-muted" id="comment_date">{{ comment.comment_date }}</small>
 
+                                                        {% if comment.user != request.user %}
 
                                                         <small class="float-right report" id="{{ comment.id }}">
                                                             <img src="{% static 'img/report_flag.png' %}" alt="report" width="20" height="20"
                                                                  data-toggle="tooltip" title="Report" data-placement="top"></small>
-                                                    </div>
+                                                        {% endif %}
 
+                                                    </div>
+                                                {% if comment.user == request.user  %}
                                                     <small class="float-right delete" id="{{ comment.id }}"><img
                                                             src="{% static 'img/report_delete.png' %}" width="20" height="20" data-toggle="tooltip"
                                                             title="Delete" data-placement="bottom"></small>
+                                                        {% endif %}
 
                                                     <p class="mb-1 ">{{ comment.comment }}</p>
 
@@ -250,12 +254,22 @@
 
                                                         <br class="comment-break d-none">
                                                         <small class="text-muted">{{ comment.comment_date }}</small>
-                                                    </div>
 
+                                     {% if comment.user != request.user %}
                                                     <small class="float-right report" id="{{ comment.id }}">
                                                         <img src="{% static 'img/report_flag.png' %}" alt="report" width="20" height="20"
                                                              data-toggle="tooltip" title="Report" data-placement="top"></small>
 
+                                                    {% endif %}
+                                                    </div>
+                                               
+
+                                                   
+                                    {% if comment.user == request.user %}
+                                                    <small class="float-right delete" id="{{ comment.id }}"><img
+                                                            src="{% static 'img/report_delete.png' %}" width="20" height="20" data-toggle="tooltip"
+                                                            title="Delete" data-placement="bottom"></small>
+                                                         {% endif %}
                                                     <p class="mb-1">{{ comment.comment }}</p>
                                                 </div>
                                             </div>
@@ -275,11 +289,23 @@
 
                                                         <br class="comment-break d-none">
                                                         <small class="text-muted">{{ comment.comment_date }}</small>
-                                                    </div>
+
+                                                {% if comment.user != request.user %}
                                                     <small class="float-right report" id="{{ comment.id }}">
                                                         <img src="{% static 'img/report_flag.png' %}" alt="report" width="20" height="20"
                                                              data-toggle="tooltip" title="Report" data-placement="top"></small>
+                                                    {% endif %}
+
+
+                                                    </div>
+
+                                                {% if comment.user == request.user %}
+                                                    <small class="float-right delete" id="{{ comment.id }}"><img
+                                                            src="{% static 'img/report_delete.png' %}" width="20" height="20" data-toggle="tooltip"
+                                                            title="Delete" data-placement="bottom"></small>
+                                                         {% endif %}
                                                     <p class="mb-1">{{ comment.comment }}</p>
+
                                                 </div>
                                             </div>
                                         </div>
