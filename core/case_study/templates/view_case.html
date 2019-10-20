@@ -222,16 +222,14 @@
 
                                                         {% if comment.user != request.user %}
                                                             <small class="float-right report" id="{{ comment.id }}">
-                                                            <i class="fa-fw fa fa-flag"
-                                                            data-toggle="tooltip" title="Report" data-placement="top"></i></small>
+                                                            <i class="fa-fw fa fa-flag" data-toggle="tooltip" title="Report" data-placement="top"></i></small>
                                                         {% endif %}
 
                                                     </div>
                                                         {% if request.user.is_superuser  %}
                                                             <small class="float-right delete" id="{{ comment.id }}">
                                                             <i class="fa fa-trash" aria-hidden="true"
-                                                            data-toggle="tooltip"
-                                                            title="Delete" data-placement="bottom"></i></small>
+                                                            data-toggle="tooltip" title="Delete" data-placement="bottom"></i></small>
                                                         {% endif %}
 
                                                     <p class="mb-1 ">{{ comment.comment }}</p>
@@ -266,8 +264,7 @@
                                                    
                                                         {% if request.user.is_superuser %}
                                                             <small class="float-right delete" id="{{ comment.id }}">
-                                                            <i class="fa fa-trash" aria-hidden="true" data-toggle="tooltip"
-                                                            title="Delete" data-placement="bottom"></i></small>
+                                                            <i class="fa fa-trash" aria-hidden="true" data-toggle="tooltip" title="Delete" data-placement="bottom"></i></small>
                                                         {% endif %}
 
                                                     <p class="mb-1">{{ comment.comment }}</p>
@@ -292,8 +289,7 @@
 
                                                         {% if comment.user != request.user %}
                                                             <small class="float-right report" id="{{ comment.id }}">
-                                                            <i class="fa-fw fa fa-flag"
-                                                            data-toggle="tooltip" title="Report" data-placement="top"></i></small>
+                                                            <i class="fa-fw fa fa-flag"data-toggle="tooltip" title="Report" data-placement="top"></i></small>
                                                         {% endif %}
 
 
