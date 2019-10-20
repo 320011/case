@@ -13,7 +13,7 @@ class Command(BaseCommand):
             {
                 "id" : 1 , 
                 "firstName" : "David" , 
-                "lastName" : "R", 
+                "lastName" : "D", 
                 "email" : "david@example.com",
                 "password" : "test123456789!"
             } , 
@@ -25,12 +25,19 @@ class Command(BaseCommand):
                 "password" : "test123456789!"
             } 
         }
-        
-        test_cases = {
-            {
-                "id" : 1 ,
-                "case_description" : "" 
-            }
-        }
 
+        # create test users 
+        for test_user in test_users:
+            try:
+                user = User.objects.get(email=test_user.email)
+            except ObjectDoesNotExist:
+                user = User.objects.create(email=test_user.email)
+                user.first_name = test_user.firstName
+                user.last_name = test_user.firstName
+                user.is_active = True 
+                user.university = "UWA"
+                user.degree_commencement_year = 2019
+                # user.set_password(test_user.password) 
+                user.save()
+                
         print("hello")
