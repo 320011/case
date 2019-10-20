@@ -32,7 +32,7 @@ $(".report").click(function(){
     }
 });
 
-
+    
 $(".delete").click(function(){
     if(confirm('Are you sure you would like to delete this comment.\n\nIt will no longer appear to users but it will still be available in the admin until it is hard deleted.')){
         let id = $(this).attr('id'); //get the id of the comment\

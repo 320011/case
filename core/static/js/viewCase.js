@@ -114,13 +114,33 @@ $('#submit_comment').click(function () {
         let br = window.innerWidth < 1026 ? "comment-break" : "comment-break d-none";
         let name = data.user.name;
         let date = moment(data.comment.date).format("MMM D YYYY, hh:mm a.");
+        let comment_id = data.comment.id
         if ( data.user.is_tutor ) {
           name = '<a data-toggle="tooltip" title="Tutor"><i class="fa fa-fw fa-graduation-cap" data-toggle="tooltip"></i></a>' + data.user.name;
         } else {
           name = data.comment.is_anon ? data.user.name + " (Anonymous)" :  data.user.name;
         }
         // 
-
+      if(data.user.is_staff){
+        htmlstring =
+          `<div class="row justify-content-end">\
+                  <div class="${container}">\
+                    <div class="alert alert-primary" role="alert">\
+                      <div class="${content}">\
+                        <small class="text-muted">\
+                        ${name}\
+                        </small>\
+                        <br class="${br}">\
+                        <small class="text-muted">${date}</small>\
+                      </div>\                    
+                      <p class="mb-1">${data.comment.body}</p>\
+                      <small class="delete" id="${comment_id}">\
+                      <a data-toggle="tooltip" title="Delete" data-placement="top">delete</a></small>\
+                    </div>\
+                  </div>\
+                </div>`;
+              }
+      else{
         htmlstring =
           `<div class="row justify-content-end">\
                   <div class="${container}">\
@@ -135,9 +155,31 @@ $('#submit_comment').click(function () {
                       <p class="mb-1">${data.comment.body}</p>\
                     </div>\
                   </div>\
-                </div>`;
+                </div>`;  
+      }
+
         $("#comment-container").prepend($(htmlstring).hide().delay(500).show('slow'));
+    
+
+      $(".delete").click(function(){
+      if(confirm('Are you sure you would like to delete this comment.\n\nIt will no longer appear to users but it will still be available in the admin until it is hard deleted.')){
+          $.ajax({
+              type: 'POST',
+              url: '/cases/api/v1/delete_comment/' + comment_id  + '/' ,
+              dataType: 'json',
+              data:{
+                  'comment_id': comment_id 
+              },
+              success: function(){
+                  alert("The comment has been deleted.");
+                  location.reload();
+              }
+          });
+      }
+  });
       }
     });
   }
 });
+
+
