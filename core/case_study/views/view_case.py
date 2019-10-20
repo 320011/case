@@ -106,8 +106,12 @@ def submit_comment(request, case_study_id):
     else:
         comment = Comment.objects.create(comment=body, case_study=case, user=request.user, is_anon=is_anon,
                                         comment_date=timezone.now())
+
+    comment_id = comment.id
+
     data = {
         'comment': {
+            'id':comment_id,
             'body': body,
             'date': timezone.now(),
             'is_anon': comment.is_anon == 'True'
