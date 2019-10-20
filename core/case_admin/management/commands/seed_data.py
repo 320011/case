@@ -82,7 +82,8 @@ class Command(BaseCommand):
                 "lastName" : "D", 
                 "email" : "david@example.com",
                 "password" : "test123456789!", 
-                "is_staff" : False
+                "is_staff" : False,
+                "commencement_year" : 2018,
             }, 
             {
                 "id" : 2 , 
@@ -90,7 +91,8 @@ class Command(BaseCommand):
                 "lastName" : "J", 
                 "email" : "jess@example.com",
                 "password" : "test123456789!", 
-                "is_staff" : False
+                "is_staff" : False,
+                "commencement_year" : 2019,
             }, 
             {
                 "id" : 3, 
@@ -98,7 +100,8 @@ class Command(BaseCommand):
                 "lastName" : "B", 
                 "email" : "bobby@example.com",
                 "password" : "test123456789!", 
-                "is_staff" : False
+                "is_staff" : False,
+                "commencement_year" : 2018,
             }, 
             {
                 "id" : 4, 
@@ -106,7 +109,8 @@ class Command(BaseCommand):
                 "lastName" : "S", 
                 "email" : "sam@example.com",
                 "password" : "test123456789!", 
-                "is_staff" : False
+                "is_staff" : False,
+                "commencement_year" : 2018,
             }
             , 
             {
@@ -115,7 +119,8 @@ class Command(BaseCommand):
                 "lastName" : "S", 
                 "email" : "sally@example.com",
                 "password" : "test123456789!", 
-                "is_staff" : False
+                "is_staff" : False,
+                "commencement_year" : 2018,
 
             }, 
             {
@@ -124,7 +129,8 @@ class Command(BaseCommand):
                 "lastName" : "AdminTest", 
                 "email" : "admin@example.com",
                 "password" : "test123456789!", 
-                "is_staff" : True
+                "is_staff" : True,
+                "commencement_year" : 2018,
             }
         ]
 
@@ -139,7 +145,7 @@ class Command(BaseCommand):
                     user.last_name = test_user["lastName"]
                     user.is_active = True 
                     user.university = "UWA"
-                    user.degree_commencement_year = 2019
+                    user.degree_commencement_year = test_user["commencement_year"]
                     user.set_password(test_user["password"]) 
                     user.is_staff = test_user["is_staff"]
                     user.save()
@@ -149,15 +155,15 @@ class Command(BaseCommand):
         test_questions = [
             {
                 "id":1,
-                "body": "test_What should you tell the patient?"
+                "body": "What should you tell the patient?"
             },
             {
                 "id":2,
-                "body": "test_What dosage should you provide?"
+                "body": "What dosage should you provide?"
             },
             {
                 "id":3,
-                "body": "test_Who should you refer this patient to?"
+                "body": "Who should you refer this patient to?"
             },
         ]
 
@@ -174,15 +180,15 @@ class Command(BaseCommand):
         test_tags = [
             {
                 "id":1,
-                "name": "test_Fever"
+                "name": "Fever"
             },
             {
                 "id":2,
-                "name": "test_Cold"
+                "name": "Cold"
             },
             {
                 "id":3,
-                "name": "test_Rash"
+                "name": "Rash"
             },
         ]
         if action == "create":
@@ -198,7 +204,7 @@ class Command(BaseCommand):
         test_cases = [
             {
                 "id":1,
-                "created_by": "david@example.com",
+                "created_by": "sally@example.com",
                 "case_state": "P",
                 "height" : 180,
                 "weight" : 60,
@@ -207,13 +213,14 @@ class Command(BaseCommand):
                 "age" : 540,
                 "sex" : "M",
                 "description" : "with a bleeding knee and cuts to arms.",
-                "question" : "test_What should you tell the patient?",
+                "question" : "What dosage should you provide?",
                 "answer_a" : "Nothing",
                 "answer_b" : "I can't help you",
                 "answer_c" : "Go to a hospital",
                 "answer_d" : "Here's some medication for your cuts",
                 "answer" : "D",
                 "feedback" : "Be helpful",
+                "date_created" : "2019-09-01T08:20:30",
             },
             {
                 "id":2,
@@ -226,17 +233,18 @@ class Command(BaseCommand):
                 "age" : 360,
                 "sex" : "F",
                 "description" : "complaining pains to her belly.",
-                "question" : "test_What should you tell the patient?",
+                "question" : "What should you tell the patient?",
                 "answer_a" : "Nothing",
                 "answer_b" : "I can't help you",
                 "answer_c" : "Go to a hospital",
                 "answer_d" : "Here's some medication for your tummy",
                 "answer" : "D",
                 "feedback" : "Be helpful",
+                "date_created" : "2019-08-30T15:20:30",
             },
             {
                 "id":3,
-                "created_by": "bobby@example.com",
+                "created_by": "david@example.com",
                 "case_state": "P",
                 "height" : 190,
                 "weight" : 50,
@@ -245,13 +253,14 @@ class Command(BaseCommand):
                 "age" : 204,
                 "sex" : "F",
                 "description" : "complaining feeling faint.",
-                "question" : "test_What should you tell the patient?",
+                "question" : "Who should you refer this patient to?",
                 "answer_a" : "Nothing",
                 "answer_b" : "I can't help you",
                 "answer_c" : "Go to a hospital",
                 "answer_d" : "Here's some medication for your faintness",
-                "answer" : "C",
+                "answer" : "D",
                 "feedback" : "Patient is underweight",
+                "date_created" : "2019-08-25T10:20:30",
             },
         ]
 
@@ -263,8 +272,7 @@ class Command(BaseCommand):
                     print(test_case["description"] + " case has already been created")
                 except ObjectDoesNotExist:
                     case = CaseStudy.objects.create(description=test_case["description"])
-                    user = User.objects.get(email=test_user["email"])
-                    case.created_by = user
+                    case.created_by = User.objects.get(email=test_case["created_by"])
                     case.case_state = test_case["case_state"]
                     case.height = test_case["height"]
                     case.weight = test_case["weight"]
@@ -280,6 +288,7 @@ class Command(BaseCommand):
                     case.answer_d = test_case["answer_d"]
                     case.answer = test_case["answer"]
                     case.feedback = test_case["feedback"]
+                    case.date_created = test_case["date_created"]
                     case.save()
                     print("Created case " + test_case["description"] )
 
@@ -287,22 +296,22 @@ class Command(BaseCommand):
         test_tag_relationships = [
             {
                 "id":1,
-                "tag": "test_Fever",
+                "tag": "Fever",
                 "case": "complaining feeling faint."
             },
             {
                 "id":2,
-                "tag": "test_Cold",
+                "tag": "Cold",
                 "case": "complaining feeling faint."
             },
             {
                 "id":3,
-                "tag": "test_Rash",
+                "tag": "Rash",
                 "case": "with a bleeding knee and cuts to arms."
             },
             {
                 "id":4,
-                "tag": "test_Cold",
+                "tag": "Cold",
                 "case": "complaining pains to her belly."
             },
         ]
@@ -438,77 +447,77 @@ class Command(BaseCommand):
                 "user_answer": "A",
                 "case": "complaining feeling faint.", 
                 "user": "bobby@example.com", 
-                "attempt_date": "2019-09-01T13:20:30",
+                "attempt_date": "2019-09-01T09:20:30",
             },
             {
                 "id":2,
                 "user_answer": "B",
                 "case": "complaining feeling faint.", 
                 "user": "bobby@example.com", 
-                "attempt_date": "2019-09-02T13:20:30",
+                "attempt_date": "2019-09-02T09:20:30",
             },
             {
                 "id":3,
                 "user_answer": "C",
                 "case": "complaining feeling faint.", 
                 "user": "bobby@example.com", 
-                "attempt_date": "2019-09-03T13:20:30",
+                "attempt_date": "2019-09-03T10:20:30",
             },
             {
                 "id":4,
                 "user_answer": "D",
                 "case": "complaining feeling faint.", 
                 "user": "bobby@example.com", 
-                "attempt_date": "2019-09-04T13:20:30",
+                "attempt_date": "2019-09-04T11:20:30",
             },
             {
                 "id":5,
                 "user_answer": "D",
                 "case": "complaining feeling faint.", 
                 "user": "sally@example.com", 
-                "attempt_date": "2019-09-02T13:20:30",
+                "attempt_date": "2019-09-02T12:20:30",
             },
             {
                 "id":6,
                 "user_answer": "D",
                 "case": "complaining feeling faint.", 
                 "user": "david@example.com", 
-                "attempt_date": "2019-09-03T13:20:30",
+                "attempt_date": "2019-09-03T16:20:30",
             },
             {
                 "id":7,
                 "user_answer": "C",
                 "case": "complaining feeling faint.", 
                 "user": "jess@example.com", 
-                "attempt_date": "2019-09-11T13:20:30",
+                "attempt_date": "2019-09-11T20:20:30",
             },
             {
                 "id":8,
                 "user_answer": "D",
                 "case": "complaining feeling faint.", 
                 "user": "jess@example.com", 
-                "attempt_date": "2019-09-15T13:20:30",
+                "attempt_date": "2019-09-15T21:20:30",
             },
             {
                 "id":9,
                 "user_answer": "A",
                 "case": "with a bleeding knee and cuts to arms.", 
                 "user": "bobby@example.com", 
-                "attempt_date": "2019-09-09T13:20:30",
+                "attempt_date": "2019-09-09T14:20:30",
             },
             {
                 "id":10,
                 "user_answer": "B",
                 "case": "with a bleeding knee and cuts to arms.", 
                 "user": "bobby@example.com", 
-                "attempt_date": "2019-09-17T13:20:30",
+                "attempt_date": "2019-09-17T15:20:30",
             },
             {
                 "id":11,
                 "user_answer": "C",
                 "case": "with a bleeding knee and cuts to arms.", 
                 "user": "bobby@example.com", 
-                "attempt_date": "2019-09-20T13:20:30",
+                "attempt_date": "2019-09-20T14:20:30",
             },
             {
                 "id":12,
@@ -522,49 +531,49 @@ class Command(BaseCommand):
                 "user_answer": "C",
                 "case": "with a bleeding knee and cuts to arms.", 
                 "user": "sally@example.com", 
-                "attempt_date": "2019-09-07T13:20:30",
+                "attempt_date": "2019-09-07T20:20:30",
             },
             {
                 "id":14,
                 "user_answer": "D",
                 "case": "with a bleeding knee and cuts to arms.", 
                 "user": "sally@example.com", 
-                "attempt_date": "2019-09-08T13:20:30",
+                "attempt_date": "2019-09-08T10:20:30",
             },
             {
                 "id":15,
                 "user_answer": "A",
                 "case": "with a bleeding knee and cuts to arms.", 
                 "user": "david@example.com", 
-                "attempt_date": "2019-09-10T13:20:30",
+                "attempt_date": "2019-09-10T11:20:30",
             },
             {
                 "id":16,
-                "user_answer": "A",
+                "user_answer": "D",
                 "case": "with a bleeding knee and cuts to arms.", 
                 "user": "jess@example.com", 
-                "attempt_date": "2019-09-11T13:20:30",
+                "attempt_date": "2019-09-11T12:20:30",
             },
             {
                 "id":17,
                 "user_answer": "D",
                 "case": "complaining pains to her belly.", 
                 "user": "jess@example.com", 
-                "attempt_date": "2019-09-14T13:20:30",
+                "attempt_date": "2019-09-14T14:20:30",
             },
             {
                 "id":18,
                 "user_answer": "D",
                 "case": "complaining pains to her belly.", 
                 "user": "bobby@example.com", 
-                "attempt_date": "2019-09-12T13:20:30",
+                "attempt_date": "2019-09-12T15:20:30",
             },
             {
                 "id":19,
                 "user_answer": "D",
                 "case": "complaining pains to her belly.", 
                 "user": "david@example.com", 
-                "attempt_date": "2019-09-03T13:20:30",
+                "attempt_date": "2019-09-03T09:20:30",
             },
             {
                 "id":20,
