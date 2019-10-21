@@ -20,6 +20,7 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='default'),
+    path('error/<int:exception>', views.view_403, name='404'),
     path('cases/', include('case_study.urls', namespace='cases')),
     path('user/', include('accounts.urls', namespace='accounts')),
     path('admin/', admin.site.urls),
@@ -44,3 +45,7 @@ urlpatterns = [
         template_name='password_reset_complete.html',), name='password_reset_complete'),
 ]
 
+handler400 = 'core.views.view_400'
+handler403 = 'core.views.view_403'
+handler404 = 'core.views.view_404'
+handler500 = 'core.views.view_500'
