@@ -50,6 +50,8 @@ def search(request):
     anon_cases = None
     if get.get("staff_choice") is not None:
         anon_cases = cases.filter(created_by__is_staff=True)
+        anon_cases_tutor = cases.filter(created_by__is_tutor=True)
+        anon_cases = anon_cases.union(anon_cases_tutor)
 
     # all tags
     tags = Tag.objects.filter()
