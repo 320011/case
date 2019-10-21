@@ -49,9 +49,9 @@ def search(request):
     # Staff only
     anon_cases = None
     if get.get("staff_choice") is not None:
-        anon_cases = cases.filter(created_by__is_staff=True)
+        anon_cases_staff = cases.filter(created_by__is_staff=True)
         anon_cases_tutor = cases.filter(created_by__is_tutor=True)
-        anon_cases = anon_cases.union(anon_cases_tutor)
+        anon_cases = anon_cases_staff.union(anon_cases_tutor)
 
     # all tags
     tags = Tag.objects.filter()
@@ -315,7 +315,9 @@ def advsearch(request):
     # Staff only
     anon_cases = None
     if get.get("staff_choice") is not None:
-        anon_cases = cases.filter(created_by__is_staff=True)
+        anon_cases_staff = cases.filter(created_by__is_staff=True)
+        anon_cases_tutor = cases.filter(created_by__is_tutor=True)
+        anon_cases = anon_cases_staff.union(anon_cases_tutor)
 
     tags = Tag.objects.filter()
     sexes = ['Both', 'Male', 'Female']
