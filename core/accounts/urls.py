@@ -13,4 +13,6 @@ urlpatterns = [
     path("activate/", views.view_activate, name="activate"),
     path("settings", views.view_settings, name="profile_settings"),
     path("settings/password", views.view_change_password, name="change_password"),
+    path("settings/delete", views.view_delete_account, name="delete_account"),
+    path("settings/delete/confirm", views.api_delete_account_confirm, name="delete_account_confirm"),
 ]

@@ -224,7 +224,7 @@
                           <p class="mb-1 ow" style="max-width: 32rem">{{ comment.comment }}</p>
 
                           <div>
-                            {% if request.user.is_superuser %}
+                            {% if request.user.is_staff %}
                               <small class="delete " id="{{ comment.id }}">
                                 <a data-toggle="tooltip" title="Delete" data-placement="top">delete</a></small>
                             {% endif %}
@@ -265,7 +265,7 @@
                                 <a data-toggle="tooltip" title="Report" data-placement="top">report</a></small>
                             {% endif %}
 
-                            {% if request.user.is_superuser %}
+                            {% if request.user.is_staff %}
                               <small class="delete " id="{{ comment.id }}">
                                 <a data-toggle="tooltip" title="Delete" data-placement="top">delete</a></small>
                             {% endif %}
@@ -298,7 +298,7 @@
                                 <a data-toggle="tooltip" title="Report" data-placement="top">report</a></small>
                             {% endif %}
 
-                            {% if request.user.is_superuser %}
+                            {% if request.user.is_staff %}
                               <small class="delete " id="{{ comment.id }}">
                                 <a data-toggle="tooltip" title="Delete" data-placement="top">delete</a></small>
                             {% endif %}

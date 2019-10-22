@@ -1,5 +1,5 @@
-from django.http import HttpResponseBadRequest, HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.http import HttpResponseBadRequest, HttpResponseRedirect, JsonResponse
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, update_session_auth_hash
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
@@ -316,3 +316,31 @@ def view_change_password(request):
     return render(request, 'profile-password.html', {
         'form': form
     })
+
+
+@login_required
+def view_delete_account(request):
+    return render(request, 'profile-delete-account.html', {})
+
+
+@login_required
+def api_delete_account_confirm(request):
+    if request.method == "POST":
+        try:
+            u = User.objects.get(pk=request.user.pk)
+            u.delete(keep_parents=False)
+            return JsonResponse({
+                "success": True,
+                "message": "Account deleted"
+            })
+        except User.DoesNotExist:
+            return JsonResponse({
+                "success": False,
+                "message": "Could not find the the specified account. It may have already been deleted."
+            })
+    else:
+        return JsonResponse({
+            "success": False,
+            "message": "Unsupported HTTP method: " + request.method
+        })
+
