@@ -37,6 +37,7 @@ class LogInForm(forms.Form):
             "password"
         ]
 
+
 class SignUpForm(UserCreationForm):
     """
     Attributes added to customise for bootstrap
@@ -115,6 +116,19 @@ class SignUpForm(UserCreationForm):
             }
         ),
         label="Degree Commencement Year"
+    )
+    terms_accepted = forms.BooleanField(
+        widget=forms.CheckboxInput(
+            attrs={
+                "class": "form-control",
+                "type": "checkbox",
+                "name": "tos_accepted",
+                "placeholder": ""
+            }
+        ),
+        label="I understand and accept that any information I provide to UWA Pharmacy Case may be utilised in "
+              "internal analytics that could include but is not limited to improving learning outcomes "
+              "for the master of pharmacy course at UWA."
     )
 
     class Meta:

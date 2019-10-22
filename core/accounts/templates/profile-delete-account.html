@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load css %}
+
+{% block title %}
+    Delete Account | UWA Pharmacy Case
+{% endblock %}
+
+{% block body %}
+    <div class='container'>
+        <p> {{ message }} </p>
+    </div>
+    <div class="container">
+        <div class='theme-container theme-container-sm'>
+            <h1 class="theme-header">Account Deletion</h1>
+            <p>We are sad to see you go, but thank you for your use of our website.</p>
+            <p>Are you sure you want to delete your account?</p>
+            <button style="width: 100%;" class="btn btn-danger" onclick="deleteUserAccount()">Yes, Delete my Account</button>
+            <a style="display: block; width: 100%; margin-top: 20px" class="theme-btn" href="{% url "accounts:profile_settings" %}">No, Return to Settings</a>
+        </div>
+    </div>
+    <script>
+        function getCookie(name) {
+            if (document.cookie && document.cookie !== "") {
+                let cookies = document.cookie.split(";");
+                for (let i = 0; i < cookies.length; i++) {
+                    let cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + "=")) {
+                        return decodeURIComponent(cookie.substring(name.length + 1));
+                    }
+                }
+            }
+            return null;
+        }
+        function deleteUserAccount() {
+            if (confirm("Are you sure?\nThis action is immediate cannot be undone.")) {
+                // ajax the deletion request to the server
+                fetch("/user/settings/delete/confirm", {
+                    method: "POST",
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": getCookie("csrftoken"),
+                    },
+                    credentials: "same-origin",
+                    body: JSON.stringify({
+                        "delete": true,
+                    }),
+                }).then(r => r.json()).then(resp => {
+                    if (resp && resp.success) {
+                        alert(resp.message);
+                        console.log("Account deleted");
+                        location.replace("/");
+                    } else {
+                        alert("Failed to delete account. \nError: " + resp.message);
+                        console.log("Failed to delete account. \nError:", resp.message);
+                    }
+                }).catch(err => {
+                    alert("Failed to delete account. \nFatal Error: " + err);
+                    console.log("Failed to delete account. \nFatal Error:", err);
+                });
+            }
+        }
+    </script>
+{% endblock %}
